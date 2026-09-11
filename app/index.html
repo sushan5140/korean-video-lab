@@ -1,0 +1,1112 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Haneul Video Lab</title><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;color:#171827;background:radial-gradient(circle at 82% 7%,#eee9ff,transparent 24%),radial-gradient(circle at 70% 17%,#e5fbff,transparent 18%),#f8f8ff}button,input{font:inherit}.app{display:grid;grid-template-columns:210px 1fr;min-height:100vh}.side{background:linear-gradient(#15182a,#1e2239);color:#fff;padding:24px 18px}.brand{font-weight:900;font-size:20px}.brand b{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#fff;color:#6757f6;margin-right:8px}.nav{display:grid;gap:8px;margin-top:28px;color:#aeb4c4}.nav span{padding:11px;border-radius:12px}.nav .on{color:#fff;background:linear-gradient(90deg,#6d5dfc55,#57d7ff22)}.main{padding:36px 46px 70px;max-width:1400px}.ey{font-size:11px;letter-spacing:.12em;font-weight:900;color:#8a91a2}.top{display:flex;justify-content:space-between;gap:20px;align-items:end}.top h1{font-size:56px;line-height:1;letter-spacing:-.05em;margin:8px 0}.top h1 em{font-style:normal;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc);-webkit-background-clip:text;color:transparent}.top p{max-width:700px;color:#737b8b;line-height:1.55}.goal{width:220px;background:#fff;border:1px solid #e5e6ef;border-radius:16px;padding:15px;position:relative;overflow:hidden}.goal:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc)}.bar{height:7px;background:#eeeef5;border-radius:9px;margin-top:8px}.bar i{display:block;width:72%;height:100%;border-radius:9px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#ff76bc)}.tools{display:flex;gap:10px;margin:26px 0 18px}.tools input{flex:1;height:45px;border:1px solid #e3e5ed;border-radius:13px;padding:0 14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:#fff;border:1px solid #e6e7ef;border-radius:20px;overflow:hidden;cursor:pointer}.card img{width:100%;height:220px;object-fit:cover;background:#ececf5}.copy{padding:16px}.badge{display:inline-block;background:#eeeaff;color:#5d4cf1;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800}.copy h3{margin:10px 0 5px;font-size:18px}.copy p{font-size:13px;color:#737b8b}.copy small{color:#777f8f}.ov{display:none;position:fixed;inset:0;z-index:50;height:100dvh;background:#f2f3fc;overflow:hidden}.ov.open{display:grid;grid-template-rows:62px minmax(0,1fr)}.lessonbar{display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:14px;padding:0 18px;background:#fffffff2;border-bottom:1px solid #e7e7f2;position:relative}.lessonbar:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc)}.lt strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lt span{font-size:11px;color:#888f9f}.close{width:34px;height:34px;border:1px solid #dedfea;background:#fff;border-radius:50%;font-size:20px}.lessonGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:100%;min-height:0;gap:1px;background:#e6e7f0;overflow:hidden}.left{display:grid;grid-template-rows:minmax(0,57fr) minmax(0,43fr);min-height:0;height:100%;background:#141727;overflow:hidden}.video{padding:14px 14px 0;min-height:0;background:radial-gradient(circle at 50% 15%,#6d5dfc25,transparent 30%),#141727}.player{height:100%;border-radius:17px 17px 0 0;overflow:hidden;background:#080a12}.player iframe,.player>div{width:100%;height:100%;border:0}.caps{margin:0 14px 14px;background:#fff;border-radius:0 0 17px 17px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:0;overflow:hidden}.ctop{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid #ececf4}.ctop b{font-size:11px}.modes{display:flex;gap:4px}.modes button{font-size:10px;border:1px solid #e3e4ee;background:#fff;border-radius:999px;padding:5px 8px}.modes .on{background:#f1eeff;color:#5e50df;border-color:#d8d1ff}.cap{display:grid;align-content:center;justify-items:start;padding:10px 16px;overflow:auto;min-height:0}.label{font-size:9px;letter-spacing:.12em;font-weight:900;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#ff76bc);-webkit-background-clip:text;color:transparent}.ko{display:block;width:100%;font-size:clamp(30px,2.8vw,40px);font-weight:800;line-height:1.22;margin-top:4px;letter-spacing:-.02em}.en{display:block;width:100%;font-size:clamp(16px,1.4vw,20px);font-weight:650;color:#596274;margin-top:6px;line-height:1.35}.meaningWait{opacity:.62;font-style:italic}
+.spokenWord{display:inline-block;padding:1px 3px;border-radius:7px;transition:.1s}
+.spokenWord.active{background:linear-gradient(135deg,#6d5dfc,#8d79ff);color:#fff;box-shadow:0 4px 12px rgba(109,93,252,.2)}.syncPreview{font-size:9px;font-weight:850;letter-spacing:.06em;padding:4px 7px;border-radius:999px;background:#eefaf7;color:#23806d;margin-left:6px}
+.wordExplain{border:1px solid #e5e7f1;border-radius:15px;padding:14px 15px;background:linear-gradient(135deg,#fbfbff,#f7fcff);margin-bottom:12px}
+.wordExplainTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.wordExplain h3{margin:4px 0 2px;font-size:28px;line-height:1.15}
+.roman{font-size:12px;color:#8a91a2}
+.posBadge{font-size:10px;padding:6px 8px;border-radius:999px;background:#eeeaff;color:#5f50df;white-space:nowrap}
+.explainPicker{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.explainPick{border:1px solid #e1e3ed;background:#fff;border-radius:9px;padding:8px 10px;font-size:14px;font-weight:800;cursor:pointer}
+.explainPick.on{background:#ede9ff;border-color:#bfb4ff;color:#5848df}
+.followBtn{border:0;background:#eefaff;color:#267895;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:850;cursor:pointer}
+.wordGrid{display:grid;grid-template-columns:140px 1fr;gap:7px 12px;margin-top:12px;font-size:13px}
+.wordGrid span{color:#8a91a2}.wordGrid b{font-weight:750}
+.realExample{margin-top:12px;padding:10px 11px;border-radius:10px;background:#f2efff;font-size:13px;line-height:1.45}
+.grammarChunk{padding:10px 0;border-top:1px solid #ececf4}.grammarChunk:first-child{border-top:0}
+.grammarChunk b{font-size:16px}.grammarChunk p{margin:3px 0 0;font-size:13px;color:#687184}.actions{display:grid;grid-template-columns:1fr 1fr auto 1fr 1fr;gap:5px;padding:7px 16px 9px;border-top:1px solid #ececf4}.actions button{height:32px;border:1px solid #e2e3ee;background:#fff;border-radius:9px;font-size:10px}.actions .replay{background:#6d5dfc;color:#fff;border:0;min-width:118px}.actions .active{background:#ecfbff;color:#267895}.right{display:grid;grid-template-rows:auto minmax(0,1fr);height:100%;min-height:0;background:#fff;overflow:hidden}.rhead{padding:14px 18px 0;border-bottom:1px solid #e7e7f2}.rtitle{display:flex;justify-content:space-between;gap:15px}.rtitle h2{margin:0;font-size:22px}.rtitle p{margin:3px 0 0;color:#7c8392;font-size:12px}.level{font-size:10px;background:linear-gradient(90deg,#f1eeff,#ecfbff,#fff0f8);color:#5d53c7;padding:6px 8px;border-radius:999px;height:max-content}.tabs{display:flex;gap:16px;margin-top:13px;overflow-x:auto}.tabs button{border:0;background:none;padding:0 0 9px;font-size:11px;font-weight:850;color:#9297a5;border-bottom:2px solid transparent;white-space:nowrap}.tabs .on{color:#252738;border-color:#6d5dfc}.panel{min-height:0;padding:14px 18px 18px;overflow-y:auto;overscroll-behavior:contain}.rainbow{height:4px;border-radius:99px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc);margin-bottom:12px}.practiceHero{padding:14px 15px;border:1px solid #e6e4f5;border-radius:15px;background:linear-gradient(135deg,#faf9ff,#f4fdff,#fff6fb)}.practiceHero h3{font-size:26px;line-height:1.25;margin:5px 0}.practiceHero p,.item p{font-size:14px;color:#677083;line-height:1.45;margin:5px 0}.sect{font-size:10px;letter-spacing:.11em;color:#888f9f;font-weight:900;margin:14px 0 7px}.item{padding:10px 0;border-top:1px solid #ececf4}.wordJump{width:100%;display:block;text-align:left;border:0;background:transparent;padding:11px 4px;cursor:pointer;border-radius:10px;transition:background .12s ease,transform .12s ease}.wordJump:hover{background:#f7f5ff;transform:translateX(2px)}.wordJump b{font-size:18px}.wordJump p{margin:4px 0 0}.wordJump .jumpHint{font-size:10px;color:#7567e8;font-weight:800;margin-top:5px}.item b{font-size:18px;line-height:1.3}.item button,.opt{border:1px solid #e2e3ed;background:#fff;border-radius:9px;padding:8px 10px;font-size:11px}.opt{display:block;width:100%;text-align:left;margin-top:7px;padding:10px 11px;font-size:13px}.quickGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 12px}.quick{border:1px solid #e3e4ee;background:#fff;border-radius:11px;padding:10px 11px;text-align:left;cursor:pointer}.quick b{display:block;font-size:14px}.quick small{display:block;margin-top:2px;color:#8a91a0;font-size:10px}.quick.primary{background:linear-gradient(135deg,#f2efff,#effcff);border-color:#dcd7ff}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.metric{border:1px solid #ececf4;border-radius:12px;padding:10px}.metric strong{display:block;font-size:19px}.metric small{font-size:10px;color:#8a91a0}.cueList{display:grid;gap:6px}.cueItem{width:100%;border:1px solid #ececf4;background:#fff;border-radius:11px;padding:9px 10px;text-align:left}.cueItem.current{border-color:#cbc4ff;background:linear-gradient(90deg,#f7f5ff,#f3fdff)}.cueItem b{display:block;font-size:16px;line-height:1.3}.cueItem small{display:block;color:#8a91a0;margin-top:3px;font-size:11px}.status{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;background:#effcf7;color:#268267;font-size:10px}.status.off{background:#fff4f7;color:#a44b68}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,12px);opacity:0;background:#191b2b;color:#fff;padding:9px 13px;border-radius:9px;font-size:11px;transition:.2s;z-index:80}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:850px){.app{grid-template-columns:1fr}.side,.goal{display:none}.main{padding:24px 18px}.grid{grid-template-columns:1fr}.ov{overflow-y:auto}.ov.open{display:block}.lessonbar{height:62px;position:sticky;top:0;z-index:4}.lessonGrid{display:block;height:auto}.left{height:auto;grid-template-rows:400px 320px}.right{height:auto;min-height:620px}.panel{overflow:visible}.top h1{font-size:40px}}
+.practiceModes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;background:#f5f4fb;border:1px solid #e8e5f4;border-radius:15px;margin-bottom:14px}
+.practiceModes button{border:0;background:transparent;border-radius:11px;padding:11px 8px;font:inherit;font-size:12px;font-weight:800;color:#6f7181;cursor:pointer;transition:.18s}
+.practiceModes button.on{background:linear-gradient(135deg,#6959ff,#7d6bff);color:#fff;box-shadow:0 7px 18px rgba(105,89,255,.22)}
+.practiceTask{border:1px solid #e7e5f1;border-radius:17px;padding:17px;background:#fff}
+.practiceTask .taskTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.practiceTask .taskTop small{font-size:10px;font-weight:800;color:#8c8b9c;background:#f5f3ff;padding:5px 8px;border-radius:999px}
+.practiceTask h3{font-size:22px;line-height:1.35;margin:5px 0 8px;color:#17182a}
+.practiceTask p{margin:0 0 14px;color:#73758a;font-size:13px;line-height:1.55}
+.practiceChoices{display:grid;gap:9px}
+.practiceChoices button{width:100%;text-align:left;padding:12px 13px;border:1px solid #e2dff2;border-radius:12px;background:#fff;color:#25263a;font-weight:800;cursor:pointer}
+.practiceChoices button:hover{border-color:#8b7dff;background:#f8f6ff}
+.practiceChoices button.correct{border-color:#69c99b;background:#effbf5;color:#1d8257}
+.practiceChoices button.wrong{border-color:#ee8a9b;background:#fff3f5;color:#aa3d51}
+.practiceActions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
+.practiceActions button{padding:10px 13px;border:1px solid #dedbea;background:#fff;border-radius:11px;font:inherit;font-weight:800;cursor:pointer}
+.practiceActions button.primary{border:0;background:linear-gradient(135deg,#6757ff,#7b6cff);color:#fff}
+.dictationInput{width:100%;min-height:90px;resize:vertical;border:1.5px solid #d8d3ff;border-radius:13px;padding:13px;font:inherit;font-size:16px;outline:none;box-sizing:border-box}
+.dictationInput:focus{border-color:#7464ff;box-shadow:0 0 0 3px rgba(116,100,255,.09)}
+.practiceResult{margin-top:12px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.5}
+.practiceResult.good{background:#effbf5;color:#237452}
+.practiceResult.bad{background:#fff4f5;color:#994657}
+.shadowSteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.shadowStep{padding:12px 8px;text-align:center;border:1px solid #e3e0f0;border-radius:12px;background:#faf9fe}
+.shadowStep b{display:block;font-size:12px;margin-bottom:3px}.shadowStep small{font-size:10px;color:#8a8998}
+.shadowStep.on{border-color:#7b6cff;background:#f1efff}
+
+.nav span{cursor:pointer;user-select:none}
+.pinCurrent{width:100%;border:1px solid #dcd7ff;background:linear-gradient(135deg,#f5f2ff,#f2fbff);border-radius:13px;padding:12px 13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:#26263c}
+.pinCurrent b{font-size:13px}.pinCurrent small{display:block;color:#85899a;font-size:10px;margin-top:3px}
+.pinCurrent .pinIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#6d5dfc;color:#fff;font-weight:900;flex:none}
+.pinCurrent.pinned .pinIcon{background:#35b77d}.pinCurrent.pinned{border-color:#bde8d4;background:#f2fcf7}
+.libraryPage{min-height:70vh}
+.libraryHead{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}
+.libraryHead h1{font-size:42px;letter-spacing:-.04em;margin:6px 0 4px}.libraryHead p{margin:0;color:#747b8b}
+.libraryCount{background:#fff;border:1px solid #e4e5ee;border-radius:14px;padding:12px 15px;font-size:12px;color:#707789}
+.libraryCount b{display:block;color:#202235;font-size:20px}
+.libraryEmpty{background:#fff;border:1px solid #e6e7ef;border-radius:18px;padding:36px;text-align:center;color:#777f90}
+.libraryList{display:grid;gap:12px}
+.libCard{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:16px;align-items:center;background:#fff;border:1px solid #e5e6ef;border-radius:18px;padding:12px}
+.libThumb{width:150px;height:88px;object-fit:cover;border-radius:12px;background:#ececf5}
+.libKo{font-size:19px;font-weight:850;line-height:1.3;margin-bottom:4px}.libEn{font-size:13px;color:#687184;margin-bottom:8px}
+.libMeta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:10px;color:#858b9b}
+.libTag{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eeeaff;color:#5d4cf1;font-size:9px;font-weight:800}
+.libActions{display:grid;gap:7px}.libActions button{border:1px solid #dedfea;background:#fff;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:800;cursor:pointer}
+.libActions .openPhrase{background:#6d5dfc;color:#fff;border-color:#6d5dfc}
+@media(max-width:850px){.libCard{grid-template-columns:95px 1fr}.libThumb{width:95px;height:70px}.libActions{grid-column:1/-1;grid-template-columns:1fr 1fr}}
+
+.pinModal{display:none;position:fixed;inset:0;z-index:90;background:rgba(20,23,39,.38);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.pinModal.open{display:flex}
+.pinModalCard{position:relative;width:min(520px,94vw);background:#fff;border:1px solid #e5e6ef;border-radius:22px;padding:22px;box-shadow:0 30px 80px rgba(36,38,70,.22)}
+.pinModalClose{position:absolute;right:14px;top:14px;width:32px;height:32px;border:1px solid #dedfea;background:#fff;border-radius:50%;font-size:20px;cursor:pointer}
+.pinModalCard h2{margin:5px 0 14px;font-size:25px}
+.pinPhrasePreview{border:1px solid #e5e6ef;border-radius:15px;padding:14px;background:linear-gradient(135deg,#faf9ff,#f5fbff)}
+.pinPhrasePreview b{display:block;font-size:20px;line-height:1.35;margin-bottom:4px}
+.pinPhrasePreview p{margin:0 0 9px;color:#687184}
+.pinPhraseMeta{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:#858b9b}
+.tagEditor{margin-top:16px}.tagEditor label{display:block;font-size:12px;font-weight:850;margin-bottom:8px}
+.tagChips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.editTag{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:#eeeaff;color:#5d4cf1;font-size:10px;font-weight:800}
+.editTag button{border:0;background:transparent;color:#7568df;font-weight:900;cursor:pointer;padding:0}
+.tagAdd{display:flex;gap:8px}.tagAdd input{flex:1;height:38px;border:1px solid #dedfea;border-radius:10px;padding:0 11px}.tagAdd button{border:1px solid #d9d4ff;background:#f4f1ff;color:#5d4cf1;border-radius:10px;padding:0 13px;font-weight:800;cursor:pointer}
+.pinModalActions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.pinModalActions button{border:1px solid #dedfea;background:#fff;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.pinModalActions .primary{border:0;background:#6d5dfc;color:#fff}
+
+.contentFilters{position:relative;margin:26px 0 14px;padding:20px;background:#fff;border:1px solid #e8e7f0;border-radius:24px;box-shadow:0 16px 40px rgba(32,35,70,.045);overflow:hidden}
+.contentFilters:before{content:"";position:absolute;left:20px;right:20px;top:0;height:2px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc);border-radius:0 0 4px 4px}
+.compassHead h3{font-size:21px;letter-spacing:-.025em;margin:5px 0 4px}
+.compassHead p{margin:0;color:#7a8190;font-size:12px}
+.levelBlock{margin-top:17px;padding-top:16px;border-top:1px solid #efeff5}
+.levelMeta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.levelMeta>span,.choiceStep{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:#f0edff;color:#6153de;font-size:10px;font-weight:900;flex:none}
+.levelMeta div{display:grid;gap:2px}.levelMeta b{font-size:12px}.levelMeta small{font-size:10px;color:#9297a5}
+.levelSelector{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;background:#f5f4f9;border-radius:14px;padding:5px}
+.levelSelector .chip{border:0;background:transparent;border-radius:10px;padding:11px 10px;font-size:11px;font-weight:850;color:#747987;cursor:pointer;transition:.18s}
+.levelSelector .chip:hover{background:#fbfbfe;color:#5d50df}
+.levelSelector .chip.on{background:#fff;color:#5b4fe0;box-shadow:0 4px 14px rgba(55,50,115,.09)}
+.choiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.choiceCard{position:relative;display:grid;grid-template-columns:28px 1fr 24px;gap:10px;align-items:center;min-height:76px;padding:13px 14px;border:1px solid #e7e6ee;border-radius:16px;background:linear-gradient(145deg,#fff,#fcfcff);cursor:pointer;transition:.18s}
+.choiceCard:hover{transform:translateY(-1px);border-color:#d4ceff;box-shadow:0 10px 24px rgba(55,50,120,.055)}
+.choiceCopy{display:grid;gap:2px;min-width:0}.choiceCopy small{font-size:9px;font-weight:900;letter-spacing:.09em;color:#9a9eaa}.choiceCopy b{font-size:14px;color:#202238;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.choiceCopy em{font-style:normal;font-size:10px;color:#9196a3}
+.choiceArrow{font-size:16px;color:#8f92a0;text-align:right}
+.choiceCard select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.topicChoice:hover .choiceStep{background:#edf8ff;color:#287b9a}.styleChoice:hover .choiceStep{background:#f3edff;color:#744cdf}
+.feedStatus{min-height:18px;font-size:11px;color:#858c9b;margin:2px 0 10px}
+@media(max-width:760px){.choiceGrid{grid-template-columns:1fr}.levelSelector{grid-template-columns:1fr}.contentFilters{padding:16px}.contentFilters:before{left:16px;right:16px}}
+
+@media(max-width:760px){.filterTopline{display:block}.selectionSummary{display:inline-block;margin-top:10px}.filterSelectGrid{grid-template-columns:1fr}.levelSelector{grid-template-columns:1fr}.levelSelector .chip{padding:10px}}
+
+
+.card{position:relative}
+.readyBadge{position:absolute;top:12px;right:12px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:6px 8px;border-radius:999px;font-size:9px;font-weight:900;backdrop-filter:blur(8px)}
+.readyBadge.ready{background:rgba(236,252,247,.94);color:#20836b;border:1px solid #bfe8d9}
+.readyBadge.checking{background:rgba(255,250,235,.94);color:#9b7120;border:1px solid #f0dfaa}
+.card.checking{opacity:.64}
+.card.checking:after{content:"Transcript verification pending";position:absolute;inset:auto 12px 12px 12px;background:rgba(20,23,39,.82);color:#fff;border-radius:10px;padding:8px 10px;font-size:9px;font-weight:800;text-align:center}
+.intelStrip{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.intelTag{font-size:9px;padding:5px 7px;border-radius:999px;background:#f1efff;color:#6254dd;font-weight:850}
+
+.stealCard{margin:12px 0;padding:15px;border:1px solid #e6e3f4;border-radius:17px;background:linear-gradient(145deg,#fff,#faf9ff)}
+.stealCard .stealTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.stealCard h3{margin:4px 0 5px;font-size:17px}.stealCard p{margin:0;color:#73798a;font-size:11px;line-height:1.5}
+.stealBtn{border:0;border-radius:11px;background:#6557e6;color:#fff;padding:10px 12px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}
+.stealMeta{display:grid;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid #efedf6}
+.stealMeta div{display:grid;gap:2px}.stealMeta small{font-size:9px;color:#989dab;font-weight:850;text-transform:uppercase;letter-spacing:.07em}.stealMeta b{font-size:12px;color:#2f3243}
+.stealExamples{display:grid;gap:6px;margin-top:8px}.stealExample{padding:9px 10px;border-radius:11px;background:#f6f4ff;font-size:11px}.stealExample span{display:block;color:#7b8090;margin-top:2px;font-size:10px}
+.sectionCheckpoint{display:grid;gap:12px}.checkpointHead{padding:14px 15px;border-radius:16px;background:linear-gradient(145deg,#f8f6ff,#f4fbff);border:1px solid #e8e5f7}
+.checkpointHead h3{margin:4px 0;font-size:18px}.checkpointHead p{margin:0;color:#777e8e;font-size:11px}
+.checkQ{padding:14px;border:1px solid #e8e7ef;border-radius:15px;background:#fff}.checkQ>b{display:block;font-size:13px;line-height:1.45;margin-bottom:9px}
+.checkOpts{display:grid;gap:7px}.checkOpt{border:1px solid #e2e2eb;background:#fff;border-radius:11px;padding:9px 10px;text-align:left;font-size:11px;font-weight:750;cursor:pointer}.checkOpt.good{background:#effcf7;border-color:#bfe9d9}.checkOpt.bad{background:#fff4f7;border-color:#f0ccd6}
+.checkpointLoading{padding:20px;border:1px dashed #dcd8f0;border-radius:16px;text-align:center;color:#777e8e;font-size:11px}
+.libPattern{margin-top:7px;padding:8px 10px;border-radius:10px;background:#f5f2ff;font-size:10px;color:#5e55c8}.libPattern b{color:#312b78}
+
+.libraryTabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 16px;padding:5px;background:#f3f2f8;border-radius:14px;width:max-content;max-width:100%}
+.libraryTabs button{border:0;background:transparent;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:850;color:#747987;cursor:pointer}
+.libraryTabs button.on{background:#fff;color:#5f52df;box-shadow:0 4px 12px rgba(60,55,120,.08)}
+.wordSaveCard{display:grid;grid-template-columns:1fr auto;gap:10px;padding:13px 14px;margin-bottom:8px;border:1px solid #e8e7ef;border-radius:14px;background:#fff}
+.wordSaveMain{min-width:0}.wordSaveMain b{font-size:15px}.wordSaveMain p{margin:4px 0 5px;color:#6f7687;font-size:11px;line-height:1.45}.wordContext{font-size:9px;color:#9a9eab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wordSaveActions{display:flex;gap:6px;align-items:center}
+.wordSaveActions button,.reviewWordBtn{border:1px solid #dfdeea;background:#fff;border-radius:10px;padding:8px 9px;font-size:9px;font-weight:850;color:#6257cf;cursor:pointer}
+.wordSaveActions button.saved{background:#f0edff;border-color:#d9d2ff}
+.wordDetails{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin-top:9px;font-size:10px}.wordDetails span{color:#959aa7}.wordDetails b{font-size:10px;color:#303347}
+.reviewPill{display:inline-flex;align-items:center;padding:5px 7px;border-radius:999px;font-size:8px;font-weight:900;background:#f3f2f8;color:#737887}
+.reviewPill.reviewing{background:#fff8e7;color:#9b7424}.reviewPill.familiar{background:#ecfbf6;color:#267a66}
+.recentList{display:grid;gap:9px}.recentItem{display:grid;grid-template-columns:1fr auto;gap:12px;padding:13px 14px;border:1px solid #e8e7ef;border-radius:14px;background:#fff}
+.recentItem b{font-size:12px}.recentItem p{margin:4px 0 0;font-size:10px;color:#7c8290}.recentMeta{font-size:9px;color:#9a9eaa;white-space:nowrap}
+.miniCount{font-size:9px;color:#9297a5;margin-left:4px}
+@media(max-width:760px){.wordSaveCard,.recentItem{grid-template-columns:1fr}.wordSaveActions{justify-content:flex-start}.wordDetails{grid-template-columns:90px 1fr}}
+
+.smartRewatch{margin-top:14px;padding:16px;border:1px solid #e6e3f4;border-radius:18px;background:linear-gradient(145deg,#fff,#faf9ff)}
+.smartRewatchHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.smartRewatchHead h3{font-size:18px;margin:4px 0}.smartRewatchHead p{font-size:11px;color:#757c8d;line-height:1.5;margin:0;max-width:430px}
+.rewatchEstimate{padding:7px 9px;border-radius:10px;background:#f1eeff;color:#6155d6;font-size:9px;font-weight:900;white-space:nowrap}
+.rewatchList{display:grid;gap:7px;margin-top:13px}.rewatchItem{display:grid;grid-template-columns:28px 1fr auto;gap:9px;align-items:center;padding:10px;border:1px solid #eceaf3;border-radius:12px;background:#fff}
+.rewatchItem.active{border-color:#cfc8ff;background:#f8f6ff}.rewatchNum{width:28px;height:28px;border-radius:9px;background:#f2f0f8;display:grid;place-items:center;font-size:9px;font-weight:900;color:#686e7d}
+.rewatchItem b{font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rewatchReasons{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.rewatchReason{font-size:8px;font-weight:850;padding:4px 6px;border-radius:999px;background:#f3f2f8;color:#777d8b}
+.rewatchTime{font-size:9px;color:#989daa}.rewatchActions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.rewatchActions button{border:1px solid #dddbea;background:#fff;border-radius:11px;padding:9px 11px;font-size:9px;font-weight:900;color:#6156d4;cursor:pointer}.rewatchActions .primary{border-color:#6557e6;background:#6557e6;color:#fff}
+
+.predictTask{padding:15px;border:1px solid #e6e3f4;border-radius:17px;background:linear-gradient(145deg,#fff,#faf9ff)}
+.predictLead{padding:12px 13px;border-radius:13px;background:#f6f4ff;margin:10px 0 12px}
+.predictLead small{display:block;font-size:8px;font-weight:900;letter-spacing:.08em;color:#8a80df;margin-bottom:5px}
+.predictLead b{font-size:13px;line-height:1.45;color:#303347}
+.predictChoices{display:grid;gap:8px}.predictChoice{border:1px solid #e3e1eb;background:#fff;border-radius:12px;padding:10px 11px;text-align:left;font-size:11px;font-weight:780;color:#333746;cursor:pointer;line-height:1.4}
+.predictChoice:hover{border-color:#cfc8ff;background:#faf9ff}.predictChoice.good{background:#effcf7;border-color:#bee8d8}.predictChoice.bad{background:#fff4f7;border-color:#f0cbd5}
+.predictMeta{font-size:9px;color:#8f95a3;margin-top:8px}
+
+.easyLayer{display:grid;gap:7px;text-align:left}
+.easyBadge{display:inline-flex;width:max-content;padding:4px 7px;border-radius:999px;background:#f1eeff;color:#6659db;font-size:8px;font-weight:900;letter-spacing:.07em}
+.easyKo{font-size:13px;line-height:1.5;color:#4a4f60;font-weight:750}
+.easyWhy{font-size:9px;color:#969baa;line-height:1.4}
+.easyEnglishBtn{width:max-content;border:1px solid #ddd9f4;background:#fff;border-radius:9px;padding:6px 8px;color:#6559d6;font-size:8px;font-weight:900;cursor:pointer}
+.easyEnglishText{font-size:11px;color:#747b8b;line-height:1.45;padding-top:2px}
+
+.microHero{padding:14px 15px;border:1px solid #e6e3f4;border-radius:16px;background:linear-gradient(145deg,#faf9ff,#f3fbff);margin-bottom:12px}
+.microHero h3{margin:4px 0;font-size:21px}.microHero p{margin:0;color:#747b8c;font-size:11px;line-height:1.5}
+.microGrid{display:grid;gap:9px}.microCard{display:grid;grid-template-columns:70px 1fr auto;gap:11px;align-items:center;padding:12px;border:1px solid #e8e6f0;border-radius:14px;background:#fff}
+.microNum{width:54px;height:54px;border-radius:13px;background:#f3f0ff;display:grid;place-items:center;color:#6558d9;font-weight:900;font-size:11px}
+.microCard h4{margin:0 0 4px;font-size:13px}.microCard p{margin:0;color:#7b8190;font-size:10px;line-height:1.45}.microMeta{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.microTag{padding:4px 6px;border-radius:999px;background:#f4f3f8;color:#777d89;font-size:8px;font-weight:850}
+.microOpen{border:1px solid #dddbea;background:#fff;border-radius:10px;padding:8px 9px;color:#6155d3;font-size:9px;font-weight:900;cursor:pointer}
+.microLoading{padding:22px;border:1px dashed #ddd9ed;border-radius:15px;text-align:center;color:#777e8e;font-size:11px}
+@media(max-width:760px){.microCard{grid-template-columns:52px 1fr}.microOpen{grid-column:1/-1}.microNum{width:46px;height:46px}}
+
+.sayItCard{padding:15px;border:1px solid #e6e3f4;border-radius:17px;background:linear-gradient(145deg,#fff,#faf9ff)}
+.sayItSource{padding:11px 12px;border-radius:12px;background:#f6f4ff;margin:9px 0 11px}
+.sayItSource small{display:block;font-size:8px;font-weight:900;letter-spacing:.08em;color:#887dde;margin-bottom:4px}
+.sayItSource b{font-size:13px;line-height:1.45;color:#313446}
+.sayItPattern{padding:10px 11px;border:1px solid #e8e5f5;border-radius:11px;background:#fff;margin-bottom:10px}
+.sayItPattern small{display:block;color:#969baa;font-size:8px;font-weight:900;letter-spacing:.07em;margin-bottom:4px}
+.sayItPattern b{font-size:12px;color:#5d53cb}.sayItInput{width:100%;min-height:92px;border:1.5px solid #d8d3ff;border-radius:13px;padding:12px 13px;resize:vertical;font:inherit;font-size:15px;outline:none}
+.sayItInput:focus{border-color:#7464ff;box-shadow:0 0 0 3px rgba(116,100,255,.09)}
+.sayItFeedback{margin-top:12px;padding:12px;border-radius:13px;border:1px solid #e5e3ef;background:#fff}
+.sayItFeedback.good{background:#effbf5;border-color:#c7ead9}.sayItFeedback.mid{background:#fff9ec;border-color:#f0dfb8}.sayItFeedback.bad{background:#fff4f6;border-color:#efcbd3}
+.sayItFeedback h4{margin:0 0 5px;font-size:13px}.sayItFeedback p{margin:3px 0;font-size:10px;line-height:1.5;color:#656c7b}.sayItCorrected{margin-top:7px;padding:8px 9px;border-radius:9px;background:#f6f4ff;font-size:11px;font-weight:800;color:#35384a}
+
+.masteryWrap{margin-top:14px;display:grid;gap:10px}
+.masteryHead{padding:15px;border:1px solid #e6e3f4;border-radius:17px;background:linear-gradient(145deg,#fff,#f8f6ff)}
+.masteryHeadTop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.masteryHead h3{margin:4px 0;font-size:20px}.masteryHead p{margin:0;color:#767d8d;font-size:10px;line-height:1.5}
+.masteryScore{width:58px;height:58px;border-radius:18px;background:#f1eeff;display:grid;place-items:center;color:#6255d8;font-weight:950;font-size:17px;flex:none}
+.masteryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.masteryCard{border:1px solid #e8e6f0;border-radius:14px;padding:11px;background:#fff}
+.masteryCard b{display:block;font-size:11px;margin-bottom:5px}.masteryCard small{color:#8f95a3;font-size:8px}.masteryBar{height:6px;background:#f0eff5;border-radius:99px;margin-top:8px;overflow:hidden}.masteryBar i{display:block;height:100%;background:linear-gradient(90deg,#6d5dfc,#57d7ff);border-radius:99px}
+.masteryFocus{padding:12px 13px;border:1px solid #e7e4f3;border-radius:14px;background:#faf9ff}.masteryFocus .ey{margin-bottom:4px}.masteryFocus b{font-size:12px}.masteryFocus p{margin:4px 0 0;color:#777e8d;font-size:9px;line-height:1.45}
+.memoryStats{display:flex;gap:7px;flex-wrap:wrap}.memoryStat{padding:7px 9px;border-radius:10px;background:#f4f3f8;font-size:8px;color:#777d8b;font-weight:850}
+@media(max-width:760px){.masteryGrid{grid-template-columns:1fr}}
+
+.lessonJourney{display:flex;align-items:center;gap:5px;margin-top:12px;padding:7px 8px;border:1px solid #eceaf4;border-radius:13px;background:#fafaff;overflow-x:auto}
+.lessonJourney button{display:flex;align-items:center;gap:6px;border:0;background:transparent;border-radius:9px;padding:6px 8px;color:#9297a6;font-size:9px;font-weight:850;white-space:nowrap;cursor:pointer}
+.lessonJourney button span{width:20px;height:20px;border-radius:7px;background:#efeff5;display:grid;place-items:center;font-size:8px}
+.lessonJourney button.on{background:#f1eeff;color:#5d51d2}.lessonJourney button.on span{background:#6d5dfc;color:#fff}.lessonJourney i{font-style:normal;color:#c1c4cf;font-size:9px}
+.masteryFocus button{margin-top:9px;border:0;background:#6557e6;color:#fff;border-radius:10px;padding:8px 10px;font-size:9px;font-weight:900;cursor:pointer}
+.checkFallback{padding:14px;border:1px solid #eadff1;border-radius:15px;background:#fffafd}.checkFallback h3{margin:4px 0 6px;font-size:18px}.checkFallback p{font-size:10px;color:#7b8190;line-height:1.45}.checkFallback .practiceActions{margin-top:10px}
+
+.tabs,.practiceModes{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar,.practiceModes::-webkit-scrollbar,.lessonJourney::-webkit-scrollbar{display:none}
+.tabs button,.practiceModes button{flex:0 0 auto;white-space:nowrap}
+@media(max-width:760px){.lessonJourney{padding:6px}.lessonJourney button{padding:5px 6px}.lessonJourney i{display:none}.tabs{gap:5px}.practiceModes{display:flex;gap:6px}}
+</style></head><body><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b>18 / 25 min</b><div class="bar"><i></i></div></div></div><div class="contentFilters">
+  <div class="compassHead">
+    <div>
+      <div class="ey">LESSON COMPASS</div>
+      <h3>What do you want to learn right now?</h3>
+      <p>Pick a level, then shape the kind of lesson you want.</p>
+    </div>
+  </div>
+  <div class="levelBlock">
+    <div class="levelMeta"><span>1</span><div><b>Choose your level</b><small>This controls the difficulty of the videos we bring in.</small></div></div>
+    <div class="levelSelector" id="levelChips"></div>
+  </div>
+  <div class="choiceGrid">
+    <label class="choiceCard topicChoice">
+      <span class="choiceStep">2</span>
+      <span class="choiceCopy"><small>TOPIC</small><b id="topicLabel">All topics</b><em>Choose what the conversation is about</em></span>
+      <span class="choiceArrow">→</span>
+      <select id="topicSelect"></select>
+    </label>
+    <label class="choiceCard styleChoice">
+      <span class="choiceStep">3</span>
+      <span class="choiceCopy"><small>STYLE</small><b id="styleLabel">All styles</b><em>Choose how you want the Korean delivered</em></span>
+      <span class="choiceArrow">→</span>
+      <select id="styleSelect"></select>
+    </label>
+  </div>
+</div><div class="tools"><input id="q" placeholder="Search these lessons..."></div><div class="feedStatus" id="feedStatus"></div><div class="grid" id="grid"></div></section><section id="libraryPage" class="libraryPage" hidden></section></main></div><div class="ov" id="ov"><header class="lessonbar"><div class="brand"><b>한</b>Haneul</div><div class="lt"><strong id="lt">Korean video lesson</strong><span id="lm">Active listening · real Korean</span></div><button class="close" id="x">×</button></header><div class="lessonGrid"><section class="left"><div class="video"><div class="player" id="player"></div></div><div class="caps"><div class="ctop"><b id="sync">Connecting transcript · <span id="time">0:00</span></b><div class="modes" id="modes"><button data-m="ko">한국어</button><button data-m="easy">쉬운 한국어</button><button data-m="tap">Tap meaning</button><button class="on" data-m="dual">한국어 + English</button></div></div><div class="cap" id="cap"><div class="label">NOW SPEAKING</div><strong class="ko" id="ko">Play the video to follow the real transcript.</strong><span class="en" id="en"></span></div><div class="actions"><button id="guess">◐ Guess</button><button id="prev">← Prev</button><button class="replay" id="replay">↻ Replay line</button><button id="next">Next →</button><button id="loop">∞ Loop</button></div></div></section><aside class="right"><div class="rhead"><div class="rtitle"><div><h2>Study the scene</h2><p>Everything here follows the exact cue on the left.</p></div><span class="level" id="level">TOPIK 1</span></div><div class="lessonJourney" id="lessonJourney"><button data-jump-tab="overview"><span>1</span><b>Watch</b></button><i>→</i><button data-jump-tab="explain"><span>2</span><b>Understand</b></button><i>→</i><button data-jump-tab="practice"><span>3</span><b>Practice</b></button><i>→</i><button data-jump-tab="progress"><span>4</span><b>Review</b></button></div><div class="tabs" id="tabs"><button class="on" data-t="overview">Overview</button><button data-t="micro">Micro Lessons</button><button data-t="practice">Practice</button><button data-t="phrases">Phrases</button><button data-t="vocab">Words</button><button data-t="explain">Explain</button><button data-t="quiz">Check</button><button data-t="progress">Progress</button></div></div><div class="panel" id="panel"></div></aside></div></div><div class="pinModal" id="pinModal"><div class="pinModalCard"><button class="pinModalClose" id="pinModalClose">×</button><div class="ey">PIN PHRASE</div><h2>Save this phrase</h2><div id="pinPreview"></div><div class="tagEditor"><label>Tags</label><div class="tagChips" id="tagChips"></div><div class="tagAdd"><input id="tagInput" placeholder="Add a tag"><button id="tagAddBtn">Add</button></div></div><div class="pinModalActions"><button id="pinCancel">Cancel</button><button class="primary" id="pinSave">Save to Library</button></div></div></div><div class="toast" id="toast"></div><script>const $=x=>document.getElementById(x);let videos=[{id:'in58DVfmxug',title:'Presence and Location · Learn Korean Like a Baby',level:'TOPIK 1',channel:'Delicious Korean',desc:'Beginner Korean with presence, location and everyday patterns.',thumb:'https://i.ytimg.com/vi/in58DVfmxug/hqdefault.jpg'},{id:'kHsEZUcyD7c',title:'Mina’s Slow Korean Podcast · Morning Routine',level:'TOPIK 1',channel:'Mina Korean',desc:'Slow natural Korean with a verified timed transcript.',thumb:'https://i.ytimg.com/vi/kHsEZUcyD7c/hqdefault.jpg'}];const vocab={'있어요':'there is / exists','없어요':'there is not','여기':'here','저기':'over there','어디':'where','집':'home','책상':'desk','컵':'cup','핸드폰':'phone','사과':'apple','피자':'pizza','먹어요':'eat','마셔요':'drink','좋아해요':'like','가요':'go','사요':'buy','해요':'do','커피':'coffee','감사합니다':'thank you'};let seedVideos=videos.slice(),curatedCatalog=[{"id":"kHsEZUcyD7c","title":"Slow Korean Podcast for Beginners · Listen on Repeat","channel":"Korean with Mina","level":"Beginner","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Slow natural Korean for everyday listening.","ready":true,"thumb":"https://i.ytimg.com/vi/kHsEZUcyD7c/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"8rvv4RXQYb4","title":"Self-introduction · Slow Korean Podcast","channel":"Korean with Mina","level":"Beginner","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Simple self-introduction phrases in slow Korean.","thumb":"https://i.ytimg.com/vi/8rvv4RXQYb4/hqdefault.jpg","levelCode":"TOPIK 1","ready":true},{"id":"o6AP3nVNj_8","title":"윤지는 학교에 가요 · Super Beginner Story","channel":"몰입한국어 Immersion in Korean","level":"Beginner","topics":["School","Daily Life"],"styles":["Teaching","Animation"],"desc":"A0–A1 short story about going to school.","ready":true,"thumb":"https://i.ytimg.com/vi/o6AP3nVNj_8/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"79Pwq7MTUPE","title":"Easy Korean Listening · Beginner Lesson","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Daily Life"],"styles":["Slow Korean","Teaching"],"desc":"Short beginner listening built around everyday vocabulary.","ready":true,"thumb":"https://i.ytimg.com/vi/79Pwq7MTUPE/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"rj2j3Tes8q0","title":"Basic Expressions · Learn Korean Like a Baby","channel":"Delicious Korean","level":"Beginner","topics":["Daily Life"],"styles":["Teaching"],"desc":"Comprehensible input for basic expressions.","thumb":"https://i.ytimg.com/vi/rj2j3Tes8q0/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"GnwIG51ah7k","title":"취미 생활 · Hobbies Podcast","channel":"최수수 ChoiSusu","level":"Beginner","topics":["Hobbies"],"styles":["Slow Korean"],"desc":"Beginner Korean podcast about hobbies.","thumb":"https://i.ytimg.com/vi/GnwIG51ah7k/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"Szv3gPqohbg","title":"A Day in Seoul · Real-Life Korean","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Daily Life","Culture"],"styles":["Vlog","Slow Korean"],"desc":"Slow comprehensible Korean through a day in Seoul.","ready":true,"thumb":"https://i.ytimg.com/vi/Szv3gPqohbg/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"paToZla2CK8","title":"Supermarket Korean · Comprehensible Input","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Shopping","Food"],"styles":["Vlog","Slow Korean"],"desc":"Beginner Korean while shopping in a Seoul supermarket.","thumb":"https://i.ytimg.com/vi/paToZla2CK8/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"ufDM439eOqU","title":"Bike Trip in Seoul · Real-Life Korean","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Travel","Hobbies"],"styles":["Vlog","Slow Korean"],"desc":"Natural beginner Korean during a short bike trip.","ready":true,"thumb":"https://i.ytimg.com/vi/ufDM439eOqU/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"2CXwo_O7xCg","title":"Conversation in a Korean Restaurant","channel":"KoreAnt","level":"Beginner","topics":["Food"],"styles":["Teaching"],"desc":"Restaurant conversation with listening and grammar points.","ready":true,"thumb":"https://i.ytimg.com/vi/2CXwo_O7xCg/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"LWGNKfztgcI","title":"Breakfast Routine · Comprehensible Korean","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Daily Life","Food"],"styles":["Vlog","Slow Korean"],"desc":"Breakfast routine explained in clear beginner Korean.","ready":true,"thumb":"https://i.ytimg.com/vi/LWGNKfztgcI/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"u_N9KjD_OVY","title":"공부? · Korean Short Story for Real Beginners","channel":"akapinn 한국어","level":"Beginner","topics":["School","Daily Life"],"styles":["Teaching"],"desc":"A short A0–A1 story for listening practice.","ready":true,"thumb":"https://i.ytimg.com/vi/u_N9KjD_OVY/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"VMiPQcgq7wg","title":"Must-Know Korean for Daily Routines","channel":"Ria Korea 리아 코리아","level":"Beginner","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Daily-routine vocabulary and listening practice.","thumb":"https://i.ytimg.com/vi/VMiPQcgq7wg/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"-11--LSPNB0","title":"10 Real Conversations at Restaurants & Cafes","channel":"Small Talk in Korean","level":"Beginner","topics":["Food"],"styles":["Teaching"],"desc":"Beginner restaurant and cafe situations.","thumb":"https://i.ytimg.com/vi/-11--LSPNB0/hqdefault.jpg","levelCode":"TOPIK 1","ready":true},{"id":"2NDS0F3bTwk","title":"Why Korean Cafes Are the Best","channel":"Storytime in Korean","level":"Beginner","topics":["Food","Culture"],"styles":["Slow Korean"],"desc":"A cozy beginner story about Korean cafe culture.","thumb":"https://i.ytimg.com/vi/2NDS0F3bTwk/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"NRcXaIUcEak","title":"Intermediate Korean Listening Practice · Ep. 1","channel":"Learn Korean with Hoya","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"Structured intermediate listening practice.","thumb":"https://i.ytimg.com/vi/NRcXaIUcEak/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"eF65dUUDcEQ","title":"Talking About Daily Routines","channel":"Korean with Sol","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Everyday expressions through a natural routine.","thumb":"https://i.ytimg.com/vi/eF65dUUDcEQ/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"k3FsjyRlZdU","title":"제2의 인생 · Second Life","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["Work","Daily Life"],"styles":["Teaching","Animation"],"desc":"B1–B2 listening story about a new stage of life.","ready":true,"thumb":"https://i.ytimg.com/vi/k3FsjyRlZdU/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"mdASVEboloc","title":"이사를 했어요 · I Moved","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Teaching","Animation"],"desc":"B1 story about moving house.","thumb":"https://i.ytimg.com/vi/mdASVEboloc/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"mOry_eE_OZA","title":"하필 소개팅 날에 · Blind Date Story","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Teaching","Animation"],"desc":"Intermediate story built around a blind-date situation.","thumb":"https://i.ytimg.com/vi/mOry_eE_OZA/hqdefault.jpg","levelCode":"TOPIK 2","ready":true},{"id":"mIBkzUdEXoQ","title":"70 Super-Common Korean Sentences","channel":"Korean with Miss Vicky 빅키쌤","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"High-frequency spoken Korean for listening and speaking.","thumb":"https://i.ytimg.com/vi/mIBkzUdEXoQ/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"9rgKP4igcmk","title":"달려라 예지 · Intermediate Short Story","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["Hobbies","Daily Life"],"styles":["Teaching","Animation"],"desc":"B1–B2 story for listening and reading practice.","thumb":"https://i.ytimg.com/vi/9rgKP4igcmk/hqdefault.jpg","levelCode":"TOPIK 2","ready":true},{"id":"MF6MuUfo3gI","title":"30 min Intermediate Korean Podcast","channel":"토토의 Korean Podcast","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Long-form intermediate listening practice.","ready":true,"thumb":"https://i.ytimg.com/vi/MF6MuUfo3gI/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"xShgqxDB2Bc","title":"Reading Reddit Posts About Korea","channel":"Hayden Kim","level":"Lower Intermediate","topics":["Culture"],"styles":["Culture","Slow Korean"],"desc":"Intermediate Korean through real discussions about Korea.","thumb":"https://i.ytimg.com/vi/xShgqxDB2Bc/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"fNjtQyA43c8","title":"All Thanks to You · Intermediate Story","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["School","Daily Life"],"styles":["Teaching","Animation"],"desc":"A university-student story for B1–B2 learners.","thumb":"https://i.ytimg.com/vi/fNjtQyA43c8/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"KMBYFe55isQ","title":"신축치고 월세가 싸요 · Housing Story","channel":"몰입한국어 Immersion in Korean","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Teaching","Animation"],"desc":"Intermediate Korean about housing and rent.","thumb":"https://i.ytimg.com/vi/KMBYFe55isQ/hqdefault.jpg","levelCode":"TOPIK 2","ready":true},{"id":"TLgAJgYqIZk","title":"Daily Conversations with Native Koreans","channel":"Talk To Me In Korean","level":"Lower Intermediate","topics":["Daily Life","Culture"],"styles":["Street Talk"],"desc":"Native Korean conversations with subtitles.","thumb":"https://i.ytimg.com/vi/TLgAJgYqIZk/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"02HTENb9KGg","title":"My Daily Routine · Korean Listening Vlog","channel":"Korean Jream","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Vlog"],"desc":"Routine-based listening for beginning to intermediate learners.","thumb":"https://i.ytimg.com/vi/02HTENb9KGg/hqdefault.jpg","levelCode":"TOPIK 2","ready":true},{"id":"5n7HFxyE4ZI","title":"Restaurant & Cafe Conversations with Native Koreans","channel":"Talk To Me In Korean","level":"Lower Intermediate","topics":["Food","Culture"],"styles":["Street Talk"],"desc":"Natural restaurant and cafe Korean.","thumb":"https://i.ytimg.com/vi/5n7HFxyE4ZI/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"x031U15y6_U","title":"40 min Intermediate Korean Podcast","channel":"토토의 Korean Podcast","level":"Lower Intermediate","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Extended intermediate listening session.","thumb":"https://i.ytimg.com/vi/x031U15y6_U/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"6Y7VwFR5cDg","title":"1 Hour Natural Korean Conversation","channel":"Talk To Me In Korean","level":"Intermediate","topics":["Daily Life","Culture"],"styles":["Street Talk"],"desc":"Long-form natural conversation with Korean and English subtitles.","thumb":"https://i.ytimg.com/vi/6Y7VwFR5cDg/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"pZz0-jlSMT4","title":"Everything About Me · Natural Korean Listening","channel":"Korean with Sol","level":"Intermediate","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Natural Korean listening for stronger learners.","ready":true,"thumb":"https://i.ytimg.com/vi/pZz0-jlSMT4/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"QLJVSqyxU4M","title":"Park Trip in Korea · Vlog Korean","channel":"Talk To Me In Korean","level":"Intermediate","topics":["Travel","Daily Life"],"styles":["Vlog","Street Talk"],"desc":"Real conversations during a park trip.","thumb":"https://i.ytimg.com/vi/QLJVSqyxU4M/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"Ux-TMWnmntM","title":"Natural Korean Conversation with 태웅쌤","channel":"Didi의 한국문화 Podcast","level":"Intermediate","topics":["Culture"],"styles":["Street Talk","Culture"],"desc":"Long natural conversation around Korean language and culture.","thumb":"https://i.ytimg.com/vi/Ux-TMWnmntM/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"EMUpahrg1Dg","title":"비 오는 날 듣는 한국어 · Rainy Season","channel":"Didi의 한국문화 Podcast","level":"Intermediate","topics":["Weather","Culture"],"styles":["Culture","Slow Korean"],"desc":"One-hour Korean listening about rain and summer culture.","thumb":"https://i.ytimg.com/vi/EMUpahrg1Dg/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"2I6UMxg6cDc","title":"나와 고양이 · Me & Cat","channel":"Didi의 한국문화 Podcast","level":"Intermediate","topics":["Daily Life","Hobbies"],"styles":["Slow Korean"],"desc":"Long-form natural Korean podcast about life with a cat.","thumb":"https://i.ytimg.com/vi/2I6UMxg6cDc/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"tZCeGRDmUdY","title":"3-Step Korean Speaking Practice","channel":"Korean with Miss Vicky 빅키쌤","level":"Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"Listen, speak, and break down natural Korean.","thumb":"https://i.ytimg.com/vi/tZCeGRDmUdY/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"Yz1R55Opwwg","title":"-겠어요 vs -나 봐요 · Speaking Practice","channel":"Korean with Miss Vicky 빅키쌤","level":"Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"Intermediate grammar through listening and speaking.","thumb":"https://i.ytimg.com/vi/Yz1R55Opwwg/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"Eo2I6voTVnA","title":"How Koreans Actually Study Korean","channel":"케이진 KJin","level":"Intermediate","topics":["School","Culture"],"styles":["Culture"],"desc":"Natural Korean about learning methods used by Korean speakers.","thumb":"https://i.ytimg.com/vi/Eo2I6voTVnA/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"g1Eaa3g-25U","title":"15 min Intermediate Korean Podcast","channel":"토토의 Korean Podcast","level":"Intermediate","topics":["Daily Life"],"styles":["Slow Korean"],"desc":"Compact intermediate listening practice.","thumb":"https://i.ytimg.com/vi/g1Eaa3g-25U/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"WFy6o--cocI","title":"Learn Korean Naturally with This Vlog","channel":"Chan Korean","level":"Intermediate","topics":["Daily Life"],"styles":["Vlog"],"desc":"Comprehensible Korean through a natural vlog.","thumb":"https://i.ytimg.com/vi/WFy6o--cocI/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"DI0lxAx1dwo","title":"Traditional Tea House Date · Korean Vlog","channel":"korean patch","level":"Intermediate","topics":["Culture","Food"],"styles":["Vlog","Culture"],"desc":"Korean comprehensible input in a traditional tea house.","thumb":"https://i.ytimg.com/vi/DI0lxAx1dwo/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"ypK89NqZvAg","title":"무슨 옷을 입을까요? · What Should I Wear?","channel":"몰입한국어 Immersion in Korean","level":"Intermediate","topics":["Shopping","Daily Life"],"styles":["Teaching","Animation"],"desc":"B1–B2 story about choosing clothes.","thumb":"https://i.ytimg.com/vi/ypK89NqZvAg/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"_vt-tr4fnWg","title":"Intermediate Korean Dialogue & Story","channel":"KTS KOREA 국적","level":"Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"Longer intermediate dialogue and story listening.","thumb":"https://i.ytimg.com/vi/_vt-tr4fnWg/hqdefault.jpg","levelCode":"TOPIK 2+","ready":true},{"id":"cWcbK176lQs","title":"Korean Listening Practice · Fun Short Story","channel":"Talk To Me In Korean","level":"Intermediate","topics":["Daily Life"],"styles":["Teaching"],"desc":"Short natural listening story for mixed-level review.","thumb":"https://i.ytimg.com/vi/cWcbK176lQs/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"Gy_nMwa51nY","title":"Traditional Market Shopping · Slow Real-Life Korean","channel":"Daily Korean with Jaerim","level":"Beginner","topics":["Shopping","Food"],"styles":["Vlog","Slow Korean"],"desc":"Slow comprehensible Korean while grocery shopping at a traditional market in Seoul.","ready":true,"thumb":"https://i.ytimg.com/vi/Gy_nMwa51nY/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"wns9Ro1Nkb0","title":"Ordering at a Korean Restaurant · Survival Phrases","channel":"Learn Korean with Hoya","level":"Beginner","topics":["Food","Travel"],"styles":["Teaching"],"desc":"Practical restaurant Korean for entering, ordering and handling common dining situations.","ready":true,"thumb":"https://i.ytimg.com/vi/wns9Ro1Nkb0/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"_7fhtMzAfOM","title":"Taxi, Cafe & Convenience Store · Real Korean Vlog","channel":"Talk To Me In Korean","level":"Lower Intermediate","topics":["Travel","Daily Life"],"styles":["Vlog","Street Talk"],"desc":"Natural Korean conversations across a taxi, cafe and convenience-store outing.","ready":true,"thumb":"https://i.ytimg.com/vi/_7fhtMzAfOM/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"sa0mN3K7BIM","title":"Beginner Korean Vlog · Everyday Listening","channel":"최수수 ChoiSusu","level":"Beginner","topics":["Daily Life","Travel"],"styles":["Vlog"],"desc":"Easy vocabulary and grammar inside a real Korean vlog for beginner listening practice.","ready":true,"thumb":"https://i.ytimg.com/vi/sa0mN3K7BIM/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"jmAzSdwYBj4","title":"Meeting Korean Celebrities · Listening Practice","channel":"Talk To Me In Korean","level":"Intermediate","topics":["Culture","Daily Life"],"styles":["Street Talk","Teaching"],"desc":"Natural Korean listening practice built around conversations and real spoken context.","ready":true,"thumb":"https://i.ytimg.com/vi/jmAzSdwYBj4/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"FY9_RtFt84U","title":"At the Movie Theater · Slow Korean Input","channel":"Ria Korea 리아 코리아","level":"Beginner","topics":["Daily Life","Culture"],"styles":["Slow Korean","Vlog"],"desc":"Beginner comprehensible Korean in a movie-theater setting with real daily-life expressions.","ready":true,"thumb":"https://i.ytimg.com/vi/FY9_RtFt84U/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"Oh8fiYihNhM","title":"Cherry Blossom Picnic · Easy Korean Input","channel":"Ria Korea 리아 코리아","level":"Beginner","topics":["Culture","Food","Weather"],"styles":["Slow Korean","Vlog"],"desc":"Beginner comprehensible Korean around buying picnic food and enjoying cherry blossoms in Korea.","ready":true,"thumb":"https://i.ytimg.com/vi/Oh8fiYihNhM/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"NyCrQ-NZMbg","title":"Korean Street Food · Beginner Listening","channel":"Ria Korea 리아 코리아","level":"Beginner","topics":["Food","Culture"],"styles":["Slow Korean","Vlog"],"desc":"Slow real-life Korean around Korean street food with beginner-friendly listening context.","ready":true,"thumb":"https://i.ytimg.com/vi/NyCrQ-NZMbg/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"xUbMF1aEH8Y","title":"How Korean University Students Hang Out","channel":"Korean with Mina","level":"Beginner","topics":["School","Culture","Daily Life"],"styles":["Slow Korean"],"desc":"Slow Korean podcast about how Korean university students spend time together.","ready":true,"thumb":"https://i.ytimg.com/vi/xUbMF1aEH8Y/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"p5kMoLahPa4","title":"10 Short Conversations · Talking About Your Day","channel":"Learn Korean Podcast","level":"Lower Intermediate","topics":["Daily Life","Work","Shopping"],"styles":["Teaching"],"desc":"Ten realistic short Korean conversations covering everyday situations and casual daily talk.","ready":true,"thumb":"https://i.ytimg.com/vi/p5kMoLahPa4/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"5XyvYJ0u8S4","title":"Love Languages · Slow Korean Podcast","channel":"Learn Korean with Songs (Bom)","level":"Intermediate","topics":["Culture","Family","Daily Life"],"styles":["Slow Korean","Teaching"],"desc":"A longer slow-Korean podcast discussing love languages and relationship vocabulary.","ready":true,"thumb":"https://i.ytimg.com/vi/5XyvYJ0u8S4/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"zYsoHRFmC0Y","title":"This Cafe Used to Be What? · Korean Vlog","channel":"korean patch","level":"Lower Intermediate","topics":["Culture","Food","Travel"],"styles":["Vlog"],"desc":"Comprehensible Korean vlog exploring a cafe and the story behind the place.","ready":true,"thumb":"https://i.ytimg.com/vi/zYsoHRFmC0Y/hqdefault.jpg","levelCode":"TOPIK 2"},{"id":"xuYpxWYeOKM","title":"Grocery Shopping Photos · Beginner Korean Input","channel":"korean patch","level":"Beginner","topics":["Shopping","Daily Life"],"styles":["Teaching"],"desc":"Short beginner comprehensible-input lesson built around grocery shopping and everyday Korean.","ready":true,"thumb":"https://i.ytimg.com/vi/xuYpxWYeOKM/hqdefault.jpg","levelCode":"TOPIK 1"},{"id":"7aSzPwA2DPo","title":"Why Are You Learning Korean? · Slow Korean Podcast","channel":"Ria Korea 리아 코리아","level":"Intermediate","topics":["Culture","School"],"styles":["Slow Korean"],"desc":"A longer slow-Korean podcast about motivation, studying Korean and language-learning experiences.","ready":true,"thumb":"https://i.ytimg.com/vi/7aSzPwA2DPo/hqdefault.jpg","levelCode":"TOPIK 2+"},{"id":"aoJXA2O2hoM","title":"Doctor & Pharmacy · Natural Korean Conversation","channel":"몰입한국어 Immersion in Korean","level":"Intermediate","topics":["Daily Life","Work"],"styles":["Teaching","Street Talk"],"desc":"Natural Korean listening around a doctor visit and pharmacy conversation with practical health-related language.","ready":true,"thumb":"https://i.ytimg.com/vi/aoJXA2O2hoM/hqdefault.jpg","levelCode":"TOPIK 2+"}];const VERIFIED_READY=new Set(["kHsEZUcyD7c","o6AP3nVNj_8","79Pwq7MTUPE","Szv3gPqohbg","ufDM439eOqU","2CXwo_O7xCg","LWGNKfztgcI","u_N9KjD_OVY","k3FsjyRlZdU","MF6MuUfo3gI","pZz0-jlSMT4","NRcXaIUcEak","xShgqxDB2Bc"]);curatedCatalog=curatedCatalog.map(v=>({...v,readiness:VERIFIED_READY.has(v.id)?'ready':'checking'})),sel=videos[0],player,ready=false,cues=[],cue=-1,mode='dual',guess=false,revealed=-1,loop=false,replays=0,saved=new Set(),tab='overview',raf=0,state='idle',meaningCache=new Map(),meaningPending=new Map(),activeSpoken=-1,explainSelected=null,captionCache=new Map(),playerVideoId=null,bulkMeaningLoaded=new Set(),bulkMeaningPending=new Map(),practiceMode='reconstruct',practiceFeedback='',shadowStep=0,pinnedPhrases=loadPins(),pendingPin=null,pendingTags=[],videoFilters={level:'Beginner',topic:'All',style:'All'},videoFeedLoading=false,semanticIntel=null,semanticLoading=false,sectionCheckpointCache=new Map(),sectionCheckpointPending=new Set(),sectionCheckpointFailed=new Set(),sectionQuizAnswers={},stolenSentences=loadStolen(),savedWords=loadSavedWords(),practiceHistory=loadPracticeHistory(),libraryView='phrases',replayFocus=loadReplayFocus(),rewatchQueue=[],rewatchPos=-1,predictCache=new Map(),predictPending=new Set(),predictFeedback='',simplifyCache=new Map(),simplifyPending=new Set(),microLessons=null,microPending=false,microFailed=false,simplifyFailed=new Set(),predictFailed=new Set(),sayItCache=new Map(),sayItPending=new Set(),sayItDraft='',sayItFeedback=null,masteryMemory=loadMasteryMemory();const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),fmt=s=>Math.floor((+s||0)/60)+':'+String(Math.floor((+s||0)%60)).padStart(2,'0'),hasKo=s=>/[가-힣]/.test(String(s||'')),latin=s=>/[A-Za-z]/.test(String(s||''));function toast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),1100)}function cleanEnglish(s=''){s=String(s).trim();if(!s)return'';let parts=s.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean),eng=parts.filter(x=>latin(x)&&!hasKo(x));if(eng.length)return eng.join(' ');let stripped=s.replace(/[가-힣ㄱ-ㅎㅏ-ㅣ]+/g,' ').replace(/\s+/g,' ').trim();return latin(stripped)&&stripped.length>3?stripped:''}async function meaningFor(c){if(!c||!hasKo(c.ko))return'';let direct=cleanEnglish(c.en);if(direct)return direct;let key=c.ko.trim();if(meaningCache.has(key))return meaningCache.get(key)||'';if(sel&&bulkMeaningPending.has(sel.id)){try{await bulkMeaningPending.get(sel.id)}catch{}if(meaningCache.has(key))return meaningCache.get(key)||''}if(meaningPending.has(key))return meaningPending.get(key);let p=fetch('/api/meaning?text='+encodeURIComponent(key),{cache:'force-cache'}).then(r=>r.json()).then(d=>{let m=String(d.meaning||'').trim();meaningCache.set(key,m||null);meaningPending.delete(key);return m}).catch(()=>{meaningCache.set(key,null);meaningPending.delete(key);return''});meaningPending.set(key,p);return p}async function preloadMeanings(id,list){
+  if(!list||!list.length||bulkMeaningLoaded.has(id)||bulkMeaningPending.has(id))return;
+  const texts=[...new Set(list.filter(c=>c&&hasKo(c.ko)&&!cleanEnglish(c.en)&&!meaningCache.has(c.ko)).map(c=>c.ko.trim()))];
+  if(!texts.length){bulkMeaningLoaded.add(id);return}
+  const p=fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts})})
+    .then(r=>r.json()).then(d=>{
+      const map=d&&d.meanings||{};
+      Object.entries(map).forEach(([k,v])=>meaningCache.set(k,String(v||'').trim()||null));
+      bulkMeaningLoaded.add(id);bulkMeaningPending.delete(id)
+    }).catch(()=>bulkMeaningPending.delete(id));
+  bulkMeaningPending.set(id,p);return p
+}
+function loadPins(){try{const x=JSON.parse(localStorage.getItem('haneulPinnedPhrases')||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
+function savePins(){try{localStorage.setItem('haneulPinnedPhrases',JSON.stringify(pinnedPhrases))}catch{}}
+function pinKey(videoId,startMs){return videoId+'@'+Math.round((Number(startMs)||0)/100)}
+function lessonTags(v){
+  const base=[v&&v.level||'TOPIK 1'];
+  if(v&&v.id==='kHsEZUcyD7c')return [...base,'Daily Life','Morning Routine'];
+  if(v&&v.id==='in58DVfmxug')return [...base,'Presence & Location','Everyday Korean'];
+  return [...base,'Real Korean']
+}
+function freshMasteryMemory(){return{version:1,skills:{},words:{},patterns:{},topics:{},styles:{},lessons:{},seenEvents:[],updatedAt:Date.now()}}
+function loadMasteryMemory(){try{const x=JSON.parse(localStorage.getItem('haneulMastery:v1')||'null');return x&&x.version===1?x:freshMasteryMemory()}catch{return freshMasteryMemory()}}
+function saveMasteryMemory(){try{masteryMemory.updatedAt=Date.now();masteryMemory.seenEvents=(masteryMemory.seenEvents||[]).slice(-240);localStorage.setItem('haneulMastery:v1',JSON.stringify(masteryMemory))}catch{}}
+function memorySkillName(mode){return{'Reconstruct':'Reconstruct','Dictation':'Dictation','Predict':'Prediction','Checkpoint':'Comprehension','Say It':'Production','Shadowing':'Shadowing'}[mode]||mode}
+function memoryVideoMeta(videoId){return curatedCatalog.find(v=>v.id===videoId)||videos.find(v=>v.id===videoId)||null}
+function touchExposure(videoId){
+ const v=memoryVideoMeta(videoId);if(!v)return;
+ for(const t of v.topics||[]){const x=masteryMemory.topics[t]||{count:0,lastAt:0};x.count++;x.lastAt=Date.now();masteryMemory.topics[t]=x}
+ for(const s of v.styles||[]){const x=masteryMemory.styles[s]||{count:0,lastAt:0};x.count++;x.lastAt=Date.now();masteryMemory.styles[s]=x}
+ const l=masteryMemory.lessons[videoId]||{count:0,lastAt:0,level:v.level||''};l.count++;l.lastAt=Date.now();l.level=v.level||l.level;masteryMemory.lessons[videoId]=l
+}
+function absorbPracticeEvent(item){
+ if(!item||!item.id)return;
+ masteryMemory.seenEvents=masteryMemory.seenEvents||[];
+ if(masteryMemory.seenEvents.includes(item.id))return;
+ const name=memorySkillName(item.mode),x=masteryMemory.skills[name]||{attempts:0,success:0,retry:0,completed:0,lastAt:0};
+ x.attempts++;if(item.result==='correct')x.success++;if(item.result==='retry')x.retry++;if(item.result==='completed'||item.result==='revealed')x.completed++;x.lastAt=Number(item.at)||Date.now();masteryMemory.skills[name]=x;
+ touchExposure(item.videoId);masteryMemory.seenEvents.push(item.id)
+}
+function touchWordMemory(w){
+ if(!w)return;
+ const key=(w.base||w.word||'').trim().toLowerCase();if(!key)return;
+ const x=masteryMemory.words[key]||{word:w.word||w.base||key,base:w.base||w.word||key,encounters:0,reviews:0,lastAt:0};
+ x.word=w.word||x.word;x.base=w.base||x.base;x.encounters=Math.max(1,Number(x.encounters)||0);x.reviews=Math.max(Number(x.reviews)||0,Number(w.reviewCount)||0);x.lastAt=Date.now();masteryMemory.words[key]=x
+}
+function touchPatternMemory(p){
+ if(!p)return;const key=String(p.pattern||p.ko||'').trim();if(!key)return;
+ const x=masteryMemory.patterns[key]||{pattern:key,encounters:0,lastAt:0};x.encounters=Math.max(1,Number(x.encounters)||0);x.lastAt=Date.now();masteryMemory.patterns[key]=x
+}
+function syncMasteryMemory(){
+ (practiceHistory||[]).slice().reverse().forEach(absorbPracticeEvent);
+ (savedWords||[]).forEach(touchWordMemory);
+ (stolenSentences||[]).forEach(touchPatternMemory);
+ saveMasteryMemory();return masteryMemory
+}
+function skillMasteryScore(x){
+ const a=Number(x&&x.attempts)||0;if(!a)return 0;
+ const success=Number(x.success)||0,done=Number(x.completed)||0,retry=Number(x.retry)||0;
+ return Math.max(0,Math.min(100,Math.round(((success+done*.65)/(a+retry*.15))*100)))
+}
+function masterySnapshot(){
+ syncMasteryMemory();
+ const skills=Object.entries(masteryMemory.skills||{}).map(([name,x])=>({name,score:skillMasteryScore(x),attempts:Number(x.attempts)||0,retry:Number(x.retry)||0})).filter(x=>x.attempts>0).sort((a,b)=>b.score-a.score);
+ const words=Object.values(masteryMemory.words||{}),patterns=Object.values(masteryMemory.patterns||{});
+ const familiar=words.filter(w=>Number(w.reviews)>=3).length,reviewing=words.filter(w=>Number(w.reviews)>0&&Number(w.reviews)<3).length;
+ const weighted=skills.length?Math.round(skills.reduce((n,x)=>n+x.score*Math.min(8,x.attempts),0)/skills.reduce((n,x)=>n+Math.min(8,x.attempts),0)):0;
+ const strongest=skills[0]||null,weakest=skills.slice().reverse().find(x=>x.attempts>=2)||skills[skills.length-1]||null;
+ let focus='Keep practicing across a few modes to build a clearer profile.',focusWhy='Haneul needs a little more evidence before choosing a specific weak area.';
+ if(weakest){focus=weakest.name+' needs the next reps.';focusWhy=weakest.score+'% current mastery from '+weakest.attempts+' recorded attempt'+(weakest.attempts===1?'':'s')+'.'}
+ else if(reviewing){focus='Review your learning words.';focusWhy=reviewing+' saved word'+(reviewing===1?' is':'s are')+' still between New and Familiar.'}
+ return{skills,words:words.length,patterns:patterns.length,familiar,reviewing,score:weighted,strongest,weakest,focus,focusWhy,topics:Object.keys(masteryMemory.topics||{}).length,lessons:Object.keys(masteryMemory.lessons||{}).length}
+}
+function renderMasterySnapshot(){
+ const m=masterySnapshot(),cards=m.skills.slice(0,6);
+ const a=masteryFocusAction();return '<div class="masteryWrap"><div class="masteryHead"><div class="masteryHeadTop"><div><div class="ey">HANEUL MEMORY · LOCAL</div><h3>Your Korean is becoming measurable.</h3><p>This snapshot combines practice accuracy, saved vocabulary, reusable patterns and lesson exposure. It persists beyond the Recent activity list.</p></div><div class="masteryScore">'+m.score+'%</div></div><div class="memoryStats"><span class="memoryStat">'+m.words+' remembered words</span><span class="memoryStat">'+m.familiar+' familiar</span><span class="memoryStat">'+m.patterns+' patterns</span><span class="memoryStat">'+m.lessons+' lessons seen</span><span class="memoryStat">'+m.topics+' topics</span></div></div>'+(cards.length?'<div class="masteryGrid">'+cards.map(x=>'<div class="masteryCard"><b>'+esc(x.name)+' · '+x.score+'%</b><small>'+x.attempts+' recorded attempt'+(x.attempts===1?'':'s')+'</small><div class="masteryBar"><i style="width:'+x.score+'%"></i></div></div>').join('')+'</div>':'')+'<div class="masteryFocus"><div class="ey">NEXT FOCUS</div><b>'+esc(m.focus)+'</b><p>'+esc(m.focusWhy)+'</p><button id="masteryFocusBtn">'+esc(a.label)+' →</button></div></div>'
+}
+async function aiJson(payload,timeout=14000){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
+ try{
+  const r=await fetch('/api/semantic',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
+  const d=await r.json().catch(()=>null);
+  if(!r.ok||!d||d.ok===false)throw Error(d&&d.error||('semantic-'+r.status));
+  return d
+ }finally{clearTimeout(timer)}
+}
+function loadReplayFocus(){try{return JSON.parse(localStorage.getItem('haneulReplayFocus')||'{}')}catch{return{}}}
+function saveReplayFocus(){try{localStorage.setItem('haneulReplayFocus',JSON.stringify(replayFocus))}catch{}}
+function replayFocusKey(videoId,index){return videoId+'|'+index}
+function recordCueReplay(){
+ if(!sel||cue<0)return;
+ const k=replayFocusKey(sel.id,cue),x=replayFocus[k]||{count:0,lastAt:0};
+ x.count=Number(x.count||0)+1;x.lastAt=Date.now();replayFocus[k]=x;saveReplayFocus()
+}
+function cueReviewSignals(index){
+ if(!sel)return{score:0,reasons:[]};
+ let score=0,reasons=[];
+ const events=practiceHistory.filter(x=>x.videoId===sel.id&&Number(x.cueIndex)===index);
+ const retries=events.filter(x=>x.result==='retry').length;
+ const correct=events.filter(x=>x.result==='correct'||x.result==='completed').length;
+ if(retries){score+=Math.min(9,retries*3);reasons.push(retries+' retry'+(retries>1?'s':''))}
+ if(correct&&retries){score+=1;reasons.push('practiced')}
+ const rp=Number((replayFocus[replayFocusKey(sel.id,index)]||{}).count||0);
+ if(rp>=2){score+=Math.min(5,rp);reasons.push(rp+' replays')}
+ const ws=savedWords.filter(w=>w.videoId===sel.id&&Number(w.cueIndex)===index&&reviewState(w)!=='familiar');
+ if(ws.length){score+=Math.min(5,ws.length*2);reasons.push(ws.length+' learning word'+(ws.length>1?'s':''))}
+ if(stolenSentences.some(x=>x.videoId===sel.id&&Number(x.cueIndex)===index)){score+=1;reasons.push('stolen pattern')}
+ return{score,reasons}
+}
+function buildRewatchQueue(){
+ if(!sel||!cues.length)return[];
+ const ranked=cues.map((c,index)=>{const s=cueReviewSignals(index);return{index,c,score:s.score,reasons:s.reasons}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.index-b.index);
+ const picked=[];
+ for(const x of ranked){if(picked.some(y=>Math.abs(y.index-x.index)<=1))continue;picked.push(x);if(picked.length>=8)break}
+ if(picked.length<3){
+  const intel=getLessonIntel(),fallback=[...(intel.dictation||[]),...(intel.shadowing||[]),...(intel.reconstruct||[])];
+  for(const index of fallback){
+   if(index<0||index>=cues.length||picked.some(y=>Math.abs(y.index-index)<=1))continue;
+   picked.push({index,c:cues[index],score:0,reasons:['useful review line']});
+   if(picked.length>=Math.min(5,cues.length))break
+  }
+ }
+ rewatchQueue=picked.sort((a,b)=>a.index-b.index);return rewatchQueue
+}
+function rewatchDurationMs(list){return (list||rewatchQueue).reduce((n,x)=>n+Math.max(1800,Number(x.c.endMs)-Number(x.c.startMs)+900),0)}
+function renderSmartRewatch(){
+ const q=buildRewatchQueue();
+ if(!q.length)return '<div class="smartRewatch"><div class="smartRewatchHead"><div><div class="ey">SMART REWATCH</div><h3>No review moments yet.</h3><p>Practice or replay a few lines and Haneul will build a focused second pass from your actual weak spots.</p></div></div></div>';
+ const est=Math.max(1,Math.ceil(rewatchDurationMs(q)/60000));
+ return '<div class="smartRewatch"><div class="smartRewatchHead"><div><div class="ey">SMART REWATCH</div><h3>Your shortest useful second pass.</h3><p>'+q.length+' moments selected from mistakes, repeated listening, learning words and useful patterns in this lesson.</p></div><div class="rewatchEstimate">≈ '+est+' min</div></div><div class="rewatchList">'+q.map((x,i)=>'<div class="rewatchItem '+(rewatchPos===i?'active':'')+'"><div class="rewatchNum">'+(i+1)+'</div><div><b>'+esc(x.c.ko)+'</b><div class="rewatchReasons">'+x.reasons.slice(0,3).map(r=>'<span class="rewatchReason">'+esc(r)+'</span>').join('')+'</div></div><div class="rewatchTime">'+fmt(x.c.startMs/1000)+'</div></div>').join('')+'</div><div class="rewatchActions"><button class="primary" id="startRewatch">'+(rewatchPos>=0?'↻ Restart':'▶ Start Smart Rewatch')+'</button>'+(rewatchPos>=0?'<button id="rewatchPrev">← Previous</button><button id="rewatchNext">'+(rewatchPos===q.length-1?'Finish':'Next focus →')+'</button>':'')+'</div></div>'
+}
+function goRewatch(pos){
+ const q=rewatchQueue.length?rewatchQueue:buildRewatchQueue();if(!q.length)return;
+ if(pos>=q.length){rewatchPos=-1;toast('Smart Rewatch complete');panel('progress');return}
+ rewatchPos=Math.max(0,pos);seek(q[rewatchPos].index);setTimeout(()=>{if(tab!=='progress')panel('progress')},50)
+}
+function wireSmartRewatch(){
+ if($('startRewatch'))$('startRewatch').onclick=()=>goRewatch(0);
+ if($('rewatchPrev'))$('rewatchPrev').onclick=()=>goRewatch(Math.max(0,rewatchPos-1));
+ if($('rewatchNext'))$('rewatchNext').onclick=()=>goRewatch(rewatchPos+1)
+}
+function loadSavedWords(){try{return JSON.parse(localStorage.getItem('haneulSavedWords')||'[]')}catch{return[]}}
+function saveSavedWords(){try{localStorage.setItem('haneulSavedWords',JSON.stringify(savedWords))}catch{}}
+function loadPracticeHistory(){try{return JSON.parse(localStorage.getItem('haneulPracticeHistory')||'[]')}catch{return[]}}
+function savePracticeHistory(){try{localStorage.setItem('haneulPracticeHistory',JSON.stringify(practiceHistory.slice(0,60)))}catch{}}
+function wordKey(videoId,cueIndex,raw){return videoId+'|'+cueIndex+'|'+stripExplainWord(raw).toLowerCase()}
+function reviewState(w){const n=Number(w&&w.reviewCount)||0;return n>=3?'familiar':n>=1?'reviewing':'new'}
+function wordInfoAt(raw,index){
+ const sv=semanticVocabFor(raw,cue),fallback=genericWordInfo(raw),key=stripExplainWord(raw);
+ const direct=Object.entries(vocab).find(([k])=>key===k||key.startsWith(k)||k.startsWith(key));
+ return sv?{base:sv.base||sv.word||key,meaning:sv.meaning||fallback.meaning,pron:sv.pronunciation||'—',pos:sv.pos||'Word / expression',role:sv.role||fallback.role,reg:sv.register||'Context dependent',ex:sv.exampleKo||key,exen:sv.exampleEn||''}:{...fallback,meaning:direct?direct[1]:wordMeaning(raw)}
+}
+async function saveWordAt(index){
+ const c=cur();if(!c||!sel)return;
+ const tokens=spokenTokens(c.ko),raw=tokens[index];if(!raw)return;
+ const key=wordKey(sel.id,cue,raw),existing=savedWords.findIndex(w=>w.key===key);
+ if(existing>=0){savedWords.splice(existing,1);saveSavedWords();toast('Word removed');panel('vocab');return}
+ const d=wordInfoAt(raw,index),en=cleanEnglish(c.en)||meaningCache.get(c.ko)||await meaningFor(c)||'';
+ savedWords.unshift({key,videoId:sel.id,lessonLevel:sel.level,title:sel.title,channel:sel.channel,level:sel.level,thumb:sel.thumb,topics:sel.topics||[],styles:sel.styles||[],word:stripExplainWord(raw),surface:raw,base:d.base||stripExplainWord(raw),meaning:d.meaning||'',pron:d.pron||'',pos:d.pos||'',role:d.role||'',register:d.reg||'',exampleKo:d.ex||'',exampleEn:d.exen||'',contextKo:c.ko,contextEn:en,startMs:wordStartMs(c,index),cueIndex:cue,reviewCount:0,lastReviewed:null,savedAt:Date.now()});
+ touchWordMemory(savedWords[0]);saveMasteryMemory();saveSavedWords();toast('Saved to Words');panel('vocab')
+}
+function isWordSaved(raw,index){return !!(sel&&savedWords.some(w=>w.key===wordKey(sel.id,cue,raw)))}
+function markWordReviewed(index){
+ const w=savedWords[index];if(!w)return;w.reviewCount=(Number(w.reviewCount)||0)+1;w.lastReviewed=Date.now();touchWordMemory(w);saveMasteryMemory();saveSavedWords();renderLibrary()
+}
+function logPractice(mode,result,c=cur()){
+ if(!sel)return;
+ const item={id:Date.now()+'-'+Math.random().toString(36).slice(2,7),mode,result:String(result||''),videoId:sel.id,lessonLevel:sel.level,title:sel.title,channel:sel.channel,level:sel.level,thumb:sel.thumb,cueIndex:cue,startMs:c&&c.startMs||0,ko:c&&c.ko||'',at:Date.now()};
+ practiceHistory.unshift(item);practiceHistory=practiceHistory.slice(0,60);absorbPracticeEvent(item);saveMasteryMemory();savePracticeHistory()
+}
+function loadStolen(){try{return JSON.parse(localStorage.getItem('haneulStolenSentences')||'[]')}catch{return[]}}
+function saveStolen(){try{localStorage.setItem('haneulStolenSentences',JSON.stringify(stolenSentences))}catch{}}
+function stealKey(videoId,index){return videoId+'#'+index}
+function isCurrentStolen(){return !!(sel&&cue>=0&&stolenSentences.some(x=>x.key===stealKey(sel.id,cue)))}
+function sectionBounds(index=cue){
+ if(!cues.length)return{start:0,end:0,key:'0-0'};
+ const intel=getLessonIntel(),marks=[0,...(intel.checkpoints||[]),cues.length-1].filter((x,i,a)=>x>=0&&x<cues.length&&a.indexOf(x)===i).sort((a,b)=>a-b);
+ let start=0,end=cues.length-1;
+ for(let i=0;i<marks.length;i++){if(marks[i]<=index)start=marks[i];if(marks[i]>index){end=marks[i]-1;break}}
+ if(end-start>34)end=Math.min(end,start+34);
+ return{start,end,key:start+'-'+end}
+}
+function validCheckpointQuestions(a){return (Array.isArray(a)?a:[]).filter(q=>q&&q.question&&Array.isArray(q.options)&&q.options.length>=2&&q.options.includes(q.answer)).slice(0,3)}
+async function ensureSectionCheckpoint(index=cue){
+ if(!sel||!cues.length||index<0)return null;
+ const b=sectionBounds(index),key=sel.id+'|'+sel.level+'|'+b.key;
+ if(sectionCheckpointCache.has(key))return sectionCheckpointCache.get(key);
+ try{const cached=JSON.parse(localStorage.getItem('haneulCheckpoint:'+key)||'null');if(cached){sectionCheckpointCache.set(key,cached);return cached}}catch{}
+ if(sectionCheckpointPending.has(key))return null;
+ sectionCheckpointPending.add(key);
+ const section=cues.slice(b.start,b.end+1).map((c,j)=>({index:b.start+j,ko:c.ko,en:cleanEnglish(c.en)}));
+ try{
+   const r=await fetch('/api/semantic',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'section',videoId:sel.id,title:sel.title,level:sel.level,sectionKey:b.key,cues:section})});
+   const d=await r.json(),questions=validCheckpointQuestions(d&&d.data&&d.data.questions);
+   if(questions.length){const out={...b,questions};sectionCheckpointFailed.delete(key);sectionCheckpointCache.set(key,out);try{localStorage.setItem('haneulCheckpoint:'+key,JSON.stringify(out))}catch{}if(tab==='quiz')panel('quiz');return out}
+   sectionCheckpointFailed.add(key)
+ }catch{sectionCheckpointFailed.add(key)}finally{sectionCheckpointPending.delete(key)}
+ if(tab==='quiz')panel('quiz');return null
+}
+function renderSectionCheckpoint(){
+ if(cue<0)return '<div class="checkpointLoading">Play the lesson to reach a section checkpoint.</div>';
+ const b=sectionBounds(cue),key=sel.id+'|'+sel.level+'|'+b.key,pack=sectionCheckpointCache.get(key);
+ if(!pack){
+ if(sectionCheckpointFailed.has(key)){
+   const f=quiz(cur());
+   return '<div class="checkFallback"><div class="ey">QUICK CHECK FALLBACK</div><h3>Section AI is unavailable right now.</h3><p>You can still check the current scene, or retry the full section checkpoint.</p>'+(f?'<div class="checkQ"><b>'+esc(f.q)+'</b><div class="checkOpts">'+f.opts.map(o=>'<button class="checkOpt" data-fallback-a="'+esc(o)+'" data-fallback-correct="'+esc(f.a)+'">'+esc(o)+'</button>').join('')+'</div></div>':'')+'<div class="practiceActions"><button id="retrySectionCheck" class="primary">Retry section check</button></div></div>'
+ }
+ ensureSectionCheckpoint(cue);return '<div class="checkpointLoading"><b>Building this section checkpoint…</b><br>Haneul is reading what was actually said nearby.</div>'
+}
+ const pos=Math.min(100,Math.max(0,Math.round(((cue-pack.start)/Math.max(1,pack.end-pack.start))*100)));
+ return '<div class="sectionCheckpoint"><div class="checkpointHead"><div class="ey">SECTION CHECK · '+fmt((cues[pack.start]?.startMs||0)/1000)+'–'+fmt((cues[pack.end]?.endMs||0)/1000)+'</div><h3>Did you catch what happened?</h3><p>'+pack.questions.length+' comprehension questions · '+pos+'% through this section</p></div>'+pack.questions.map((q,i)=>{const ans=sectionQuizAnswers[key+'|'+i];return '<div class="checkQ"><b>'+(i+1)+'. '+esc(q.question)+'</b><div class="checkOpts">'+q.options.map(o=>'<button class="checkOpt '+(ans?(o===q.answer?'good':o===ans?'bad':''):'')+'" data-check-key="'+esc(key)+'" data-check-i="'+i+'" data-check-a="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div></div>'}).join('')+'</div>'
+}
+function wireSectionCheckpoint(){
+ if($('retrySectionCheck'))$('retrySectionCheck').onclick=()=>{const b=sectionBounds(cue),key=sel.id+'|'+sel.level+'|'+b.key;sectionCheckpointFailed.delete(key);sectionCheckpointCache.delete(key);panel('quiz')};
+ document.querySelectorAll('[data-fallback-a]').forEach(b=>b.onclick=()=>{const ok=b.dataset.fallbackA===b.dataset.fallbackCorrect;logPractice('Checkpoint',ok?'correct':'retry',cur());toast(ok?'Correct ✓':'Try that scene once more')});
+ document.querySelectorAll('[data-check-key]').forEach(b=>b.onclick=()=>{const k=b.dataset.checkKey+'|'+b.dataset.checkI;sectionQuizAnswers[k]=b.dataset.checkA;const pack=[...sectionCheckpointCache.values()].find(x=>x.questions&&x.questions[+b.dataset.checkI]);const q=pack&&pack.questions[+b.dataset.checkI];logPractice('Checkpoint',q&&q.answer===b.dataset.checkA?'correct':'retry',cur());panel('quiz')})
+}
+async function stealCurrentSentence(){
+ const c=cur();if(!c)return toast('No active phrase');
+ const key=stealKey(sel.id,cue),existing=stolenSentences.findIndex(x=>x.key===key);
+ if(existing>=0){stolenSentences.splice(existing,1);saveStolen();toast('Removed from stolen sentences');panel('phrases');return}
+ const around=cues.slice(Math.max(0,cue-2),Math.min(cues.length,cue+3)).map((x,j)=>({index:Math.max(0,cue-2)+j,ko:x.ko,en:cleanEnglish(x.en)}));
+ let data=null;
+ try{
+   const cacheKey='haneulSteal:'+sel.id+'|'+sel.level+'|'+cue;
+   try{data=JSON.parse(localStorage.getItem(cacheKey)||'null')}catch{}
+   if(!data){
+     const r=await fetch('/api/semantic',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'pattern',videoId:sel.id,title:sel.title,level:sel.level,cueIndex:cue,cues:around})});
+     const d=await r.json();if(d&&d.ok&&d.data){data=d.data;try{localStorage.setItem(cacheKey,JSON.stringify(data))}catch{}}
+   }
+ }catch{}
+ if(!data){const p=semanticPatternFor(cue);data={pattern:p&&p.pattern||c.ko,meaning:p&&p.meaning||'Reusable expression from this scene',whenToUse:'Use it in a similar real-life context.',examples:[]}}
+ const en=cleanEnglish(c.en)||meaningCache.get(c.ko)||await meaningFor(c)||'';
+ stolenSentences.unshift({key,videoId:sel.id,lessonLevel:sel.level,title:sel.title,channel:sel.channel,level:sel.level,thumb:sel.thumb,ko:c.ko,en,startMs:c.startMs,endMs:c.endMs,cueIndex:cue,pattern:data.pattern||c.ko,patternMeaning:data.meaning||'',whenToUse:data.whenToUse||'',examples:Array.isArray(data.examples)?data.examples.slice(0,2):[],savedAt:Date.now()});
+ touchPatternMemory(stolenSentences[0]);saveMasteryMemory();saveStolen();toast('Sentence stolen ✦');panel('phrases')
+}
+function stealCardHTML(c){
+ if(!c)return '';
+ const stolen=isCurrentStolen(),p=semanticPatternFor(cue);
+ return '<div class="stealCard"><div class="stealTop"><div><div class="ey">STEAL THIS SENTENCE</div><h3>'+esc(c.ko)+'</h3><p>'+(p?esc((p.pattern||'')+' · '+(p.meaning||'')):'Save the useful pattern behind this line, not just the words.')+'</p></div><button class="stealBtn" id="stealCurrent">'+(stolen?'✓ Stolen':'✦ Steal')+'</button></div></div>'
+}
+async function pinCurrentPhrase(){
+  const c=cur();if(!c)return toast('No active phrase');
+  const key=pinKey(sel.id,c.startMs),idx=pinnedPhrases.findIndex(p=>p.key===key);
+  if(idx>=0){
+    pinnedPhrases.splice(idx,1);savePins();toast('Phrase unpinned');if(tab==='phrases')panel('phrases');return
+  }
+  let en=cleanEnglish(c.en)||meaningCache.get(c.ko)||'';
+  if(!en)en=await meaningFor(c);
+  pendingTags=lessonTags(sel).slice();
+  pendingPin={key,videoId:sel.id,lessonLevel:sel.level,title:sel.title,channel:sel.channel,level:sel.level,thumb:sel.thumb,ko:c.ko,en:en||'',startMs:c.startMs,endMs:c.endMs,savedAt:Date.now()};
+  renderPinModal()
+}
+function renderPinModal(){
+  if(!pendingPin)return;
+  $('pinPreview').innerHTML='<div class="pinPhrasePreview"><b>'+esc(pendingPin.ko)+'</b><p>'+esc(pendingPin.en||'English meaning unavailable')+'</p><div class="pinPhraseMeta"><span>'+fmt((pendingPin.startMs||0)/1000)+'</span><span>·</span><span>'+esc(pendingPin.channel||'Haneul')+'</span></div></div>';
+  $('tagChips').innerHTML=pendingTags.map((t,i)=>'<span class="editTag">'+esc(t)+'<button data-remove-tag="'+i+'">×</button></span>').join('');
+  document.querySelectorAll('[data-remove-tag]').forEach(b=>b.onclick=()=>{pendingTags.splice(+b.dataset.removeTag,1);renderPinModal()});
+  $('pinModal').classList.add('open')
+}
+function closePinModal(){if($('pinModal'))$('pinModal').classList.remove('open')}
+function addPendingTag(){
+  const input=$('tagInput');if(!input)return;const t=input.value.trim();if(!t)return;
+  if(!pendingTags.some(x=>x.toLowerCase()===t.toLowerCase()))pendingTags.push(t);
+  input.value='';renderPinModal()
+}
+function isCurrentPinned(){const c=cur();return !!(c&&pinnedPhrases.some(p=>p.key===pinKey(sel.id,c.startMs)))}
+function renderLibrary(){
+ const page=$('libraryPage');if(!page)return;
+ const counts={phrases:pinnedPhrases.length,words:savedWords.length,stolen:stolenSentences.length,recent:practiceHistory.length};
+ const total=counts.phrases+counts.words+counts.stolen;
+ const tabs='<div class="libraryTabs">'+[['phrases','Phrases'],['words','Words'],['stolen','Stolen'],['recent','Recent']].map(x=>'<button class="'+(libraryView===x[0]?'on':'')+'" data-library-view="'+x[0]+'">'+x[1]+' <span class="miniCount">'+counts[x[0]]+'</span></button>').join('')+'</div>';
+ let body='';
+ if(libraryView==='phrases'){
+  body=pinnedPhrases.length?'<div class="libraryList">'+pinnedPhrases.map((p,i)=>'<article class="libCard"><img class="libThumb" src="'+esc(p.thumb)+'"><div><div class="libKo">'+esc(p.ko)+'</div><div class="libEn">'+esc(p.en||'English meaning saved with the lesson')+'</div><div class="libMeta"><span>'+fmt((p.startMs||0)/1000)+'</span><span>·</span><span>'+esc(p.channel||'Haneul')+'</span>'+(p.tags||[]).map(t=>'<span class="libTag">'+esc(t)+'</span>').join('')+'</div></div><div class="libActions"><button data-open-pin="'+i+'">▶ Open</button><button data-remove-pin="'+i+'">Remove</button></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>No pinned phrases yet</b><p>Pin useful lines while watching a lesson.</p></div>'
+ }else if(libraryView==='words'){
+  body=savedWords.length?'<div class="libraryList">'+savedWords.map((w,i)=>{const st=reviewState(w);return '<article class="libCard"><img class="libThumb" src="'+esc(w.thumb)+'"><div><div class="libKo">'+esc(w.word)+' <span class="reviewPill '+st+'">'+(st==='new'?'New':st==='reviewing'?'Reviewing':'Familiar')+'</span></div><div class="libEn">'+esc(w.meaning||'Contextual meaning')+'</div><div class="wordDetails"><span>Base form</span><b>'+esc(w.base||'—')+'</b><span>Role</span><b>'+esc(w.role||'—')+'</b><span>Context</span><b>'+esc(w.contextKo||'—')+'</b></div><div class="libMeta"><span>'+fmt((w.startMs||0)/1000)+'</span><span>·</span><span>'+esc(w.channel||'Haneul')+'</span><span>·</span><span>'+Number(w.reviewCount||0)+' reviews</span></div></div><div class="libActions"><button data-review-word="'+i+'">✓ Reviewed</button><button data-open-word="'+i+'">▶ Context</button><button data-remove-word="'+i+'">Remove</button></div></article>'}).join('')+'</div>':'<div class="libraryEmpty"><b>No saved words yet</b><p>Open a lesson → Words → Save.</p></div>'
+ }else if(libraryView==='stolen'){
+  body=stolenSentences.length?'<div class="libraryList">'+stolenSentences.map((p,i)=>'<article class="libCard"><img class="libThumb" src="'+esc(p.thumb)+'"><div><div class="libKo">'+esc(p.ko)+'</div><div class="libEn">'+esc(p.en||'')+'</div><div class="libPattern"><b>'+esc(p.pattern||'Reusable pattern')+'</b>'+(p.patternMeaning?' · '+esc(p.patternMeaning):'')+'</div>'+(p.whenToUse?'<div class="libEn" style="margin-top:6px">'+esc(p.whenToUse)+'</div>':'')+(p.examples&&p.examples.length?'<div class="stealExamples">'+p.examples.map(x=>'<div class="stealExample">'+esc(x.ko||'')+'<span>'+esc(x.en||'')+'</span></div>').join('')+'</div>':'')+'<div class="libMeta"><span>'+fmt((p.startMs||0)/1000)+'</span><span>·</span><span>'+esc(p.channel||'Haneul')+'</span></div></div><div class="libActions"><button data-open-steal="'+i+'">▶ Open</button><button data-remove-steal="'+i+'">Remove</button></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>No stolen sentences yet</b><p>Steal reusable patterns from the Phrases tab.</p></div>'
+ }else{
+  body=practiceHistory.length?'<div class="recentList">'+practiceHistory.slice(0,40).map((x,i)=>'<article class="recentItem"><div><b>'+esc(x.mode)+' · '+esc(x.result)+'</b><p>'+esc(x.ko||x.title||'Lesson practice')+'</p></div><div><div class="recentMeta">'+new Date(x.at).toLocaleDateString()+' · '+fmt((x.startMs||0)/1000)+'</div><div class="libActions" style="margin-top:7px"><button data-open-recent="'+i+'">▶ Revisit</button></div></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>No practice history yet</b><p>Reconstruct, Dictation, Shadowing and Check activity will appear here.</p></div>'
+ }
+ page.innerHTML='<div class="libraryHead"><div><div class="ey">YOUR LEARNING LIBRARY</div><h1>Keep what matters.</h1><p>Saved language and the practice trail behind it.</p></div><div class="libraryCount"><b>'+total+'</b>saved items</div></div>'+tabs+body;
+ page.querySelectorAll('[data-library-view]').forEach(b=>b.onclick=()=>{libraryView=b.dataset.libraryView;renderLibrary()});
+ page.querySelectorAll('[data-open-pin]').forEach(b=>b.onclick=()=>{const p=pinnedPhrases[+b.dataset.openPin];if(!p)return;window.__pendingPinnedSeek=p.startMs;showMainPage('discover');open(p.videoId,p.lessonLevel)});
+ page.querySelectorAll('[data-remove-pin]').forEach(b=>b.onclick=()=>{pinnedPhrases.splice(+b.dataset.removePin,1);savePins();renderLibrary()});
+ page.querySelectorAll('[data-review-word]').forEach(b=>b.onclick=()=>markWordReviewed(+b.dataset.reviewWord));
+ page.querySelectorAll('[data-open-word]').forEach(b=>b.onclick=()=>{const w=savedWords[+b.dataset.openWord];if(!w)return;window.__pendingPinnedSeek=w.startMs;showMainPage('discover');open(w.videoId,w.lessonLevel)});
+ page.querySelectorAll('[data-remove-word]').forEach(b=>b.onclick=()=>{savedWords.splice(+b.dataset.removeWord,1);saveSavedWords();renderLibrary()});
+ page.querySelectorAll('[data-open-steal]').forEach(b=>b.onclick=()=>{const p=stolenSentences[+b.dataset.openSteal];if(!p)return;window.__pendingPinnedSeek=p.startMs;showMainPage('discover');open(p.videoId,p.lessonLevel)});
+ page.querySelectorAll('[data-remove-steal]').forEach(b=>b.onclick=()=>{stolenSentences.splice(+b.dataset.removeSteal,1);saveStolen();renderLibrary()});
+ page.querySelectorAll('[data-open-recent]').forEach(b=>b.onclick=()=>{const x=practiceHistory[+b.dataset.openRecent];if(!x)return;window.__pendingPinnedSeek=x.startMs;showMainPage('discover');open(x.videoId,x.lessonLevel)})
+}
+function showMainPage(name){
+  const discover=$('discoverPage'),library=$('libraryPage');
+  if(discover)discover.hidden=name==='library';
+  if(library)library.hidden=name!=='library';
+  document.querySelectorAll('.nav [data-nav]').forEach(n=>n.classList.toggle('on',n.dataset.nav===name));
+  if(name==='library')renderLibrary();
+}
+const FILTERS={
+ levels:['Beginner','Lower Intermediate','Intermediate'],
+ topics:['All','Daily Life','Food','Travel','Shopping','School','Culture','Weather','Family','Work','Hobbies'],
+ styles:['All','Slow Korean','Teaching','Vlog','Culture','Street Talk','Animation','News']
+};
+function renderFilterChips(){
+  const levels=$('levelChips'),topic=$('topicSelect'),style=$('styleSelect');
+  if(levels)levels.innerHTML=FILTERS.levels.map(x=>'<button class="chip '+(videoFilters.level===x?'on':'')+'" data-level-choice="'+esc(x)+'">'+esc(x)+'</button>').join('');
+  if(topic){
+    topic.innerHTML=FILTERS.topics.map(x=>'<option value="'+esc(x)+'" '+(videoFilters.topic===x?'selected':'')+'>'+esc(x==='All'?'All topics':x)+'</option>').join('');
+    $('topicLabel').textContent=videoFilters.topic==='All'?'All topics':videoFilters.topic
+  }
+  if(style){
+    style.innerHTML=FILTERS.styles.map(x=>'<option value="'+esc(x)+'" '+(videoFilters.style===x?'selected':'')+'>'+esc(x==='All'?'All styles':x)+'</option>').join('');
+    $('styleLabel').textContent=videoFilters.style==='All'?'All styles':videoFilters.style
+  }
+  
+  document.querySelectorAll('[data-level-choice]').forEach(b=>b.onclick=()=>{videoFilters.level=b.dataset.levelChoice;renderFilterChips();loadVideoFeed()});
+  if(topic)topic.onchange=()=>{videoFilters.topic=topic.value;renderFilterChips();loadVideoFeed()};
+  if(style)style.onchange=()=>{videoFilters.style=style.value;renderFilterChips();loadVideoFeed()}
+}
+function mappedLevel(x){return x==='Beginner'?'TOPIK 1':x==='Lower Intermediate'?'TOPIK 2':'TOPIK 2+'}
+function lessonMatches(v){
+  const levelOk=v.level===videoFilters.level&&v.readiness==='ready';
+  const topicOk=videoFilters.topic==='All'||(v.topics||[]).includes(videoFilters.topic);
+  const styleOk=videoFilters.style==='All'||(v.styles||[]).includes(videoFilters.style);
+  return levelOk&&topicOk&&styleOk
+}
+function loadVideoFeed(){
+  videos=curatedCatalog.filter(lessonMatches).map(v=>({...v,band:v.level,level:v.levelCode||mappedLevel(v.level)}));
+  const total=curatedCatalog.filter(v=>v.level===videoFilters.level).length;
+  if($('feedStatus'))$('feedStatus').textContent=videos.length?(videos.length+' verified Ready lessons · '+total+' curated candidates in '+videoFilters.level):('No transcript-verified Ready lesson yet for this combination · '+total+' curated candidates exist');
+  home($('q')?$('q').value:'')
+}
+function home(q=''){let x=q.toLowerCase();$('grid').innerHTML=videos.filter(v=>!x||[v.title,v.channel,v.desc,...(v.topics||[]),...(v.styles||[])].some(t=>String(t||'').toLowerCase().includes(x))).map(v=>`<article class="card ${v.readiness||''}" data-id="${v.id}" data-lesson-level="${esc(v.level)}" data-lesson-band="${esc(v.band||v.level)}"><span class="readyBadge ${v.readiness||'checking'}">${v.readiness==='ready'?'● Ready':'◌ Checking'}</span><img src="${v.thumb}"><div class="copy"><span class="badge">${v.level}</span><h3>${esc(v.title)}</h3><small>${esc(v.channel)}</small><p>${esc(v.desc)}</p><div class="intelStrip">${(v.topics||[]).slice(0,2).map(t=>'<span class="intelTag">'+esc(t)+'</span>').join('')}${(v.styles||[]).slice(0,1).map(t=>'<span class="intelTag">'+esc(t)+'</span>').join('')}</div></div></article>`).join('');document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id,lv=c.dataset.lessonLevel,band=c.dataset.lessonBand;c.onclick=()=>open(id,lv,band);const warm=()=>{if(captionCache.has(id))return;fetch('/api/captions?videoId='+id+'&cv=8').then(r=>r.json()).then(d=>{if(d&&d.ok&&d.cues&&d.cues.length)captionCache.set(id,d)}).catch(()=>{})};c.onmouseenter=warm;c.onpointerdown=warm})}$('q').oninput=e=>home(e.target.value);renderFilterChips();document.querySelectorAll('.nav [data-nav]').forEach(n=>n.onclick=()=>{const x=n.dataset.nav;if(x==='library')showMainPage('library');else if(x==='discover')showMainPage('discover');else if(x==='practice'){showMainPage('discover');toast('Open a lesson to practice') }else if(x==='progress'){showMainPage('discover');toast('Open a lesson to view progress')}});function cur(){return cue>=0?cues[cue]:null}function findCue(ms){if(!cues.length)return-1;let lo=0,hi=cues.length-1,b=-1;while(lo<=hi){let m=(lo+hi)>>1;if(cues[m].startMs<=ms){b=m;lo=m+1}else hi=m-1}if(b<0)return-1;return ms<=cues[b].endMs+180?b:-1}function simplifyKey(index=cue){return sel&&index>=0?sel.id+'|'+sel.level+'|'+index:'none'}
+function validSimplifyData(d,index=cue){
+ if(!d||!cues[index])return null;
+ const original=String(cues[index].ko||'').trim(),simple=String(d.simpleKo||'').trim();
+ if(!original||!simple||!hasKo(simple))return null;
+ if(simple.length>Math.max(240,original.length*2.4))return null;
+ return{simpleKo:simple,simplified:d.simplified!==false&&normKo(simple)!==normKo(original),reason:String(d.reason||'')}
+}
+async function ensureSimplified(index=cue){
+ if(!sel||index<0||!cues[index])return null;
+ const key=simplifyKey(index);
+ if(simplifyCache.has(key))return simplifyCache.get(key);
+ try{
+  const cached=JSON.parse(localStorage.getItem('haneulSimplify:'+key)||'null'),ok=validSimplifyData(cached,index);
+  if(ok){simplifyCache.set(key,ok);return ok}
+ }catch{}
+ if(simplifyPending.has(key))return null;
+ simplifyPending.add(key);
+ const start=Math.max(0,index-2),end=Math.min(cues.length,index+3);
+ const context=cues.slice(start,end).map((c,j)=>({index:start+j,ko:c.ko,en:cleanEnglish(c.en)}));
+ try{
+  const d=await aiJson({mode:'simplify',videoId:sel.id,title:sel.title,level:sel.level,cueIndex:index,cues:context});
+  const ok=validSimplifyData(d&&d.data,index);
+  if(ok){simplifyFailed.delete(key);simplifyCache.set(key,ok);try{localStorage.setItem('haneulSimplify:'+key,JSON.stringify(ok))}catch{}if(mode==='easy'&&cue===index)renderCap();return ok}
+  simplifyFailed.add(key)
+ }catch{simplifyFailed.add(key)}finally{simplifyPending.delete(key);if(mode==='easy'&&cue===index)renderCap()}
+ return null
+}
+function renderEasyLayer(c,index=cue){
+ const d=simplifyCache.get(simplifyKey(index));
+ if(!d){const key=simplifyKey(index);if(simplifyFailed.has(key))return '<div class="easyLayer"><span class="easyBadge">EASY KOREAN</span><div class="easyKo">Could not simplify this line right now.</div><div class="easyWhy">The original Korean is still accurate. You can retry without losing your place.</div><button class="easyEnglishBtn" id="retryEasy">Retry Easy Korean</button></div>';ensureSimplified(index);return '<div class="easyLayer"><span class="easyBadge">EASY KOREAN</span><div class="easyKo">Making this line easier in Korean…</div></div>'}
+ const label=d.simplified?'EASY KOREAN':'ALREADY SIMPLE';
+ return '<div class="easyLayer"><span class="easyBadge">'+label+'</span><div class="easyKo">'+esc(d.simpleKo)+'</div>'+(d.reason?'<div class="easyWhy">'+esc(d.reason)+'</div>':'')+'<button class="easyEnglishBtn" id="easyEnglishBtn">Show English only if needed</button><div class="easyEnglishText" id="easyEnglishText" hidden></div></div>'
+}
+async function wireEasyEnglish(c){
+ const retry=$('retryEasy');if(retry)retry.onclick=()=>{simplifyFailed.delete(simplifyKey());renderCap()};const b=$('easyEnglishBtn'),out=$('easyEnglishText');if(!b||!out||!c)return;
+ b.onclick=async()=>{
+  let m=cleanEnglish(c.en)||meaningCache.get(c.ko)||'';
+  if(!m)m=await meaningFor(c);
+  if(cur()!==c||mode!=='easy')return;
+  out.textContent=m||'English meaning unavailable for this line.';
+  out.hidden=false;b.hidden=true
+ }
+}
+function renderCap(){
+ let c=cur();
+ if(!c){$('ko').textContent=state==='loading'?'Connecting to this video transcript…':state==='bad'?'Transcript unavailable for this video.':'No spoken cue at this moment.';$('en').textContent='';$('en').style.display='none';return}
+ if(guess&&revealed!==cue){$('ko').innerHTML='<span style="font-size:15px;background:#f1eeff;color:#5f50df;padding:8px 10px;border-radius:999px">Reveal Korean line</span>';$('en').style.display='none';$('ko').onclick=()=>{revealed=cue;renderCap()};return}
+ $('ko').onclick=null;$('ko').innerHTML=spokenHTML(c,ready&&player?player.getCurrentTime()*1000:c.startMs);
+ $('en').style.display=mode==='ko'?'none':'block';
+ if(mode==='ko')return;
+ if(mode==='easy'){
+   $('cap').onclick=null;$('en').classList.remove('meaningWait');$('en').innerHTML=renderEasyLayer(c,cue);setTimeout(()=>wireEasyEnglish(c),0);return
+ }
+ let direct=cleanEnglish(c.en);
+ if(direct){$('en').classList.remove('meaningWait');$('en').textContent=direct;return}
+ $('en').classList.add('meaningWait');$('en').textContent=mode==='tap'?'Tap to reveal English meaning':'Getting English meaning…';
+ let key=c.ko;
+ const reveal=async()=>{let m=await meaningFor(c);if(cur()?.ko!==key)return;$('en').classList.remove('meaningWait');$('en').textContent=m||'English meaning unavailable for this line.'};
+ if(mode==='tap')$('cap').onclick=()=>reveal();else{$('cap').onclick=null;reveal()}
+}
+function spokenTokens(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function tokenWeight(w,power=.72,punct=.38){
+  const clean=String(w||'').replace(/[^가-힣A-Za-z0-9]/g,'');
+  const n=Math.max(1,clean.length);
+  let x=.72+Math.pow(n,power);
+  if(/[,.!?…~]$/.test(String(w||'')))x+=punct;
+  return Math.min(x,4.0)
+}
+function timingProfile(){
+  if(sel&&sel.id==='in58DVfmxug')return{lead:24,tail:28,power:.66,punct:.34,gapTrim:.28,minWord:88};
+  if(sel&&sel.id==='kHsEZUcyD7c')return{lead:8,tail:16,power:.78,punct:.48,gapTrim:.16,minWord:112};
+  return{lead:8,tail:18,power:.72,punct:.40,gapTrim:.20,minWord:100}
+}
+function adaptiveWordTimeline(c){
+  const a=spokenTokens(c&&c.ko);if(!a.length)return[];
+  const p=timingProfile(),ci=(c===cur()?cue:cues.indexOf(c));
+  let st=Number(c.startMs)||0,en=Math.max(st+320,Number(c.endMs)||st+1800);
+  const next=ci>=0?cues[ci+1]:null,prev=ci>0?cues[ci-1]:null;
+  if(next&&Number(next.startMs)>st+180)en=Math.min(en,Number(next.startMs)-12);
+  if(next){
+    const rawGap=Number(next.startMs)-en;
+    if(rawGap>280)en-=Math.min(200,Math.round((rawGap-280)*p.gapTrim));
+  }
+  if(prev&&Number(prev.endMs)>st&&Number(prev.endMs)-st>220)st+=18;
+  en=Math.max(st+Math.max(260,a.length*p.minWord),en);
+  const weights=a.map(w=>tokenWeight(w,p.power,p.punct));
+  const sum=weights.reduce((x,y)=>x+y,0),span=en-st;
+  let acc=0;
+  return a.map((word,i)=>{
+    const ws=st+span*(acc/sum);acc+=weights[i];
+    const we=st+span*(acc/sum);
+    return{word,startMs:Math.max(st,Math.round(ws-p.lead)),endMs:Math.round(we-p.tail)}
+  })
+}
+function spokenIndex(c,ms){
+  const tl=adaptiveWordTimeline(c);if(!tl.length)return-1;
+  for(let i=0;i<tl.length;i++)if(ms<tl[i].endMs)return i;
+  return tl.length-1
+}
+function wordStartMs(c,index){
+  const tl=adaptiveWordTimeline(c);if(!tl.length)return Number(c&&c.startMs)||0;
+  index=Math.max(0,Math.min(tl.length-1,index));
+  return tl[index].startMs
+}
+function wordMeaning(raw){
+  const sv=semanticVocabFor(raw);if(sv&&sv.meaning)return sv.meaning;
+  const clean=stripExplainWord(raw);
+  const direct=Object.entries(vocab).find(([k])=>clean===k||clean.startsWith(k)||k.startsWith(clean));
+  if(direct)return direct[1];
+  const info=explainLex&&explainLex[raw]||explainLex&&explainLex[clean];
+  return info&&info.meaning?info.meaning:'Tap to replay this word in context';
+}
+function seekWord(index){
+  const c=cur();if(!ready||!c)return;
+  const ms=wordStartMs(c,index);
+  explainSelected=null;activeSpoken=index;
+  player.seekTo(ms/1000,true);player.playVideo();
+  revealed=-1;renderCap();
+  if(tab==='vocab')panel('vocab');
+}
+
+function spokenHTML(c,ms){
+  const a=spokenTokens(c&&c.ko),n=spokenIndex(c,ms);
+  return a.map((w,i)=>'<span class="spokenWord '+(i===n?'active':'')+'">'+esc(w)+'</span>').join(' ')
+}
+function stripExplainWord(w){return String(w||'').replace(/[.,!?~]/g,'').trim()}
+const explainLex={
+  '핸드폰':{base:'핸드폰',meaning:'mobile phone',pron:'haendeupon',pos:'Noun',role:'Names the phone; here it modifies 알람 to form “phone alarm”.',reg:'Neutral everyday word',ex:'핸드폰을 집에 두고 왔어요.',exen:'I left my phone at home.'},
+  '알람을':{base:'알람',meaning:'alarm',pron:'allam',pos:'Noun + particle',role:'알람 is the noun; 을 marks it as the object of 맞추다.',reg:'Neutral everyday word',ex:'알람을 7시에 맞춰요.',exen:'I set the alarm for 7.'},
+  '8시에':{base:'8시',meaning:'at 8 o’clock',pron:'yeodeol-si-e',pos:'Time expression + particle',role:'에 marks the specific time when the action happens.',reg:'Neutral',ex:'8시에 학교에 가요.',exen:'I go to school at 8.'},
+  '맞춰':{base:'맞추다',meaning:'set / adjust',pron:'matchwo',pos:'Verb',role:'Connective form of 맞추다; here it links to 놔요.',reg:'Everyday polite context',ex:'시간을 맞춰 주세요.',exen:'Please set or adjust the time.'},
+  '놔요':{base:'놓다',meaning:'leave it set / keep it ready',pron:'nwayo',pos:'Auxiliary verb',role:'In -아/어 놓다, it adds doing something in advance and leaving the result in place.',reg:'Polite conversational',ex:'문을 열어 놔요.',exen:'Leave the door open.'}
+};
+function genericWordInfo(raw){
+  const x=stripExplainWord(raw);
+  const endings=[['에서','place where an action happens'],['으로','direction or means'],['부터','starting point'],['까지','end point'],['을','object'],['를','object'],['은','topic or contrast'],['는','topic or contrast'],['이','subject'],['가','subject'],['에','time location or destination'],['도','also or too']];
+  for(const pair of endings){const p=pair[0],role=pair[1];if(x.length>p.length&&x.endsWith(p))return{base:x.slice(0,-p.length),meaning:'Meaning depends on the noun in context',pron:'—',pos:'Noun + particle',role:p+' marks the '+role+' in this sentence.',reg:'Neutral grammar particle',ex:x+' …',exen:'This particle connects the noun to the rest of the sentence.'}}
+  if(x.endsWith('요'))return{base:x,meaning:'Contextual verb or adjective meaning',pron:'—',pos:'Polite verb/adjective form',role:'The 요 ending makes the expression polite and conversational.',reg:'Polite conversational',ex:x,exen:'This form is common in everyday polite Korean.'};
+  return{base:x,meaning:'Contextual meaning',pron:'—',pos:'Word or expression',role:'Its exact role depends on how it connects to surrounding words.',reg:'Context dependent',ex:x,exen:'Replay the line to hear it in context.'}
+}
+function activeWordInfo(c){
+  const a=spokenTokens(c&&c.ko);
+  const auto=activeSpoken>=0?activeSpoken:spokenIndex(c,ready&&player?player.getCurrentTime()*1000:(c&&c.startMs)||0);
+  const i=Math.max(0,Math.min(a.length-1,explainSelected===null?auto:explainSelected));
+  const raw=a[i]||'',key=stripExplainWord(raw),sv=semanticVocabFor(raw);
+  const data=sv?{base:sv.base||sv.word||key,meaning:sv.meaning||'Contextual meaning',pron:sv.pronunciation||'—',pos:sv.pos||'Word / expression',role:sv.role||'Used in this sentence context.',reg:sv.register||'Context dependent',ex:sv.exampleKo||key,exen:sv.exampleEn||''}:(explainLex[raw]||explainLex[key]||genericWordInfo(raw));
+  return{raw,index:i,data}
+}
+function sentenceGrammar(c){
+  const ai=semanticGrammarFor(cue).map(g=>[g.pattern||'Grammar',g.explanation||'']);
+  const pat=semanticPatternFor(cue);if(pat)ai.push([pat.pattern||'Reusable pattern',pat.meaning||'Reusable sentence pattern']);
+  if(ai.length)return ai;
+  
+  const t=String(c&&c.ko||''),out=[];
+  if(/[을를](?:\s|$)/.test(t))out.push(['Object marking','을/를 marks the noun that receives the action.']);
+  if(/\d+시에|시에/.test(t))out.push(['Time + 에','에 marks the specific time of the action.']);
+  if(/맞춰\s*놔요|맞춰\s*놓/.test(t))out.push(['-아/어 놓다','Do something in advance and leave the resulting state in place.']);
+  if(/안\s+/.test(t))out.push(['안 + verb/adjective','Simple everyday negation.']);
+  if(/에서/.test(t))out.push(['에서','Marks the place where an action happens.']);
+  if(/있어요/.test(t))out.push(['있어요','Expresses existence or presence.']);
+  if(/없어요/.test(t))out.push(['없어요','Expresses absence or non-existence.']);
+  if(!out.length)out.push(['Sentence connection','Look at how particles and endings connect each word to the verb.']);
+  return out
+
+}
+function explainWordHTML(c){
+  const w=activeWordInfo(c),d=w.data,g=sentenceGrammar(c),tokens=spokenTokens(c&&c.ko),following=explainSelected===null;
+  return '<div class="wordExplain">'+
+    '<div class="wordExplainTop"><div><div class="ey">'+(following?'WORD BEING SPOKEN':'SELECTED WORD')+'</div><h3>'+esc(w.raw||'—')+'</h3><div class="roman">'+esc(d.pron||'')+'</div></div>'+
+    '<button class="followBtn" id="followSpeaker">'+(following?'● Following speaker':'↻ Follow speaker')+'</button></div>'+
+    '<div class="explainPicker">'+tokens.map((x,i)=>'<button class="explainPick '+(i===w.index?'on':'')+'" data-explain-word="'+i+'">'+esc(x)+'</button>').join('')+'</div>'+
+    '<span class="posBadge">'+esc(d.pos||'Word')+'</span>'+
+    '<div class="wordGrid"><span>Meaning here</span><b>'+esc(d.meaning)+'</b><span>Base form</span><b>'+esc(d.base)+'</b><span>Pronunciation</span><b>'+esc(d.pron||'—')+'</b><span>Part of speech</span><b>'+esc(d.pos)+'</b><span>Grammar / role</span><b>'+esc(d.role)+'</b><span>Register</span><b>'+esc(d.reg)+'</b></div>'+
+    '<div class="realExample"><b>Real-life example</b><br>'+esc(d.ex)+'<br><span style="color:#6d7485">'+esc(d.exen)+'</span></div></div>'+
+    '<div class="practiceHero"><div class="ey">SENTENCE GRAMMAR</div><h3>'+esc(c&&c.ko||'')+'</h3><p>Choose any word above or let Explain follow the speaker automatically.</p></div>'+
+    '<div class="item">'+g.map(x=>'<div class="grammarChunk"><b>'+esc(x[0])+'</b><p>'+esc(x[1])+'</p></div>').join('')+'<button id="er">Replay while reading</button></div>'
+}
+function paintSpoken(ms){
+  const c=cur();if(!c||(guess&&revealed!==cue))return;
+  const n=spokenIndex(c,ms),changed=n!==activeSpoken;if(!changed)return;activeSpoken=n;
+  if($('ko'))$('ko').innerHTML=spokenHTML(c,ms);
+  if(tab==='explain'&&explainSelected===null)panel('explain')
+}
+function words(c){if(!c)return[];return Object.entries(vocab).filter(([w])=>(c.ko||'').includes(w)).slice(0,8)}function explain(c){let t=c?.ko||'';if(!c)return['Waiting for a Korean line','Play the video and this explanation will change with the active cue.'];if(t.includes('없어요'))return['없어요 · absence','Use 없어요 when something is not there or does not exist.'];if(t.includes('있어요'))return['있어요 · presence','있어요 says something exists or is present; location is often marked with 에.'];if(t.includes('에서'))return['에서 · action location','에서 marks the place where an action happens.'];if(t.includes('안 '))return['안 + verb · negation','안 before a verb is a common everyday way to say not / do not.'];return['Listen to the word order','Replay this cue once without English, then compare Korean order with the meaning.']}function normKo(s){return String(s||'').replace(/\s+/g,'').replace(/[.,!?~…]/g,'').trim()}
+function semanticKey(){return sel&&sel.id?('haneulSemantic:v1:'+sel.id+'|'+(sel.level||'')):'none'}
+function normalizeSemantic(x){
+ x=x&&typeof x==='object'?x:{};
+ for(const k of ['vocabulary','grammar','reconstruct','dictation','shadowing','sentencePatterns','checkpoints'])if(!Array.isArray(x[k]))x[k]=[];
+ return x
+}
+function semanticCueIndexes(mode){
+ if(!semanticIntel)return[];
+ const a=semanticIntel[mode];return Array.isArray(a)?a.map(x=>Number(x.cueIndex)).filter(Number.isInteger):[]
+}
+function semanticVocabFor(raw,cueIndex=cue){
+ if(!semanticIntel)return null;
+ const key=stripExplainWord(raw);
+ return (semanticIntel.vocabulary||[]).find(v=>{
+   const w=stripExplainWord(v.word||v.base||'');
+   return Number(v.cueIndex)===cueIndex&&(w===key||w.startsWith(key)||key.startsWith(w))
+ })||(semanticIntel.vocabulary||[]).find(v=>{
+   const w=stripExplainWord(v.word||v.base||'');
+   return w===key||w.startsWith(key)||key.startsWith(w)
+ })||null
+}
+function semanticGrammarFor(index=cue){return semanticIntel?(semanticIntel.grammar||[]).filter(g=>Number(g.cueIndex)===index):[]}
+function semanticPatternFor(index=cue){return semanticIntel?(semanticIntel.sentencePatterns||[]).find(g=>Number(g.cueIndex)===index):null}
+async function loadSemanticIntel(){
+ if(!sel||!cues.length)return;
+ const key=semanticKey();
+ try{const cached=JSON.parse(localStorage.getItem(key)||'null');if(cached){semanticIntel=normalizeSemantic(cached);return semanticIntel}}catch{}
+ if(semanticLoading)return;
+ semanticLoading=true;
+ const max=120,step=Math.max(1,Math.ceil(cues.length/max)),sample=[];
+ for(let i=0;i<cues.length;i+=step)sample.push({index:i,ko:cues[i].ko,en:cleanEnglish(cues[i].en)});
+ if(cue>=0&&!sample.some(x=>x.index===cue))sample.push({index:cue,ko:cues[cue].ko,en:cleanEnglish(cues[cue].en)});
+ sample.sort((a,b)=>a.index-b.index);
+ try{
+  const r=await fetch('/api/semantic',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({videoId:sel.id,title:sel.title,level:sel.level,cues:sample})});
+  const d=await r.json();
+  if(d&&d.ok&&d.data){
+    semanticIntel=normalizeSemantic(d.data);
+    try{localStorage.setItem(key,JSON.stringify(semanticIntel))}catch{}
+    if(['practice','vocab','explain','quiz'].includes(tab))panel(tab)
+  }
+ }catch{}finally{semanticLoading=false}
+ return semanticIntel
+}
+function reconstructData(c){
+  if(!c||!hasKo(c.ko))return null;
+  if(semanticIntel){
+    const s=(semanticIntel.reconstruct||[]).find(x=>Number(x.cueIndex)===cue&&x.answer&&c.ko.includes(x.answer));
+    if(s){
+      const answer=String(s.answer),stem=c.ko.replace(answer,'____');
+      const opts=[answer,...(s.distractors||[]).map(String)].filter((x,i,a)=>x&&a.indexOf(x)===i).slice(0,3);
+      if(stem!==c.ko&&opts.length>=3)return{stem,answer,opts,semantic:true}
+    }
+  }
+  const toks=spokenTokens(c.ko);if(toks.length<2)return null;
+  const answer=toks[toks.length-1];
+  const stem=toks.slice(0,-1).join(' ')+' ____';
+  const pool=['있어요','없어요','가요','와요','먹어요','마셔요','해요','좋아해요'].filter(x=>x!==answer);
+  const opts=[answer,pool[(cue+2)%pool.length],pool[(cue+5)%pool.length]].filter((x,i,a)=>x&&a.indexOf(x)===i);
+  while(opts.length<3)opts.push(['봐요','사요','자요'][opts.length-1]);
+  return{stem,answer,opts,semantic:false}
+}
+function intelKey(){return sel&&sel.id?(sel.id+'|'+(sel.level||'')):'none'}
+function buildLessonIntel(list){
+ const valid=(list||[]).map((c,i)=>({i,c,t:spokenTokens(c.ko)})).filter(x=>x.t.length>=2&&hasKo(x.c.ko));
+ const reconstruct=valid.filter(x=>x.t.length>=3&&x.t.length<=9).map(x=>x.i);
+ const dictation=valid.filter(x=>x.t.length>=3&&x.t.length<=12&&Number(x.c.endMs)-Number(x.c.startMs)>=900).map(x=>x.i);
+ const shadowing=valid.filter(x=>x.t.length>=3&&x.t.length<=10).map(x=>x.i);
+ const freq={};valid.forEach(x=>x.t.forEach(w=>{const k=stripExplainWord(w);if(k.length>1)freq[k]=(freq[k]||0)+1}));
+ const vocabTop=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,18).map(x=>x[0]);
+ const checkpoints=[];let nextAt=120000;
+ for(let i=0;i<list.length;i++){if(Number(list[i].startMs)>=nextAt){checkpoints.push(i);nextAt+=150000}}
+ return{reconstruct,dictation,shadowing,vocabTop,checkpoints,builtAt:Date.now()}
+}
+function getLessonIntel(){
+ const k='haneulIntel:'+intelKey();try{const x=JSON.parse(localStorage.getItem(k)||'null');if(x)return x}catch{}
+ const x=buildLessonIntel(cues);try{localStorage.setItem(k,JSON.stringify(x))}catch{}return x
+}
+function practiceEligible(mode,index=cue){
+ const sm=semanticCueIndexes(mode);if(sm.length)return sm.includes(index);
+ const d=getLessonIntel(),arr=mode==='reconstruct'?d.reconstruct:mode==='dictation'?d.dictation:d.shadowing;
+ return arr.includes(index)
+}
+function nearestPracticeCue(mode,index=cue){
+ const sm=semanticCueIndexes(mode);
+ const d=getLessonIntel(),arr=sm.length?sm:(mode==='reconstruct'?d.reconstruct:mode==='dictation'?d.dictation:d.shadowing);
+ if(!arr.length)return index;return arr.reduce((best,x)=>Math.abs(x-index)<Math.abs(best-index)?x:best,arr[0])
+}
+function predictKey(index=cue){return sel&&index>=0?sel.id+'|'+sel.level+'|'+index:'none'}
+function validPredictData(d,index=cue){
+ if(!d||!Array.isArray(d.options)||d.options.length<3||!cues[index+1])return null;
+ const answer=String(cues[index+1].ko||'').trim();
+ const opts=d.options.map(String).map(x=>x.trim()).filter(Boolean);
+ if(!answer||!opts.includes(answer))return null;
+ return{answer,options:[...new Set(opts)].slice(0,3),reason:String(d.reason||'')}
+}
+async function ensurePredict(index=cue){
+ if(!sel||index<0||index>=cues.length-1)return null;
+ const key=predictKey(index);
+ if(predictCache.has(key))return predictCache.get(key);
+ try{
+  const cached=JSON.parse(localStorage.getItem('haneulPredict:'+key)||'null'),ok=validPredictData(cached,index);
+  if(ok){predictCache.set(key,ok);return ok}
+ }catch{}
+ if(predictPending.has(key))return null;
+ predictPending.add(key);
+ const start=Math.max(0,index-3),context=cues.slice(start,index+2).map((c,j)=>({index:start+j,ko:c.ko,en:cleanEnglish(c.en)}));
+ try{
+  const d=await aiJson({mode:'predict',videoId:sel.id,title:sel.title,level:sel.level,cueIndex:index,targetIndex:index+1,cues:context});
+  const ok=validPredictData(d&&d.data,index);
+  if(ok){predictFailed.delete(key);predictCache.set(key,ok);try{localStorage.setItem('haneulPredict:'+key,JSON.stringify(ok))}catch{}if(tab==='practice'&&practiceMode==='predict')panel('practice');return ok}
+  predictFailed.add(key)
+ }catch{predictFailed.add(key)}finally{predictPending.delete(key);if(tab==='practice'&&practiceMode==='predict')panel('practice')}
+ return null
+}
+function predictEligible(index=cue){
+ if(index<0||index>=cues.length-1)return false;
+ const t=spokenTokens(cues[index+1]&&cues[index+1].ko);
+ return t.length>=2&&t.length<=14&&hasKo(cues[index].ko)&&hasKo(cues[index+1].ko)
+}
+function nearestPredictCue(index=cue){
+ const valid=[];for(let i=0;i<cues.length-1;i++)if(predictEligible(i))valid.push(i);
+ if(!valid.length)return index;return valid.reduce((best,x)=>Math.abs(x-index)<Math.abs(best-index)?x:best,valid[0])
+}
+function predictHTML(c){
+ const modes='<div class="practiceModes"><button data-pmode="reconstruct" class="'+(practiceMode==='reconstruct'?'on':'')+'">▦ Reconstruct</button><button data-pmode="dictation" class="'+(practiceMode==='dictation'?'on':'')+'">◉ Dictation</button><button data-pmode="shadowing" class="'+(practiceMode==='shadowing'?'on':'')+'">◍ Shadowing</button><button data-pmode="predict" class="'+(practiceMode==='predict'?'on':'')+'">→ Predict</button><button data-pmode="sayit" class="'+(practiceMode==='sayit'?'on':'')+'">✎ Say It</button></div>';
+ if(!c||cue<0)return modes+'<div class="practiceTask"><h3>Waiting for Korean speech…</h3><p>Play the video and Haneul will find a prediction moment.</p></div>';
+ if(!predictEligible(cue)){const n=nearestPredictCue(cue);return modes+'<div class="practiceTask"><div class="taskTop"><b>Better prediction moment available</b><small>CONTEXT-AWARE</small></div><p>Haneul found a cleaner lead-in nearby.</p><div class="practiceActions"><button id="jumpPredict" data-jump-predict="'+n+'" class="primary">Jump to prediction moment →</button></div></div>'}
+ const key=predictKey(cue),d=predictCache.get(key);
+ if(!d){if(predictFailed.has(key))return modes+'<div class="predictTask"><div class="taskTop"><b>What comes next?</b><small>AI UNAVAILABLE</small></div><div class="predictLead"><small>LEAD-IN</small><b>'+esc(c.ko)+'</b></div><p>Prediction choices could not be generated right now.</p><div class="practiceActions"><button id="predictReplay">↻ Replay lead-in</button><button id="retryPredict" class="primary">Retry prediction</button></div></div>';ensurePredict(cue);return modes+'<div class="predictTask"><div class="taskTop"><b>What comes next?</b><small>AI BUILDING CHOICES</small></div><div class="predictLead"><small>LEAD-IN</small><b>'+esc(c.ko)+'</b></div><p>Haneul is building plausible continuations from the scene context…</p><div class="practiceActions"><button id="predictReplay">↻ Replay lead-in</button></div></div>'}
+ return modes+'<div class="predictTask"><div class="taskTop"><b>What comes next?</b><small>CONTEXT PREDICTION</small></div><div class="predictLead"><small>LEAD-IN · CUE '+(cue+1)+'</small><b>'+esc(c.ko)+'</b></div><div class="predictChoices">'+d.options.map(o=>'<button class="predictChoice '+(predictFeedback?(o===d.answer?'good':o===predictFeedback?'bad':''):'')+'" data-predict-choice="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div>'+(predictFeedback?'<div class="practiceResult '+(predictFeedback===d.answer?'good':'bad')+'">'+(predictFeedback===d.answer?'✓ That is the real next line.':'✕ Plausible, but the video says something else.')+'</div>':'')+'<div class="practiceActions"><button id="predictReplay">↻ Replay lead-in</button><button id="predictReveal">Reveal real line</button>'+(predictFeedback?'<button id="predictPlayNext" class="primary">▶ Hear real next line</button>':'')+'</div><div class="predictMeta">The correct answer always comes from the transcript. AI only creates the distractors.</div></div>'
+}
+function sayItKey(index=cue){return sel&&index>=0?sel.id+'|'+sel.level+'|'+index:'none'}
+function currentSayItPattern(){
+ const c=cur();if(!c)return{pattern:'',meaning:''};
+ const s=stolenSentences.find(x=>x.videoId===sel.id&&Number(x.cueIndex)===cue&&x.pattern);
+ if(s)return{pattern:s.pattern,meaning:s.patternMeaning||s.whenToUse||''};
+ const p=semanticPatternFor(cue);
+ if(p&&p.pattern)return{pattern:p.pattern,meaning:p.meaning||''};
+ return{pattern:c.ko,meaning:'Build a new sentence with the same useful structure.'}
+}
+function validSayItData(d){
+ if(!d||typeof d!=='object')return null;
+ const verdict=['natural','awkward','missed'].includes(String(d.verdict))?String(d.verdict):'awkward';
+ const corrected=String(d.correctedKo||'').trim(),note=String(d.note||'').trim(),patternUse=String(d.patternUse||'').trim();
+ if(corrected&& !hasKo(corrected))return null;
+ return{verdict,correctedKo:corrected,note:note.slice(0,220),patternUse:patternUse.slice(0,180)}
+}
+async function evaluateSayIt(text){
+ const c=cur();if(!sel||!c||!text.trim()||!hasKo(text))return null;
+ const pattern=currentSayItPattern(),key=sayItKey()+'|'+text.trim();
+ if(sayItCache.has(key))return sayItCache.get(key);
+ if(sayItPending.has(key))return null;
+ sayItPending.add(key);
+ const start=Math.max(0,cue-2),context=cues.slice(start,Math.min(cues.length,cue+3)).map((x,j)=>({index:start+j,ko:x.ko,en:cleanEnglish(x.en)}));
+ try{
+   const d=await aiJson({mode:'sayit',videoId:sel.id,title:sel.title,level:sel.level,cueIndex:cue,pattern:pattern.pattern,learnerText:text.trim(),cues:context});
+   const ok=validSayItData(d&&d.data);
+   if(ok){sayItCache.set(key,ok);return ok}
+ }catch{}finally{sayItPending.delete(key)}
+ return null
+}
+function sayItHTML(c){
+ const modes='<div class="practiceModes"><button data-pmode="reconstruct" class="'+(practiceMode==='reconstruct'?'on':'')+'">▦ Reconstruct</button><button data-pmode="dictation" class="'+(practiceMode==='dictation'?'on':'')+'">◉ Dictation</button><button data-pmode="shadowing" class="'+(practiceMode==='shadowing'?'on':'')+'">◍ Shadowing</button><button data-pmode="predict" class="'+(practiceMode==='predict'?'on':'')+'">→ Predict</button><button data-pmode="sayit" class="'+(practiceMode==='sayit'?'on':'')+'">✎ Say It</button></div>';
+ if(!c)return modes+'<div class="practiceTask"><h3>Waiting for Korean speech…</h3><p>Play a line first, then make it your own.</p></div>';
+ const p=currentSayItPattern(),f=sayItFeedback,cls=f?(f.verdict==='natural'?'good':f.verdict==='awkward'?'mid':'bad'):'';
+ return modes+'<div class="sayItCard"><div class="taskTop"><b>Say it your way</b><small>CUE '+(cue+1)+'</small></div><div class="sayItSource"><small>REAL SENTENCE</small><b>'+esc(c.ko)+'</b></div><div class="sayItPattern"><small>REUSE THIS PATTERN</small><b>'+esc(p.pattern||c.ko)+'</b>'+(p.meaning?'<div class="predictMeta">'+esc(p.meaning)+'</div>':'')+'</div><textarea id="sayItInput" class="sayItInput" placeholder="Write your own Korean sentence with this pattern…">'+esc(sayItDraft||'')+'</textarea><div class="practiceActions"><button id="sayItExample">Use current sentence as a guide</button><button id="sayItCheck" class="primary">Check my Korean</button></div>'+(f?'<div class="sayItFeedback '+cls+'"><h4>'+(f.verdict==='natural'?'✓ Natural Korean':f.verdict==='awkward'?'△ Understandable but awkward':'✕ Pattern missed')+'</h4>'+(f.patternUse?'<p>'+esc(f.patternUse)+'</p>':'')+(f.note?'<p>'+esc(f.note)+'</p>':'')+(f.correctedKo&&normKo(f.correctedKo)!==normKo(sayItDraft)?'<div class="sayItCorrected">'+esc(f.correctedKo)+'</div>':'')+'</div>':'')+'</div>'
+}
+function practiceHTML(c,mean){
+  const modes='<div class="practiceModes"><button data-pmode="reconstruct" class="'+(practiceMode==='reconstruct'?'on':'')+'">▦ Reconstruct</button><button data-pmode="dictation" class="'+(practiceMode==='dictation'?'on':'')+'">◉ Dictation</button><button data-pmode="shadowing" class="'+(practiceMode==='shadowing'?'on':'')+'">◍ Shadowing</button><button data-pmode="predict" class="'+(practiceMode==='predict'?'on':'')+'">→ Predict</button></div>';
+  if(practiceMode==='predict')return predictHTML(c).replace(/^<div class="practiceModes">[\s\S]*?<\/div>/,'');if(practiceMode==='sayit')return sayItHTML(c);
+  if(!c)return modes+'<div class="practiceTask"><h3>Waiting for Korean speech…</h3><p>Play the video and Practice will use the active scene.</p></div>';
+  if(practiceMode==='reconstruct'){
+    if(!practiceEligible('reconstruct')){const n=nearestPracticeCue('reconstruct');return modes+'<div class="practiceTask"><div class="taskTop"><b>Better reconstruction cue available</b><small>LESSON-AWARE</small></div><h3>'+esc(c.ko)+'</h3><p>This line is not ideal for reconstruction. Haneul found a cleaner cue in this lesson.</p><div class="practiceActions"><button id="jumpPractice" data-jump-practice="'+n+'" class="primary">Jump to recommended cue →</button></div></div>'}
+    const d=reconstructData(c);
+    if(!d)return modes+'<div class="practiceTask"><h3>'+esc(c.ko)+'</h3><p>This cue is too short for reconstruction. Move to the next line.</p></div>';
+    return modes+'<div class="practiceTask"><div class="taskTop"><b>Complete the sentence</b><small>CUE '+(cue+1)+'</small></div><h3>'+esc(d.stem)+'</h3><p>'+(mean?esc(mean):'Choose the missing word from the scene.')+'</p><div class="practiceChoices">'+d.opts.map(o=>'<button data-reconstruct="'+esc(o)+'">'+esc(o)+'</button>').join('')+'</div><div class="practiceActions"><button id="pracReplay">↻ Replay cue</button><button id="pracHint">Hint</button></div>'+(practiceFeedback?'<div class="practiceResult '+(practiceFeedback.startsWith('✓')?'good':'bad')+'">'+esc(practiceFeedback)+'</div>':'')+'</div>'
+  }
+  if(practiceMode==='dictation'){
+    if(!practiceEligible('dictation')){const n=nearestPracticeCue('dictation');return modes+'<div class="practiceTask"><div class="taskTop"><b>Better dictation cue available</b><small>LESSON-AWARE</small></div><p>Haneul picked a clearer listening line from this transcript.</p><div class="practiceActions"><button id="jumpPractice" data-jump-practice="'+n+'" class="primary">Jump to recommended cue →</button></div></div>'}
+    return modes+'<div class="practiceTask"><div class="taskTop"><b>Listen and type what you hear</b><small>CUE '+(cue+1)+'</small></div><p>Korean stays hidden here until you check or reveal the answer.</p><textarea id="dictationInput" class="dictationInput" placeholder="Type the Korean sentence you hear…"></textarea><div class="practiceActions"><button id="dictReplay">↻ Replay cue</button><button id="dictReveal">Reveal answer</button><button id="dictCheck" class="primary">Check answer</button></div>'+(practiceFeedback?'<div class="practiceResult '+(practiceFeedback.startsWith('✓')?'good':'bad')+'">'+esc(practiceFeedback)+'</div>':'')+'</div>'
+  }
+  if(!practiceEligible('shadowing')){const n=nearestPracticeCue('shadowing');return modes+'<div class="practiceTask"><div class="taskTop"><b>Better shadowing cue available</b><small>LESSON-AWARE</small></div><p>This transcript has a more natural-length line nearby for shadowing.</p><div class="practiceActions"><button id="jumpPractice" data-jump-practice="'+n+'" class="primary">Jump to recommended cue →</button></div></div>'}return modes+'<div class="practiceTask"><div class="taskTop"><b>Shadow this sentence</b><small>CUE '+(cue+1)+'</small></div><h3>'+esc(c.ko)+'</h3><p>'+(mean?esc(mean):'Listen once, repeat it aloud, then compare with the original.')+'</p><div class="shadowSteps"><div class="shadowStep '+(shadowStep===0?'on':'')+'"><b>1 Listen</b><small>hear original</small></div><div class="shadowStep '+(shadowStep===1?'on':'')+'"><b>2 Your turn</b><small>repeat aloud</small></div><div class="shadowStep '+(shadowStep===2?'on':'')+'"><b>3 Compare</b><small>replay original</small></div></div><div class="practiceActions"><button id="shadowStart" class="primary">'+(shadowStep===0?'▶ Start shadowing':shadowStep===1?'✓ I repeated it':'↻ Replay original')+'</button><button id="shadowSlow">0.8× practice</button><button id="shadowNext">Next cue →</button></div></div>'
+}
+function wirePractice(c){
+  document.querySelectorAll('[data-pmode]').forEach(b=>b.onclick=()=>{practiceMode=b.dataset.pmode;practiceFeedback='';predictFeedback='';sayItFeedback=null;sayItDraft='';shadowStep=0;panel('practice')});if($('jumpPractice'))$('jumpPractice').onclick=()=>seek(+$('jumpPractice').dataset.jumpPractice);
+  if($('jumpPredict'))$('jumpPredict').onclick=()=>seek(+$('jumpPredict').dataset.jumpPredict);
+  if($('retryPredict'))$('retryPredict').onclick=()=>{predictFailed.delete(predictKey());panel('practice')};if($('predictReplay'))$('predictReplay').onclick=()=>{if(ready&&cue>=0){player.seekTo(cues[cue].startMs/1000,true);player.playVideo()}};
+  if($('predictReveal'))$('predictReveal').onclick=()=>{const d=predictCache.get(predictKey());if(d){predictFeedback=d.answer;logPractice('Predict','revealed',c);panel('practice')}};
+  if($('predictPlayNext'))$('predictPlayNext').onclick=()=>{if(cue<cues.length-1)seek(cue+1)};
+  document.querySelectorAll('[data-predict-choice]').forEach(b=>b.onclick=()=>{const d=predictCache.get(predictKey());if(!d)return;predictFeedback=b.dataset.predictChoice;logPractice('Predict',predictFeedback===d.answer?'correct':'retry',c);panel('practice')});
+  if($('sayItInput'))$('sayItInput').oninput=e=>{sayItDraft=e.target.value};
+  if($('sayItExample'))$('sayItExample').onclick=()=>{sayItDraft=c?c.ko:'';sayItFeedback=null;panel('practice')};
+  if($('sayItCheck'))$('sayItCheck').onclick=async()=>{
+    const input=$('sayItInput'),v=(input?input.value:sayItDraft||'').trim();sayItDraft=v;
+    if(!v)return toast('Write your Korean sentence first');
+    if(!hasKo(v))return toast('Try writing it in Korean');
+    $('sayItCheck').disabled=true;$('sayItCheck').textContent='Checking…';
+    const out=await evaluateSayIt(v);
+    if(out){sayItFeedback=out;logPractice('Say It',out.verdict==='natural'?'correct':out.verdict==='awkward'?'retry':'retry',c);panel('practice')}
+    else{toast('Could not check this sentence yet');if($('sayItCheck')){$('sayItCheck').disabled=false;$('sayItCheck').textContent='Check my Korean'}}
+  };
+  if($('pracReplay'))$('pracReplay').onclick=replay;
+  if($('pracHint'))$('pracHint').onclick=()=>{const d=reconstructData(c);if(d){practiceFeedback='Hint: the missing word starts with “'+d.answer.charAt(0)+'”';panel('practice')}};
+  document.querySelectorAll('[data-reconstruct]').forEach(b=>b.onclick=()=>{const d=reconstructData(c);const ok=b.dataset.reconstruct===d.answer;practiceFeedback=ok?'✓ Correct — replay the original sentence once more.':'✕ Not quite — listen once more and try again.';logPractice('Reconstruct',ok?'correct':'retry',c);panel('practice')});
+  if($('dictReplay'))$('dictReplay').onclick=replay;
+  if($('dictReveal'))$('dictReveal').onclick=()=>{practiceFeedback='Answer: '+c.ko;panel('practice')};
+  if($('dictCheck'))$('dictCheck').onclick=()=>{const v=$('dictationInput')?$('dictationInput').value:'';const ok=normKo(v)===normKo(c.ko);practiceFeedback=ok?'✓ Perfect match. Replay it once to lock it in.':'✕ Compare with the original: '+c.ko;logPractice('Dictation',ok?'correct':'retry',c);panel('practice')};
+  if($('shadowStart'))$('shadowStart').onclick=()=>{
+    if(shadowStep===0){replay();shadowStep=1;setTimeout(()=>{if(tab==='practice'&&practiceMode==='shadowing')panel('practice')},Math.max(900,(Number(c.endMs)-Number(c.startMs))+250))}
+    else if(shadowStep===1){shadowStep=2;logPractice('Shadowing','completed',c);panel('practice')}
+    else replay()
+  };
+  if($('shadowSlow'))$('shadowSlow').onclick=()=>{if(!ready)return;try{player.setPlaybackRate(.8);replay();setTimeout(()=>{try{player.setPlaybackRate(1)}catch{}},Math.max(1200,(Number(c.endMs)-Number(c.startMs))*1.35))}catch{replay()}};
+  if($('shadowNext'))$('shadowNext').onclick=()=>{shadowStep=0;seek(cue+1);practiceMode='shadowing'}
+}
+function quiz(c){
+  if(semanticIntel&&Array.isArray(semanticIntel.checkpoints)&&semanticIntel.checkpoints.length){
+    const valid=semanticIntel.checkpoints.filter(x=>Array.isArray(x.options)&&x.options.length>=2&&x.options.includes(x.answer));
+    if(valid.length){
+      const s=valid.reduce((best,x)=>Math.abs(Number(x.cueIndex)-cue)<Math.abs(Number(best.cueIndex)-cue)?x:best,valid[0]);
+      return{q:s.question||'What did you understand from this section?',a:s.answer,opts:s.options,semantic:true}
+    }
+  }
+  if(!c||!hasKo(c.ko))return null;let w=words(c)[0];if(w){let pool=Object.values(vocab).filter(x=>x!==w[1]),opts=[w[1],pool[(cue*3+2)%pool.length],pool[(cue*5+7)%pool.length]];return{q:`What does “${w[0]}” mean here?`,a:w[1],opts}}let alts=[];for(let d of [1,-1,2,-2]){let x=cues[cue+d];if(x?.ko&&hasKo(x.ko)&&x.ko!==c.ko&&!alts.includes(x.ko))alts.push(x.ko);if(alts.length===2)break}return alts.length===2?{q:'Which Korean line is playing right now?',a:c.ko,opts:[c.ko,...alts]}:null
+}
+function validMicroLessons(a){
+ const out=[];
+ for(const x of Array.isArray(a)?a:[]){
+  const start=Number(x.startCue),end=Number(x.endCue);
+  if(!Number.isInteger(start)||!Number.isInteger(end)||start<0||end<start||end>=cues.length)continue;
+  const ms=Math.max(0,Number(cues[end].endMs)-Number(cues[start].startMs));
+  if(ms<12000||ms>75000)continue;
+  if(out.some(y=>!(end<y.startCue-1||start>y.endCue+1)))continue;
+  out.push({startCue:start,endCue:end,title:String(x.title||'Micro lesson'),why:String(x.why||'Useful Korean from this section.'),focus:Array.isArray(x.focus)?x.focus.map(String).slice(0,3):[],difficulty:String(x.difficulty||sel?.level||'')});
+  if(out.length>=6)break
+ }
+ return out
+}
+async function loadMicroLessons(){
+ if(!sel||!cues.length||microPending)return microLessons;
+ const key='haneulMicro:v1:'+sel.id+'|'+sel.level;
+ try{const cached=JSON.parse(localStorage.getItem(key)||'null'),ok=validMicroLessons(cached);if(ok.length){microLessons=ok;return ok}}catch{}
+ microPending=true;
+ const max=110,step=Math.max(1,Math.ceil(cues.length/max)),sample=[];
+ for(let i=0;i<cues.length;i+=step)sample.push({index:i,startMs:cues[i].startMs,endMs:cues[i].endMs,ko:cues[i].ko,en:cleanEnglish(cues[i].en)});
+ if(sample[sample.length-1]?.index!==cues.length-1){const i=cues.length-1;sample.push({index:i,startMs:cues[i].startMs,endMs:cues[i].endMs,ko:cues[i].ko,en:cleanEnglish(cues[i].en)})}
+ try{
+  const d=await aiJson({mode:'micro',videoId:sel.id,title:sel.title,level:sel.level,cues:sample,totalCues:cues.length},18000);
+  const ok=validMicroLessons(d&&d.data&&d.data.lessons);
+  if(ok.length){microFailed=false;microLessons=ok;try{localStorage.setItem(key,JSON.stringify(ok))}catch{}if(tab==='micro')panel('micro');return ok}
+  microFailed=true
+ }catch{microFailed=true}finally{microPending=false;if(tab==='micro')panel('micro')}
+ return null
+}
+function renderMicroLessons(){
+ if(!cues.length)return '<div class="microLoading">Connect the transcript first.</div>';
+ if(!microLessons){if(microFailed)return '<div class="microHero"><div class="ey">MICRO LESSONS</div><h3>Could not build sections right now.</h3><p>The transcript is still available normally. Retry when you want the AI-selected study cuts.</p></div><div class="microLoading"><button class="microOpen" id="retryMicro">Retry Micro Lessons</button></div>';loadMicroLessons();return '<div class="microHero"><div class="ey">MICRO LESSONS</div><h3>Finding the best learning moments…</h3><p>Haneul is scanning this video for compact sections worth studying.</p></div><div class="microLoading">Building 20–60 second lesson segments from the transcript.</div>'}
+ return '<div class="microHero"><div class="ey">MICRO LESSONS · '+microLessons.length+' PICKS</div><h3>The best parts of this video to actually study.</h3><p>Each section is short, transcript-grounded and selected for language value rather than just video chronology.</p></div><div class="microGrid">'+microLessons.map((m,i)=>'<article class="microCard"><div class="microNum">'+fmt((cues[m.startCue]?.startMs||0)/1000)+'</div><div><h4>'+esc(m.title)+'</h4><p>'+esc(m.why)+'</p><div class="microMeta">'+m.focus.map(x=>'<span class="microTag">'+esc(x)+'</span>').join('')+'<span class="microTag">'+fmt(((cues[m.endCue]?.endMs||0)-(cues[m.startCue]?.startMs||0))/1000)+'</span></div></div><button class="microOpen" data-micro="'+i+'">▶ Study section</button></article>').join('')+'</div>'
+}
+function wireMicroLessons(){
+ if($('retryMicro'))$('retryMicro').onclick=()=>{microFailed=false;loadMicroLessons();panel('micro')};document.querySelectorAll('[data-micro]').forEach(b=>b.onclick=()=>{const m=microLessons&&microLessons[+b.dataset.micro];if(!m)return;seek(m.startCue);toast('Micro lesson · '+m.title)})
+}
+function journeyStageForTab(t){
+ if(['overview','micro'].includes(t))return'overview';
+ if(['phrases','vocab','explain'].includes(t))return'explain';
+ if(['practice','quiz'].includes(t))return'practice';
+ return'progress'
+}
+function updateLessonJourney(t){
+ const stage=journeyStageForTab(t);
+ document.querySelectorAll('#lessonJourney [data-jump-tab]').forEach(b=>b.classList.toggle('on',b.dataset.jumpTab===stage))
+}
+function wireLessonJourney(){
+ document.querySelectorAll('#lessonJourney [data-jump-tab]').forEach(b=>b.onclick=()=>panel(b.dataset.jumpTab))
+}
+function masteryFocusAction(){
+ const m=masterySnapshot(),name=m.weakest&&m.weakest.name;
+ const map={Reconstruct:['practice','reconstruct'],Dictation:['practice','dictation'],Prediction:['practice','predict'],Production:['practice','sayit'],Shadowing:['practice','shadowing'],Comprehension:['quiz','']};
+ if(name&&map[name])return{tab:map[name][0],mode:map[name][1],label:name==='Comprehension'?'Open Check':'Practice '+name};
+ if(m.reviewing>0)return{tab:'vocab',mode:'',label:'Review learning words'};
+ return{tab:'practice',mode:'reconstruct',label:'Start practice'}
+}
+function wireMasteryFocus(){
+ const b=$('masteryFocusBtn');if(!b)return;
+ b.onclick=()=>{const a=masteryFocusAction();if(a.mode)practiceMode=a.mode;panel(a.tab)}
+}
+function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));let c=cur(),r='<div class="rainbow"></div>',now=ready?player.getCurrentTime()||0:0,dur=ready?player.getDuration()||0:0,pct=dur?Math.round(now/dur*100):0,mean=c?cleanEnglish(c.en):'';if(c&&!mean&&hasKo(c.ko)&&!meaningCache.has(c.ko)&&!meaningPending.has(c.ko))meaningFor(c).then(m=>{if(m&&cur()===c&&(tab==='overview'||tab==='practice'||tab==='explain'))panel(tab)});if(!mean&&c)mean=meaningCache.get(c.ko)||'';if(t==='micro'){$('panel').innerHTML=r+renderMicroLessons();setTimeout(wireMicroLessons,0)}if(t==='overview'){$('panel').innerHTML=r+`<div class="practiceHero"><div class="ey">LIVE SCENE · ${fmt(now)}</div><h3>${c?esc(c.ko):state==='loading'?'Finding the real transcript…':'Play the scene and Haneul will follow it.'}</h3><p>${c?(mean?esc(mean):'Getting English meaning…'):'Everything on this side updates from the same timestamp.'}</p></div><span class="status ${state==='ready'?'':'off'}">${state==='ready'?'● transcript connected':'● connecting transcript'}</span><div class="quickGrid"><button class="quick primary" id="qr"><b>↻ Replay line</b><small>seek to this exact cue</small></button><button class="quick" id="qg"><b>◐ Guess first</b><small>hide before reveal</small></button><button class="quick" id="qe"><b>✦ Explain</b><small>why this line works</small></button><button class="quick" id="qs"><b>⌖ ${c&&isCurrentPinned()?'Pinned':'Pin phrase'}</b><small>review tags before saving</small></button></div><div class="metrics"><div class="metric"><strong>${cue>=0?cue+1:'—'}</strong><small>active cue</small></div><div class="metric"><strong>${replays}×</strong><small>replays</small></div><div class="metric"><strong>${pinnedPhrases.length}</strong><small>pinned</small></div></div>`;setTimeout(()=>{$('qr').onclick=replay;$('qg').onclick=()=>{$('guess').click()};$('qe').onclick=()=>panel('explain');$('qs').onclick=()=>{if(cue<0)return toast('No active cue');pinCurrentPhrase()}},0)}if(t==='practice'){$('panel').innerHTML=r+practiceHTML(c,mean);setTimeout(()=>wirePractice(c),0)}if(t==='phrases'){let from=Math.max(0,(cue<0?0:cue)-2),a=cues.slice(from,from+7),pinned=isCurrentPinned();$('panel').innerHTML=r+'<button class="pinCurrent '+(pinned?'pinned':'')+'" id="pinCurrent"><div><b>'+(pinned?'Pinned to Library':'Pin current phrase')+'</b><small>'+(c?esc(c.ko):'Play a Korean cue first')+'</small></div><span class="pinIcon">'+(pinned?'✓':'⌖')+'</span></button>'+stealCardHTML(c)+'<div class="sect">PHRASES AROUND THIS MOMENT</div><div class="cueList">'+a.map((x,j)=>`<button class="cueItem ${from+j===cue?'current':''}" data-c="${from+j}"><b>${esc(x.ko)}</b><small>${fmt(x.startMs/1000)}</small></button>`).join('')+'</div>';setTimeout(()=>{if($('pinCurrent'))$('pinCurrent').onclick=pinCurrentPhrase;if($('stealCurrent'))$('stealCurrent').onclick=stealCurrentSentence;document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>seek(+b.dataset.c))},0)}if(t==='vocab'){
+  const tokens=c?spokenTokens(c.ko):[];
+  $('panel').innerHTML=r+'<div class="sect">WORDS FROM THE CURRENT CAPTION <span class="miniCount">'+savedWords.length+' saved</span></div>'+
+    (tokens.length?tokens.map((raw,i)=>{const d=wordInfoAt(raw,i),saved=isWordSaved(raw,i);return '<article class="wordSaveCard"><div class="wordSaveMain"><b>'+esc(raw)+'</b><p>'+esc(d.meaning||'Contextual meaning')+'</p><div class="wordContext">'+esc(c.ko)+'</div></div><div class="wordSaveActions"><button data-word-jump="'+i+'">▶ '+fmt(wordStartMs(c,i)/1000)+'</button><button class="'+(saved?'saved':'')+'" data-save-word="'+i+'">'+(saved?'✓ Saved':'+ Save')+'</button></div></article>'}).join(''):'<div class="item"><b>Waiting for Korean speech</b></div>');
+  setTimeout(()=>{document.querySelectorAll('[data-word-jump]').forEach(b=>b.onclick=()=>seekWord(+b.dataset.wordJump));document.querySelectorAll('[data-save-word]').forEach(b=>b.onclick=()=>saveWordAt(+b.dataset.saveWord))},0)
+}if(t==='explain'){$('panel').innerHTML=r+(c?explainWordHTML(c):'<div class="item"><b>Waiting for the next spoken word</b><p>Play the video and Explain will follow the highlighted word.</p></div>');setTimeout(()=>{if($('er'))$('er').onclick=replay;document.querySelectorAll('[data-explain-word]').forEach(b=>b.onclick=()=>{explainSelected=+b.dataset.explainWord;panel('explain')});if($('followSpeaker'))$('followSpeaker').onclick=()=>{explainSelected=null;panel('explain')}},0)}if(t==='quiz'){$('panel').innerHTML=r+renderSectionCheckpoint();setTimeout(wireSectionCheckpoint,0)}if(t==='progress'){$('panel').innerHTML=r+`<div class="practiceHero"><div class="ey">LIVE SESSION PROGRESS</div><h3>${pct}% through this video.</h3><p>Haneul uses your mistakes and listening behavior to build the next pass.</p></div><div class="metrics"><div class="metric"><strong>${pct}%</strong><small>viewed</small></div><div class="metric"><strong>${savedWords.filter(w=>sel&&w.videoId===sel.id).length}</strong><small>words saved</small></div><div class="metric"><strong>${replays}×</strong><small>session replays</small></div></div>`+renderMasterySnapshot()+renderSmartRewatch();setTimeout(()=>{wireMasteryFocus();wireSmartRewatch()},0)}}async function caps(id){
+  state='loading';cues=[];cue=-1;renderCap();panel();
+  if(captionCache.has(id)){
+    const d=captionCache.get(id);
+    if(sel.id!==id)return;
+    cues=d.cues;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V3</span>';
+    cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
+    renderCap();panel();return
+  }
+  for(let i=0;i<2;i++){
+    try{
+      const res=await fetch('/api/captions?videoId='+id+'&cv=8'+(i?'&retry='+Date.now():''));
+      const d=await res.json();
+      if(!d.ok||!d.cues||!d.cues.length)throw Error(d.reason||'no transcript');
+      captionCache.set(id,d);
+      if(sel.id!==id)return;
+      cues=d.cues;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V3</span>';
+      cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
+      renderCap();panel();return
+    }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
+  }
+  state='bad';renderCap();panel()
+}
+function tick(){cancelAnimationFrame(raf);const f=()=>{if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000;if($('time'))$('time').textContent=fmt(s);let n=findCue(ms);if(n!==cue){cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}function makePlayer(id){
+  window.pending=id;
+  if(player&&ready){
+    try{
+      if(playerVideoId!==id){player.loadVideoById(id);playerVideoId=id}
+      else player.seekTo(0,true);
+      window.pending=null;
+      tick();
+      return
+    }catch(e){}
+  }
+  if(!window.YT||!YT.Player)return;
+  player=new YT.Player('player',{
+    videoId:id,
+    playerVars:{rel:0,playsinline:1,cc_load_policy:0},
+    events:{
+      onReady:()=>{
+        ready=true;playerVideoId=window.pending||id;
+        if(window.pending&&window.pending!==id)player.loadVideoById(window.pending);
+        window.pending=null;tick()
+      },
+      onStateChange:tick
+    }
+  })
+}
+window.onYouTubeIframeAPIReady=()=>{if(window.pending)makePlayer(window.pending)};
+function seek(i){if(!ready||!cues.length)return;cue=Math.max(0,Math.min(cues.length-1,i));predictFeedback='';sayItFeedback=null;sayItDraft='';explainSelected=null;player.seekTo(cues[cue].startMs/1000,true);player.playVideo();revealed=-1;renderCap();panel()}function replay(){if(cue<0)return toast('No active cue');replays++;recordCueReplay();seek(cue)}function open(id,lessonLevel,lessonBand){
+  sel=curatedCatalog.find(v=>v.id===id&&(!lessonBand||v.level===lessonBand))||curatedCatalog.find(v=>v.id===id&&(!lessonLevel||v.levelCode===lessonLevel))||curatedCatalog.find(v=>v.id===id)||videos.find(v=>v.id===id)||videos[0];
+  $('lt').textContent=sel.title;$('lm').textContent=sel.level+' · '+sel.channel;$('level').textContent=sel.level;
+  $('ov').classList.add('open');document.body.style.overflow='hidden';
+  cues=[];cue=-1;semanticIntel=null;semanticLoading=false;microLessons=null;microPending=false;microFailed=false;simplifyFailed=new Set();predictFailed=new Set();sectionQuizAnswers={};sectionCheckpointFailed=new Set();rewatchQueue=[];rewatchPos=-1;activeSpoken=-1;explainSelected=null;guess=false;loop=false;saved=new Set();replays=0;tab='overview';practiceMode='reconstruct';practiceFeedback='';predictFeedback='';sayItFeedback=null;sayItDraft='';shadowStep=0;
+  makePlayer(id);caps(id);panel()
+}
+$('x').onclick=()=>{cancelAnimationFrame(raf);try{if(player&&ready)player.pauseVideo()}catch(e){}$('ov').classList.remove('open');document.body.style.overflow=''};$('modes').onclick=e=>{if(e.target.matches('button')){mode=e.target.dataset.m;$('cap').onclick=null;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b===e.target));renderCap()}};$('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('active',guess);renderCap();panel()};$('prev').onclick=()=>seek(cue-1);$('next').onclick=()=>seek(cue+1);$('replay').onclick=replay;$('loop').onclick=()=>{loop=!loop;$('loop').classList.toggle('active',loop);toast(loop?'Loop on':'Loop off')};$('tabs').onclick=e=>{if(e.target.matches('button'))panel(e.target.dataset.t)};
+$('pinModalClose').onclick=closePinModal;$('pinCancel').onclick=closePinModal;$('tagAddBtn').onclick=addPendingTag;
+$('tagInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPendingTag()}};
+$('pinSave').onclick=()=>{if(!pendingPin)return;pendingPin.tags=pendingTags.slice();pinnedPhrases.unshift(pendingPin);savePins();closePinModal();pendingPin=null;pendingTags=[];toast('Saved to Library');if(tab==='phrases')panel('phrases')};
+syncMasteryMemory();wireLessonJourney();home();loadVideoFeed();</script><script src="https://www.youtube.com/iframe_api"></script></body></html>
