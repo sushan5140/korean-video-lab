@@ -1,32 +1,33 @@
 module.exports=async function(req,res){
   res.setHeader('Access-Control-Allow-Origin','*');
   res.setHeader('Cache-Control','no-store');
-
-  const candidates=[
-    ['XAI_API_KEY',process.env.XAI_API_KEY],
-    ['GROK_API_KEY',process.env.GROK_API_KEY],
-    ['GROQ_API_KEY',process.env.GROQ_API_KEY],
-    ['XAI_KEY',process.env.XAI_KEY],
-    ['AI_API_KEY',process.env.AI_API_KEY],
-    ['OPENROUTER_API_KEY',process.env.OPENROUTER_API_KEY]
-  ].filter(([,v])=>typeof v==='string'&&v.trim());
-
-  const tests=[];
-  for(const [name,key] of candidates){
-    let xaiStatus=null,groqStatus=null;
-    try{
-      const r=await fetch('https://api.x.ai/v1/models',{headers:{Authorization:'Bearer '+key}});
-      xaiStatus=r.status;
-    }catch{}
-    try{
-      const r=await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+key}});
-      groqStatus=r.status;
-    }catch{}
-    tests.push({name,xaiStatus,groqStatus});
+  const key=process.env.GROQ_API_KEY;
+  if(!key)return res.status(200).json({ok:false,configured:false,reason:'groq_key_missing'});
+  const videoUrl='https://www.youtube.com/watch?v=8rvv4RXQYb4';
+  try{
+    const form=new FormData();
+    form.append('url',videoUrl);
+    form.append('model','whisper-large-v3');
+    form.append('language','ko');
+    form.append('response_format','verbose_json');
+    form.append('timestamp_granularities[]','word');
+    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
+      method:'POST',
+      headers:{Authorization:'Bearer '+key},
+      body:form
+    });
+    let body={};try{body=await r.json()}catch{}
+    return res.status(200).json({
+      ok:r.ok,
+      configured:true,
+      provider:'groq',
+      auth:true,
+      transcriptionStatus:r.status,
+      error:body?.error?.message||null,
+      wordCount:Array.isArray(body?.words)?body.words.length:0,
+      sample:Array.isArray(body?.words)?body.words.slice(0,3):[]
+    });
+  }catch(e){
+    return res.status(200).json({ok:false,configured:true,provider:'groq',reason:'transcription_test_failed'});
   }
-
-  return res.status(200).json({
-    configured:candidates.length>0,
-    tests
-  });
 };
