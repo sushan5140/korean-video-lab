@@ -606,20 +606,7 @@ function loadVideoFeed(){
   home($('q')?$('q').value:'')
 }
 function home(q=''){let x=q.toLowerCase();$('grid').innerHTML=videos.filter(v=>!x||[v.title,v.channel,v.desc,...(v.topics||[]),...(v.styles||[])].some(t=>String(t||'').toLowerCase().includes(x))).map(v=>`<article class="card ${v.readiness||''}" data-id="${v.id}" data-lesson-level="${esc(v.level)}" data-lesson-band="${esc(v.band||v.level)}"><span class="readyBadge ${v.readiness||'checking'}">${v.readiness==='ready'?'● Ready':'◌ Checking'}</span><img src="${v.thumb}"><div class="copy"><span class="badge">${v.level}</span><h3>${esc(v.title)}</h3><small>${esc(v.channel)}</small><p>${esc(v.desc)}</p><div class="intelStrip">${(v.topics||[]).slice(0,2).map(t=>'<span class="intelTag">'+esc(t)+'</span>').join('')}${(v.styles||[]).slice(0,1).map(t=>'<span class="intelTag">'+esc(t)+'</span>').join('')}</div></div></article>`).join('');document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id,lv=c.dataset.lessonLevel,band=c.dataset.lessonBand;c.onclick=()=>open(id,lv,band);const warm=()=>{if(captionCache.has(id)){const d=captionCache.get(id);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues);return}fetch('/api/captions?videoId='+id+'&cv=8').then(r=>r.json()).then(d=>{if(d&&d.ok&&d.cues&&d.cues.length){captionCache.set(id,d);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues)}}).catch(()=>{})};c.onmouseenter=warm;c.onpointerdown=warm})}$('q').oninput=e=>home(e.target.value);renderFilterChips();document.querySelectorAll('.nav [data-nav]').forEach(n=>n.onclick=()=>{const x=n.dataset.nav;if(x==='library')showMainPage('library');else if(x==='discover')showMainPage('discover');else if(x==='practice'){showMainPage('discover');toast('Open a lesson to practice') }else if(x==='progress'){showMainPage('discover');toast('Open a lesson to view progress')}});function cur(){return cue>=0?cues[cue]:null}
-function cueDisplayLagMs(){
-  if(sel&&sel.id==='paToZla2CK8')return 760;
-  if(sel&&sel.id==='in58DVfmxug')return 520;
-  if(sel&&sel.id==='kHsEZUcyD7c')return 430;
-  return 460
-}
-function findCue(ms){
-  if(!cues.length)return-1;
-  const t=Math.max(0,ms-cueDisplayLagMs());
-  let lo=0,hi=cues.length-1,b=-1;
-  while(lo<=hi){let m=(lo+hi)>>1;if(cues[m].startMs<=t){b=m;lo=m+1}else hi=m-1}
-  if(b<0)return-1;
-  return t<=cues[b].endMs+220?b:-1
-}
+function findCue(ms){if(!cues.length)return-1;let lo=0,hi=cues.length-1,b=-1;while(lo<=hi){let m=(lo+hi)>>1;if(cues[m].startMs<=ms){b=m;lo=m+1}else hi=m-1}if(b<0)return-1;return ms<=cues[b].endMs+180?b:-1}
 function simplifyKey(index=cue){return sel&&index>=0?sel.id+'|'+sel.level+'|'+index:'none'}
 function validSimplifyData(d,index=cue){
  if(!d||!cues[index])return null;
@@ -695,61 +682,34 @@ function tokenWeight(w,power=.84,punct=.52){
   return Math.min(x,5)
 }
 function timingProfile(){
-  // Positive onset guard means: do not light a word until just after its
-  // estimated acoustic onset. Per-video overrides are used only where the
-  // transcript structure or observed playback proves the global curve is wrong.
-  if(sel&&sel.id==='paToZla2CK8')return{leadIn:64,onset:128,tail:9,power:.84,punct:.54,minWord:94,lagWords:2.05,extraLag:180};
-  if(sel&&sel.id==='in58DVfmxug')return{leadIn:44,onset:92,tail:10,power:.80,punct:.48,minWord:82,lagWords:1.75};
-  if(sel&&sel.id==='kHsEZUcyD7c')return{leadIn:32,onset:78,tail:8,power:.88,punct:.62,minWord:96,lagWords:1.55};
-  return{leadIn:38,onset:86,tail:9,power:.84,punct:.54,minWord:88,lagWords:1.65,extraLag:0}
-}
-function cueHighlightLag(c,timeline){
-  if(!c||!timeline||!timeline.length)return 0;
-  const p=timingProfile();
-  const start=Number(timeline[0].startMs)||Number(c.startMs)||0;
-  const end=Number(timeline[timeline.length-1].endMs)||Number(c.endMs)||start+400;
-  const avg=Math.max(95,(end-start)/Math.max(1,timeline.length));
-  return Math.round(Math.max(170,Math.min(760,avg*(p.lagWords||1.65)+(p.extraLag||0))))
+  if(sel&&sel.id==='in58DVfmxug')return{lead:24,tail:28,power:.66,punct:.34,gapTrim:.28,minWord:88};
+  if(sel&&sel.id==='kHsEZUcyD7c')return{lead:8,tail:16,power:.78,punct:.48,gapTrim:.16,minWord:112};
+  return{lead:8,tail:18,power:.72,punct:.40,gapTrim:.20,minWord:100}
 }
 function adaptiveWordTimeline(c){
   const a=spokenTokens(c&&c.ko);if(!a.length)return[];
   const p=timingProfile(),ci=(c===cur()?cue:cues.indexOf(c));
-  let rawSt=Number(c.startMs)||0,rawEn=Math.max(rawSt+320,Number(c.endMs)||rawSt+1800);
-  const prev=ci>0?cues[ci-1]:null,next=ci>=0?cues[ci+1]:null;
-  const beforeGap=prev?Math.max(0,rawSt-Number(prev.endMs||rawSt)):0;
-  let st=rawSt+Math.min(36,Math.max(0,beforeGap*.10));
-  if(next&&Number(next.startMs)>st+180)rawEn=Math.min(rawEn,Number(next.startMs)-18);
-
-  const units=a.reduce((n,w)=>n+koreanUnits(w),0);
-  const punctuation=a.reduce((n,w)=>n+(/[.!?…~]$/.test(w)?1:/[,，]$/.test(w)?.45:0),0);
-  const naturalSpeech=Math.max(320,Math.round(units*118+a.length*38+punctuation*115));
-  const rawSpan=Math.max(320,rawEn-st);
-  const minSpan=Math.max(300,a.length*p.minWord);
-  let span=Math.max(minSpan,Math.min(rawSpan,Math.max(naturalSpeech,rawSpan*.62)));
-
-  // Caption durations often include silent tail padding. Keep the first word
-  // anchored near the cue start and trim excess tail rather than stretching
-  // every word across the entire caption window.
-  if(rawSpan>span+180) span=Math.min(rawSpan,span+Math.min(110,(rawSpan-span)*.18));
-  const en=Math.min(rawEn,st+span);
-
-  const weights=a.map(w=>tokenWeight(w,p.power,p.punct)),sum=weights.reduce((x,y)=>x+y,0);
+  let st=Number(c.startMs)||0,en=Math.max(st+320,Number(c.endMs)||st+1800);
+  const next=ci>=0?cues[ci+1]:null,prev=ci>0?cues[ci-1]:null;
+  if(next&&Number(next.startMs)>st+180)en=Math.min(en,Number(next.startMs)-12);
+  if(next){
+    const rawGap=Number(next.startMs)-en;
+    if(rawGap>280)en-=Math.min(200,Math.round((rawGap-280)*p.gapTrim));
+  }
+  if(prev&&Number(prev.endMs)>st&&Number(prev.endMs)-st>220)st+=18;
+  en=Math.max(st+Math.max(260,a.length*p.minWord),en);
+  const weights=a.map(w=>tokenWeight(w,p.power,p.punct));
+  const sum=weights.reduce((x,y)=>x+y,0),span=en-st;
   let acc=0;
   return a.map((word,i)=>{
-    const ws=st+(en-st)*(acc/sum);acc+=weights[i];
-    const we=st+(en-st)*(acc/sum);
-    return{word,startMs:Math.max(rawSt,Math.round(ws+p.onset)),endMs:Math.min(rawEn,Math.max(Math.round(ws+p.onset+70),Math.round(we-p.tail)))}
+    const ws=st+span*(acc/sum);acc+=weights[i];
+    const we=st+span*(acc/sum);
+    return{word,startMs:Math.max(st,Math.round(ws-p.lead)),endMs:Math.round(we-p.tail)}
   })
 }
 function spokenIndex(c,ms){
   const tl=adaptiveWordTimeline(c);if(!tl.length)return-1;
-  const lag=cueHighlightLag(c,tl);
-  const syncedMs=ms-lag;
-  if(syncedMs<tl[0].startMs)return-1;
-  for(let i=0;i<tl.length;i++){
-    if(syncedMs<tl[i].startMs)return Math.max(-1,i-1);
-    if(syncedMs<=tl[i].endMs)return i
-  }
+  for(let i=0;i<tl.length;i++)if(ms<tl[i].endMs)return i;
   return tl.length-1
 }
 function wordStartMs(c,index){
@@ -759,7 +719,7 @@ function wordStartMs(c,index){
 }
 function spokenHTML(c,ms){
   const a=spokenTokens(c&&c.ko),n=spokenIndex(c,ms);
-  return a.map((w,i)=>'<span class="spokenWord '+(i<n?'past ':i===n?'active':'')+'">'+esc(w)+'</span>').join(' ')
+  return a.map((w,i)=>'<span class="spokenWord '+(i===n?'active':'')+'">'+esc(w)+'</span>').join(' ')
 }
 function wordMeaning(raw){
   const sv=semanticVocabFor(raw);if(sv&&sv.meaning)return sv.meaning;
@@ -1137,7 +1097,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.5</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1149,14 +1109,15 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.5</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
   }
   state='bad';renderCap();panel()
 }
-function tick(){cancelAnimationFrame(raf);const f=()=>{if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000;if($('time'))$('time').textContent=fmt(s);let n=(window.__manualCueHoldUntil&&performance.now()<window.__manualCueHoldUntil)?cue:findCue(ms);if(n!==cue){cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}function makePlayer(id){
+function tick(){cancelAnimationFrame(raf);const f=()=>{if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000;if($('time'))$('time').textContent=fmt(s);let n=findCue(ms);if(n!==cue){cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}
+function makePlayer(id){
   window.pending=id;
   if(player&&ready){
     try{
@@ -1182,7 +1143,7 @@ function tick(){cancelAnimationFrame(raf);const f=()=>{if(ready&&$('ov').classLi
   })
 }
 window.onYouTubeIframeAPIReady=()=>{if(window.pending)makePlayer(window.pending)};
-function seek(i){if(!ready||!cues.length)return;cue=Math.max(0,Math.min(cues.length-1,i));predictFeedback='';sayItFeedback=null;sayItDraft='';explainSelected=null;window.__manualCueHoldUntil=performance.now()+Math.max(700,cueDisplayLagMs()+260);player.seekTo(cues[cue].startMs/1000,true);player.playVideo();revealed=-1;activeSpoken=-1;renderCap();panel()}function replay(){if(cue<0)return toast('No active cue');replays++;recordCueReplay();seek(cue)}function open(id,lessonLevel,lessonBand){
+function seek(i){if(!ready||!cues.length)return;cue=Math.max(0,Math.min(cues.length-1,i));predictFeedback='';sayItFeedback=null;sayItDraft='';explainSelected=null;player.seekTo(cues[cue].startMs/1000,true);player.playVideo();revealed=-1;activeSpoken=-1;renderCap();panel()}function replay(){if(cue<0)return toast('No active cue');replays++;recordCueReplay();seek(cue)}function open(id,lessonLevel,lessonBand){
   sel=curatedCatalog.find(v=>v.id===id&&(!lessonBand||v.level===lessonBand))||curatedCatalog.find(v=>v.id===id&&(!lessonLevel||v.levelCode===lessonLevel))||curatedCatalog.find(v=>v.id===id)||videos.find(v=>v.id===id)||videos[0];
   $('lt').textContent=sel.title;$('lm').textContent=sel.level+' · '+sel.channel;$('level').textContent=sel.level;
   $('ov').classList.add('open');document.body.style.overflow='hidden';
