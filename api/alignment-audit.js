@@ -1,0 +1,28 @@
+const READY=[
+['kHsEZUcyD7c','Slow Korean Podcast for Beginners'],['o6AP3nVNj_8','School · Super Beginner Story'],['79Pwq7MTUPE','Easy Korean Listening'],['Szv3gPqohbg','A Day in Seoul'],['ufDM439eOqU','Bike Trip in Seoul'],['2CXwo_O7xCg','Korean Restaurant Conversation'],['LWGNKfztgcI','Breakfast Routine'],['u_N9KjD_OVY','공부? · Short Story'],['k3FsjyRlZdU','Second Life'],['MF6MuUfo3gI','30 min Intermediate Podcast'],['pZz0-jlSMT4','Everything About Me'],['NRcXaIUcEak','Intermediate Listening Ep. 1'],['xShgqxDB2Bc','Reading Reddit Posts About Korea'],['8rvv4RXQYb4','Self-introduction'],['GnwIG51ah7k','Hobbies Podcast'],['paToZla2CK8','Supermarket Korean'],['VMiPQcgq7wg','Daily Routines'],['-11--LSPNB0','Restaurant & Cafe Conversations'],['2NDS0F3bTwk','Korean Cafes'],['eF65dUUDcEQ','Talking About Daily Routines'],['mdASVEboloc','I Moved'],['mOry_eE_OZA','Blind Date Story'],['fNjtQyA43c8','All Thanks to You'],['02HTENb9KGg','Daily Routine Vlog'],['5n7HFxyE4ZI','Restaurant & Cafe Native Conversations'],['x031U15y6_U','40 min Intermediate Podcast'],['6Y7VwFR5cDg','1 Hour Natural Conversation'],['QLJVSqyxU4M','Park Trip in Korea'],['EMUpahrg1Dg','Rainy Season'],['2I6UMxg6cDc','Me & Cat'],['Gy_nMwa51nY','Traditional Market Shopping'],['_7fhtMzAfOM','Taxi Cafe Convenience Store'],['sa0mN3K7BIM','Beginner Korean Vlog'],['jmAzSdwYBj4','Meeting Korean Celebrities'],['FY9_RtFt84U','Movie Theater'],['Oh8fiYihNhM','Cherry Blossom Picnic'],['NyCrQ-NZMbg','Korean Street Food'],['xUbMF1aEH8Y','University Students Hang Out'],['p5kMoLahPa4','10 Short Conversations'],['5XyvYJ0u8S4','Love Languages Podcast'],['zYsoHRFmC0Y','Cafe Vlog'],['xuYpxWYeOKM','Grocery Shopping Photos'],['7aSzPwA2DPo','Why Learn Korean Podcast'],['aoJXA2O2hoM','Doctor & Pharmacy']
+];
+function toks(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function units(w=''){const c=String(w).replace(/[^가-힣A-Za-z0-9]/g,''),h=(c.match(/[가-힣]/g)||[]).length,l=(c.match(/[A-Za-z0-9]/g)||[]).length;return Math.max(1,h+l*.72)}
+function weight(w,p=.84,punct=.54){const n=units(w);let x=.45+Math.pow(n,p);if(/[,，]$/.test(w))x+=punct*.45;if(/[.!?…~]$/.test(w))x+=punct;return Math.min(x,5)}
+function profile(id){if(id==='kHsEZUcyD7c')return{leadIn:32,onset:78,tail:8,power:.88,punct:.62,minWord:96,lagWords:1.55};return{leadIn:38,onset:86,tail:9,power:.84,punct:.54,minWord:88,lagWords:1.65}}
+function timeline(c,cues,i,id){const a=toks(c.ko);if(!a.length)return[];const p=profile(id);let rawSt=+c.startMs||0,rawEn=Math.max(rawSt+320,+c.endMs||rawSt+1800);const prev=i>0?cues[i-1]:null,next=i+1<cues.length?cues[i+1]:null;const before=prev?Math.max(0,rawSt-(+prev.endMs||rawSt)):0;let st=rawSt+Math.min(36,Math.max(0,before*.10));if(next&&+next.startMs>st+180)rawEn=Math.min(rawEn,+next.startMs-18);const u=a.reduce((n,w)=>n+units(w),0),pun=a.reduce((n,w)=>n+(/[.!?…~]$/.test(w)?1:/[,，]$/.test(w)?.45:0),0),natural=Math.max(320,Math.round(u*118+a.length*38+pun*115)),rawSpan=Math.max(320,rawEn-st),minSpan=Math.max(300,a.length*p.minWord);let span=Math.max(minSpan,Math.min(rawSpan,Math.max(natural,rawSpan*.62)));if(rawSpan>span+180)span=Math.min(rawSpan,span+Math.min(110,(rawSpan-span)*.18));const en=Math.min(rawEn,st+span),weights=a.map(w=>weight(w,p.power,p.punct)),sum=weights.reduce((x,y)=>x+y,0);let acc=0;return a.map((word,j)=>{const ws=st+(en-st)*(acc/sum);acc+=weights[j];const we=st+(en-st)*(acc/sum);return{startMs:Math.max(rawSt,Math.round(ws+p.onset)),endMs:Math.min(rawEn,Math.max(Math.round(ws+p.onset+70),Math.round(we-p.tail)))}})}
+function lag(c,tl,id){if(!tl.length)return 0;const p=profile(id),s=tl[0].startMs,e=tl[tl.length-1].endMs,avg=Math.max(95,(e-s)/tl.length);return Math.round(Math.max(170,Math.min(520,avg*(p.lagWords||1.65))))}
+function cueLag(id){if(id==='kHsEZUcyD7c')return 430;return 460}
+function analyze(id,title,cues){let conflicts=0,maxLead=0,sumLead=0,long=0,overlaps=0,msPerUnit=[];for(let i=0;i<cues.length;i++){const c=cues[i],dur=Math.max(1,c.endMs-c.startMs),u=toks(c.ko).reduce((n,w)=>n+units(w),0);if(u)msPerUnit.push(dur/u);if(dur>6000)long++;if(i+1<cues.length){if(cues[i+1].startMs<c.endMs)overlaps++;const tl=timeline(c,cues,i,id);if(tl.length){const release=tl[tl.length-1].endMs+lag(c,tl,id),nextDisplay=cues[i+1].startMs+cueLag(id),lead=release-nextDisplay;if(lead>0){conflicts++;sumLead+=lead;maxLead=Math.max(maxLead,lead)}}}}
+ const med=arr=>{if(!arr.length)return 0;const a=[...arr].sort((x,y)=>x-y);return Math.round(a[Math.floor(a.length/2)])};
+ const rate=cues.length>1?conflicts/(cues.length-1):0;
+ let status='OK';if(rate>=.25||maxLead>=700)status='BAD';else if(rate>=.1||maxLead>=350)status='REVIEW';
+ return{id,title,cues:cues.length,status,conflicts,conflictPct:+(rate*100).toFixed(1),maxLeadMs:Math.round(maxLead),avgLeadMs:conflicts?Math.round(sumLead/conflicts):0,overlaps,longCuePct:+(long/Math.max(1,cues.length)*100).toFixed(1),medianMsPerUnit:med(msPerUnit)}
+}
+module.exports=async function(req,res){
+ res.setHeader('Cache-Control','no-store');
+ const results=[];
+ for(let i=0;i<READY.length;i+=4){
+   const batch=READY.slice(i,i+4);
+   const rows=await Promise.all(batch.map(async([id,title])=>{
+     try{const r=await fetch('https://korean-video-lab.vercel.app/api/captions?videoId='+encodeURIComponent(id)+'&cv=8',{headers:{accept:'application/json'}});const d=await r.json();if(!d.ok||!d.cues?.length)return{id,title,status:'NO_DATA',reason:d.reason||d.error||'no cues'};return analyze(id,title,d.cues)}catch(e){return{id,title,status:'ERROR',reason:String(e.message||e)}}
+   }));
+   results.push(...rows);
+ }
+ return res.status(200).json({ok:true,count:results.length,results});
+};
