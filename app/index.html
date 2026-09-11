@@ -701,15 +701,20 @@ function adaptiveWordTimeline(c){
   }
   if(prev&&Number(prev.endMs)>st&&Number(prev.endMs)-st>220)st+=18;
 
-  // Higher-level Korean is denser and faster. Do not stretch every word
-  // across a long subtitle window; cap the spoken envelope using Korean
-  // syllable density while leaving Beginner behavior untouched.
+  // Higher-level caption tracks sometimes open a cue several seconds before
+  // the actual sentence is spoken. When the raw cue is clearly wider than a
+  // natural speech envelope, anchor the spoken phrase toward the RIGHT side
+  // of the cue instead of compressing it from the early raw start.
   if(p.targetUnit){
     const units=a.reduce((n,w)=>n+koreanUnits(w),0);
     const pauses=a.reduce((n,w)=>n+(/[.!?…~]$/.test(w)?1:/[,，]$/.test(w)?.4:0),0);
     const natural=Math.max(a.length*p.minWord,Math.round(units*p.targetUnit+pauses*85));
-    const hardEnd=st+natural+(p.maxTailPad||0);
-    en=Math.min(en,hardEnd)
+    const rawSpan=Math.max(0,en-st);
+    const allowed=natural+(p.maxTailPad||0);
+    if(rawSpan>allowed+950){
+      const excess=rawSpan-allowed;
+      st+=Math.round(excess*.88);
+    }
   }
   en=Math.max(st+Math.max(260,a.length*p.minWord),en);
   const weights=a.map(w=>tokenWeight(w,p.power,p.punct));
@@ -1111,7 +1116,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L2</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1123,7 +1128,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L2</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
