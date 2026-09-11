@@ -48,3 +48,22 @@ If changes are deployed:
 Current UI is approved.
 
 Do not redesign it unless explicitly requested.
+
+
+## Alignment audit continuation note — 2026-09-12
+
+The Ready catalog was audited one-by-one structurally. See `docs/VIDEO_ALIGNMENT_AUDIT.md`.
+
+Current production:
+- Alignment V5.5
+- 43 Ready videos
+- Supermarket Korean (`paToZla2CK8`) has a dedicated sync profile
+- Intermediate Listening Ep. 1 (`NRcXaIUcEak`) was removed from Ready because no usable Korean transcript is currently returned
+
+Do not claim all 43 remaining videos are acoustically word-perfect. Server-side YouTube media extraction is blocked by bot/login protection in the current environment, so the durable audit is structural rather than acoustic.
+
+If a user reports a specific video audibly leading or lagging:
+1. treat that playback report as stronger evidence than structural metrics
+2. inspect that video's row in `docs/VIDEO_ALIGNMENT_AUDIT.md`
+3. add a video-specific timing profile rather than changing the global curve
+4. re-verify production and keep unaffected videos unchanged
