@@ -12,61 +12,78 @@ Vercel project:
 
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
+- team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
+- current production deployment: `dpl_AdYX6UCjeAkgu48MYhiBQNWBfgDc`
 - production domain preserved
 
-A recent production deployment was verified as READY during the latest continuation session.
+The current production build was verified READY after the catalog-scaling recovery.
 
 ## Repository source status
 
-The GitHub repository now contains a direct snapshot of the currently deployed production frontend:
+The repository now contains a deployable production baseline:
 
-- `app/index.html`
+- `index.html` — current production frontend
+- `api/captions.js`
+- `api/meaning.js`
+- `api/meanings.js`
+- `api/semantic.js`
 
-That snapshot was fetched from the official production URL after verification that it returned HTTP 200, contained the Haneul Video Lab title, the live `curatedCatalog`, and the newer appended video batch.
+`app/index.html` remains as the earlier production snapshot path but the root `index.html` is now the canonical deployable frontend.
 
-This means future frontend work can start from the actual deployed interface rather than an older Library prototype.
+## Catalog scaling recovery
 
-Serverless API implementation files are still not fully recovered from Vercel. Their live behavior can be inspected through the production endpoints, but source should not be invented.
+The live frontend contains 60 curated candidates.
 
-## Catalog state
+Previously a hard-coded `VERIFIED_READY` gate exposed only 13 lessons even though many more candidates had already been prepared.
 
-The live production catalog contains the previously existing catalog plus a newer appended batch of videos.
+The gate has now been expanded to **44 verified Ready videos** after transcript-quality checks.
 
-Newly observed production entries included:
+Current Ready distribution:
 
-- `Gy_nMwa51nY` — Traditional Market Shopping · Slow Real-Life Korean
-- `wns9Ro1Nkb0` — Ordering at a Korean Restaurant · Survival Phrases
-- `_7fhtMzAfOM` — Taxi, Cafe & Convenience Store · Real Korean Vlog
-- `sa0mN3K7BIM` — Beginner Korean Vlog · Everyday Listening
-- `jmAzSdwYBj4` — Meeting Korean Celebrities · Listening Practice
-- `FY9_RtFt84U` — At the Movie Theater · Slow Korean Input
-- `Oh8fiYihNhM` — Cherry Blossom Picnic · Easy Korean Input
-- `NyCrQ-NZMbg` — Korean Street Food · Beginner Listening
-- `xUbMF1aEH8Y` — How Korean University Students Hang Out
-- `p5kMoLahPa4` — 10 Short Conversations · Talking About Your Day
-- `5XyvYJ0u8S4` — Love Languages · Slow Korean Podcast
-- `zYsoHRFmC0Y` — This Cafe Used to Be What? · Korean Vlog
-- `xuYpxWYeOKM` — Grocery Shopping Photos · Beginner Korean Input
-- `7aSzPwA2DPo` — Why Are You Learning Korean? · Slow Korean Podcast
-- `aoJXA2O2hoM` — Doctor & Pharmacy · Natural Korean Conversation
+- Beginner: 21
+- Lower Intermediate: 14
+- Intermediate: 9
 
-## Caption state
+The UI keeps the existing level-filter behavior, so the default Beginner view shows 21 Ready lessons and the other Ready lessons are available through the level filters.
 
-The production `/api/captions` endpoint was tested against the newer video batch and successfully returned timed transcript data for the batch during verification.
+## Transcript pipeline
 
-Important caveat:
+The rebuilt caption route uses:
 
-`wns9Ro1Nkb0` returned transcript content where some cue text expected to be Korean was actually English. The endpoint worked technically, but transcript quality was not acceptable enough to call that video fully verified.
+1. FreeTranscriptAPI with `lang=ko`
+2. a Hangul-content quality gate
+3. Vercel CDN caching
+4. fallback to the older YouTube caption parser when the provider is unavailable or throttled
 
-This should be treated as an unresolved transcript-quality issue.
+The anonymous FreeTranscriptAPI tier is rate limited, so bulk verification must not brute-force large batches. Previously verified results should be cached/reused and uncertain/rate-limited candidates should remain pending.
 
-## Runtime/build state
+The known bad candidate `wns9Ro1Nkb0` is **not** in the Ready set because its earlier transcript response contained English where Korean cues were expected.
 
-The latest inspected production build was READY and build logs did not show a build failure.
+## Live verification
 
-A Node deprecation warning related to `url.parse()` was observed on older/current server routes such as:
+After deployment:
 
-- `/api/youtube`
-- `/api/source-pack`
+- production homepage returned HTTP 200
+- title: `Haneul Video Lab`
+- Ready gate parsed as 44 IDs
+- `/api/meaning` returned a valid English translation
+- `8rvv4RXQYb4` returned 81 Korean caption cues with strong Hangul content
+- `Gy_nMwa51nY` returned 197 Korean caption cues with strong Hangul content
 
-This was not observed as a production-crashing error.
+## Semantic layer
+
+The original server semantic source could not be recovered from the old deployment.
+
+A deterministic transcript-grounded replacement is now committed for the response modes the frontend expects. The frontend already contains local fallback logic for practice and explanation behavior.
+
+## Rules
+
+Do not mass-audit the remaining candidate videos in one burst.
+
+For future catalog expansion:
+
+- validate in small batches
+- reuse cached successful results
+- treat rate limiting as pending, never as rejection
+- reject transcripts that are not genuinely Korean
+- do not expose a candidate as Ready until transcript quality is verified
