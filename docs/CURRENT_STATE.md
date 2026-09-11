@@ -16,6 +16,18 @@ Vercel project:
 
 A recent production deployment was verified as READY during the latest continuation session.
 
+## Repository source status
+
+The GitHub repository now contains a direct snapshot of the currently deployed production frontend:
+
+- `app/index.html`
+
+That snapshot was fetched from the official production URL after verification that it returned HTTP 200, contained the Haneul Video Lab title, the live `curatedCatalog`, and the newer appended video batch.
+
+This means future frontend work can start from the actual deployed interface rather than an older Library prototype.
+
+Serverless API implementation files are still not fully recovered from Vercel. Their live behavior can be inspected through the production endpoints, but source should not be invented.
+
 ## Catalog state
 
 The live production catalog contains the previously existing catalog plus a newer appended batch of videos.
@@ -58,11 +70,3 @@ A Node deprecation warning related to `url.parse()` was observed on older/curren
 - `/api/source-pack`
 
 This was not observed as a production-crashing error.
-
-## Source-code caveat
-
-At the time this memory repository was prepared, the Vercel project was not linked to a GitHub repository in the connected Vercel project metadata.
-
-The connected tooling exposed the live deployment and project metadata but did not expose a complete downloadable server-side source tree.
-
-Therefore, do not assume this memory repo contains the entire application source unless source files are explicitly added later.
