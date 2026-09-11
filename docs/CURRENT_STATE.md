@@ -262,3 +262,34 @@ Production deployment:
 - known-good caption test returned 81 cues
 - temporary audit/probe routes removed from production
 - no error/fatal runtime logs observed after deployment
+
+
+## Trusted Baby/Mina alignment restored globally — 2026-09-12
+
+User clarified that the desired reference is the original alignment behavior from:
+- Learn Korean Like a Baby (`in58DVfmxug`)
+- Mina Slow Korean (`kHsEZUcyD7c`)
+
+The original pre-generalization alignment engine was recovered from commit `8c90187826a77653b77567d2bf7474c8d97884bb` and restored as the global alignment model.
+
+Removed:
+- global caption display lag
+- adaptive multi-word lag compensation
+- supermarket-only giant delay profile
+- manual cue-hold logic tied to delayed caption clocks
+
+Restored:
+- raw transcript cue switching via original `findCue()`
+- original Baby/Mina timing profiles
+- original default weighted word distribution model
+- current-word-only highlight behavior
+
+Current production:
+- marker: `ALIGNMENT TRUSTED`
+- deployment: `dpl_AzPwiq9Edquhx77QuCFVMmQUKGko`
+- stable URL preserved
+- 43 Ready lessons
+- caption endpoint verified with 81 cues
+- no error/fatal runtime logs observed after deployment
+
+This trusted engine is now the baseline. Future timing work should compare against Baby/Mina and should not reintroduce broad artificial lag layers unless explicitly justified.
