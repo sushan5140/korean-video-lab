@@ -231,3 +231,34 @@ Production deployment:
 - 44 Ready lessons preserved
 - known-good caption route verified with 81 cues
 - no error/fatal runtime logs observed after deployment
+
+
+## Full Ready-video alignment audit + Alignment V5.5 — 2026-09-12
+
+A one-by-one structural timing audit was run across all 44 videos that were in the Ready gate at scan time.
+
+Audit artifact:
+- `docs/VIDEO_ALIGNMENT_AUDIT.md`
+- 44/44 Ready entries scanned
+- metrics included cue count, cue overlap, long cue-window ratio, median milliseconds per Korean unit, and conflicts between caption switching and Haneul's own word-timing model
+
+Important limitation:
+- YouTube blocked server-side media extraction with bot/login protection across the playback clients tested.
+- Therefore this audit is a cue-structure + Haneul timing audit, not a claim of true acoustic word-onset verification for every lesson.
+- User playback feedback remains required evidence for cases where transcript timestamps are globally shifted against audio.
+
+Confirmed findings:
+- `paToZla2CK8` Supermarket Korean is user-confirmed misaligned and structurally uses slower/padded cue timing (~627 ms per Korean unit versus ~408 ms for Traditional Market Shopping).
+- Supermarket now has its own V5.5 timing profile: later cue display, later word onset, and extra highlight lag.
+- `NRcXaIUcEak` Intermediate Listening Ep. 1 currently returns no usable Korean transcript and was removed from the Ready gate.
+
+Current Ready count:
+- 43
+
+Production deployment:
+- `dpl_G3bDnXYbBctxQyKXaGz9Aa5arZKQ`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- `ALIGNMENT V5.5` live
+- known-good caption test returned 81 cues
+- temporary audit/probe routes removed from production
+- no error/fatal runtime logs observed after deployment
