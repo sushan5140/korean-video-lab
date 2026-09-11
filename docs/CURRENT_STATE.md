@@ -313,3 +313,37 @@ Production:
 - 43 Ready lessons
 - caption endpoint verified healthy after deployment
 - no error/fatal runtime logs observed
+
+
+## Padded-cue alignment model — 2026-09-12
+
+User supplied screenshots comparing:
+- `p5kMoLahPa4` 10 Short Conversations
+- `02HTENb9KGg` My Daily Routine
+- `EMUpahrg1Dg` Rainy Season
+
+The screenshots exposed the real failure mode: some higher-level caption cues open well before the sentence is actually spoken. The previous L2 model compressed these long cues from the left edge, which could keep the highlight too early.
+
+Alignment Trusted L3 now:
+- keeps Beginner Baby/Mina behavior unchanged
+- keeps raw cue selection unchanged
+- estimates a natural higher-level speech envelope
+- detects only heavily padded higher-level cues (raw span exceeds estimated envelope by >950 ms)
+- right-anchors the spoken-word envelope toward the cue end/next boundary
+- leaves tight cues such as the shown Rainy Season line untouched
+
+Full Ready-catalog padding audit:
+- 43 Ready videos scanned
+- 22 videos contained at least one heavily padded higher-level cue
+- 1,778 heavy-padding cues detected
+- 10 Short Conversations: 107 / 292 cues (36.6%)
+- Daily Routine Vlog: 42 / 121 cues (34.7%)
+- Rainy Season: 126 / 847 cues (14.9%), but the screenshot cue itself remains below the heavy-padding threshold and is not shifted
+
+Production:
+- marker: `ALIGNMENT TRUSTED L3`
+- deployment: `dpl_DH3kt4amDmJ4eCcAdcgJkj4pLRNN`
+- stable URL preserved
+- temporary `/api/padding-audit` route removed
+- captions verified healthy
+- no error/fatal runtime logs observed
