@@ -136,3 +136,37 @@ Production deployment:
 - 44 Ready lessons preserved
 - production verification passed with 81 known-good caption cues
 - no error/fatal runtime logs observed after deployment
+
+
+## Alignment V5.1 — 2026-09-11
+
+The spoken-word estimator was tightened again after user feedback.
+
+Changes:
+- duplicate `spokenHTML()` renderer was removed
+- cue start/end remain the hard timing anchors
+- estimated Korean speech duration now uses Hangul-unit count, token count and punctuation
+- excess caption tail time is trimmed instead of stretching the final highlighted word through silence
+- no extra native-anchor network request is made during lesson open
+
+A native YouTube JSON3 sub-segment anchor experiment was tested and removed from production because the tested Korean lessons did not expose usable caption-track anchors through the public watch-page path.
+
+### Grok / xAI alignment path
+
+xAI Speech-to-Text can return word-level timestamps and supports Korean. This is the preferred future path for near-forced alignment.
+
+Requirements before enabling it:
+- a direct audio file or direct audio-file URL for each lesson
+- an `XAI_API_KEY` configured server-side
+
+Do not use a text-only Grok prompt to guess word timing. The useful xAI path is Speech-to-Text over the real audio.
+
+Current YouTube iframe playback does not itself expose a reusable direct audio file URL to the application, so Grok STT is not yet wired into production.
+
+Production deployment:
+- `dpl_Bsimfh8fAAoQ9a3fpkHvg5qLLqdQ`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- 44 Ready lessons preserved
+- known-good caption test returned 81 cues
+- English meaning endpoint verified
+- no error/fatal runtime logs observed after deployment
