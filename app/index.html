@@ -690,18 +690,27 @@ function adaptiveWordTimeline(c){
   let rawSt=Number(c.startMs)||0,rawEn=Math.max(rawSt+320,Number(c.endMs)||rawSt+1800);
   const prev=ci>0?cues[ci-1]:null,next=ci>=0?cues[ci+1]:null;
   const beforeGap=prev?Math.max(0,rawSt-Number(prev.endMs||rawSt)):0;
-  const afterGap=next?Math.max(0,Number(next.startMs||rawEn)-rawEn):0;
-  let st=rawSt+Math.min(p.leadIn,Math.max(0,beforeGap*.12));
-  let en=rawEn;
-  if(next&&Number(next.startMs)>st+180)en=Math.min(en,Number(next.startMs)-16);
-  if(afterGap>420)en-=Math.min(120,(afterGap-420)*.16);
+  let st=rawSt+Math.min(36,Math.max(0,beforeGap*.10));
+  if(next&&Number(next.startMs)>st+180)rawEn=Math.min(rawEn,Number(next.startMs)-18);
+
+  const units=a.reduce((n,w)=>n+koreanUnits(w),0);
+  const punctuation=a.reduce((n,w)=>n+(/[.!?…~]$/.test(w)?1:/[,，]$/.test(w)?.45:0),0);
+  const naturalSpeech=Math.max(320,Math.round(units*118+a.length*38+punctuation*115));
+  const rawSpan=Math.max(320,rawEn-st);
   const minSpan=Math.max(300,a.length*p.minWord);
-  if(en-st<minSpan)st=Math.max(rawSt,en-minSpan);
-  const weights=a.map(w=>tokenWeight(w,p.power,p.punct)),sum=weights.reduce((x,y)=>x+y,0),span=Math.max(minSpan,en-st);
+  let span=Math.max(minSpan,Math.min(rawSpan,Math.max(naturalSpeech,rawSpan*.62)));
+
+  // Caption durations often include silent tail padding. Keep the first word
+  // anchored near the cue start and trim excess tail rather than stretching
+  // every word across the entire caption window.
+  if(rawSpan>span+180) span=Math.min(rawSpan,span+Math.min(110,(rawSpan-span)*.18));
+  const en=Math.min(rawEn,st+span);
+
+  const weights=a.map(w=>tokenWeight(w,p.power,p.punct)),sum=weights.reduce((x,y)=>x+y,0);
   let acc=0;
   return a.map((word,i)=>{
-    const ws=st+span*(acc/sum);acc+=weights[i];
-    const we=st+span*(acc/sum);
+    const ws=st+(en-st)*(acc/sum);acc+=weights[i];
+    const we=st+(en-st)*(acc/sum);
     return{word,startMs:Math.max(rawSt,Math.round(ws-p.lead)),endMs:Math.min(rawEn,Math.round(we-p.tail))}
   })
 }
@@ -737,10 +746,6 @@ function seekWord(index){
   if(tab==='vocab')panel('vocab');
 }
 
-function spokenHTML(c,ms){
-  const a=spokenTokens(c&&c.ko),n=spokenIndex(c,ms);
-  return a.map((w,i)=>'<span class="spokenWord '+(i===n?'active':'')+'">'+esc(w)+'</span>').join(' ')
-}
 function stripExplainWord(w){return String(w||'').replace(/[.,!?~]/g,'').trim()}
 const explainLex={
   '핸드폰':{base:'핸드폰',meaning:'mobile phone',pron:'haendeupon',pos:'Noun',role:'Names the phone; here it modifies 알람 to form “phone alarm”.',reg:'Neutral everyday word',ex:'핸드폰을 집에 두고 왔어요.',exen:'I left my phone at home.'},
@@ -1100,7 +1105,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4.1</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.1</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1112,7 +1117,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4.1</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.1</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
