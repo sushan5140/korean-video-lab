@@ -293,3 +293,23 @@ Current production:
 - no error/fatal runtime logs observed after deployment
 
 This trusted engine is now the baseline. Future timing work should compare against Baby/Mina and should not reintroduce broad artificial lag layers unless explicitly justified.
+
+
+## Level-aware trusted alignment — 2026-09-12
+
+User feedback showed that Beginner lessons felt acceptable with the restored Baby/Mina engine, while Lower Intermediate and Intermediate lessons drifted badly because faster speech was still being stretched across full caption windows.
+
+Changes:
+- Beginner keeps the original Baby/Mina trusted alignment unchanged.
+- Lower Intermediate uses a denser/faster speech envelope (target ~230 ms per Korean unit, smaller minimum word duration).
+- Intermediate uses an even faster envelope (target ~205 ms per Korean unit, smaller minimum word duration).
+- Higher levels cap long subtitle windows instead of stretching every highlighted word through the whole cue.
+- Raw transcript cue switching remains unchanged; no broad artificial caption delay was reintroduced.
+
+Production:
+- marker: `ALIGNMENT TRUSTED L2`
+- deployment: `dpl_4eR9ejwMQfmvFGWfVg8g6MTqCsV6`
+- stable URL preserved
+- 43 Ready lessons
+- caption endpoint verified healthy after deployment
+- no error/fatal runtime logs observed
