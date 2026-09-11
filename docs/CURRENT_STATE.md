@@ -170,3 +170,27 @@ Production deployment:
 - known-good caption test returned 81 cues
 - English meaning endpoint verified
 - no error/fatal runtime logs observed after deployment
+
+
+## Alignment V5.2 — 2026-09-11
+
+Fixed a concrete early-highlight bug:
+
+- previous `spokenIndex()` forced the first word active even when playback had not reached the first estimated word onset
+- it now returns no active word before that onset
+- estimated word starts use a positive acoustic-onset guard instead of subtracting lead time
+- current default onset guard is ~86 ms, with per-video overrides available in `timingProfile()`
+- first-word cue lead-in is also slightly delayed
+
+Production deployment:
+- `dpl_FDvuxJM4fdYeTiaXkXSgdHZC8hD7`
+- stable URL preserved
+- 44 Ready lessons preserved
+- caption route verified with 81 cues
+- no error/fatal runtime logs observed after deployment
+
+Groq note:
+- Vercel currently exposes a valid `GROQ_API_KEY`
+- it authenticates successfully against Groq
+- it is not an xAI/Grok key
+- Groq Whisper is a viable future source of real Korean word timestamps once a real media/audio file URL is available
