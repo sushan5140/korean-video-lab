@@ -87,3 +87,29 @@ For future catalog expansion:
 - treat rate limiting as pending, never as rejection
 - reject transcripts that are not genuinely Korean
 - do not expose a candidate as Ready until transcript quality is verified
+
+
+## Alignment V4 — 2026-09-11
+
+The live player now uses Alignment V4 for finer word-following inside each caption cue.
+
+Changes:
+- Korean token timing is weighted more heavily by actual Korean syllable count.
+- punctuation receives small pause weighting.
+- cue-edge silence is trimmed more conservatively.
+- the current spoken word now has progressive fill during its estimated spoken duration.
+- already-spoken words remain subtly marked so the learner can follow the sentence path.
+
+English caption startup was also improved:
+- the first 16 meanings are prefetched first.
+- the rest continue loading in the background.
+- video-card hover/pointer warmup now starts caption + English preparation before opening the lesson.
+- translated meanings are cached in localStorage per video for faster repeat visits.
+- the bulk translation route now uses up to 8 workers instead of 4.
+
+Production deployment:
+- `dpl_8LNVMpKtnpW5yGos4hfopQzNZBKT`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- 44 Ready lessons preserved
+- known-good caption test returned 81 cues
+- production error/fatal scan was clean after deployment
