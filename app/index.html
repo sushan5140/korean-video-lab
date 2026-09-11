@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Haneul Video Lab</title><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;color:#171827;background:radial-gradient(circle at 82% 7%,#eee9ff,transparent 24%),radial-gradient(circle at 70% 17%,#e5fbff,transparent 18%),#f8f8ff}button,input{font:inherit}.app{display:grid;grid-template-columns:210px 1fr;min-height:100vh}.side{background:linear-gradient(#15182a,#1e2239);color:#fff;padding:24px 18px}.brand{font-weight:900;font-size:20px}.brand b{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#fff;color:#6757f6;margin-right:8px}.nav{display:grid;gap:8px;margin-top:28px;color:#aeb4c4}.nav span{padding:11px;border-radius:12px}.nav .on{color:#fff;background:linear-gradient(90deg,#6d5dfc55,#57d7ff22)}.main{padding:36px 46px 70px;max-width:1400px}.ey{font-size:11px;letter-spacing:.12em;font-weight:900;color:#8a91a2}.top{display:flex;justify-content:space-between;gap:20px;align-items:end}.top h1{font-size:56px;line-height:1;letter-spacing:-.05em;margin:8px 0}.top h1 em{font-style:normal;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc);-webkit-background-clip:text;color:transparent}.top p{max-width:700px;color:#737b8b;line-height:1.55}.goal{width:220px;background:#fff;border:1px solid #e5e6ef;border-radius:16px;padding:15px;position:relative;overflow:hidden}.goal:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc)}.bar{height:7px;background:#eeeef5;border-radius:9px;margin-top:8px}.bar i{display:block;width:72%;height:100%;border-radius:9px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#ff76bc)}.tools{display:flex;gap:10px;margin:26px 0 18px}.tools input{flex:1;height:45px;border:1px solid #e3e5ed;border-radius:13px;padding:0 14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:#fff;border:1px solid #e6e7ef;border-radius:20px;overflow:hidden;cursor:pointer}.card img{width:100%;height:220px;object-fit:cover;background:#ececf5}.copy{padding:16px}.badge{display:inline-block;background:#eeeaff;color:#5d4cf1;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800}.copy h3{margin:10px 0 5px;font-size:18px}.copy p{font-size:13px;color:#737b8b}.copy small{color:#777f8f}.ov{display:none;position:fixed;inset:0;z-index:50;height:100dvh;background:#f2f3fc;overflow:hidden}.ov.open{display:grid;grid-template-rows:62px minmax(0,1fr)}.lessonbar{display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:14px;padding:0 18px;background:#fffffff2;border-bottom:1px solid #e7e7f2;position:relative}.lessonbar:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#78e2c2,#ffd36a,#ff76bc)}.lt strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lt span{font-size:11px;color:#888f9f}.close{width:34px;height:34px;border:1px solid #dedfea;background:#fff;border-radius:50%;font-size:20px}.lessonGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:100%;min-height:0;gap:1px;background:#e6e7f0;overflow:hidden}.left{display:grid;grid-template-rows:minmax(0,57fr) minmax(0,43fr);min-height:0;height:100%;background:#141727;overflow:hidden}.video{padding:14px 14px 0;min-height:0;background:radial-gradient(circle at 50% 15%,#6d5dfc25,transparent 30%),#141727}.player{height:100%;border-radius:17px 17px 0 0;overflow:hidden;background:#080a12}.player iframe,.player>div{width:100%;height:100%;border:0}.caps{margin:0 14px 14px;background:#fff;border-radius:0 0 17px 17px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:0;overflow:hidden}.ctop{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid #ececf4}.ctop b{font-size:11px}.modes{display:flex;gap:4px}.modes button{font-size:10px;border:1px solid #e3e4ee;background:#fff;border-radius:999px;padding:5px 8px}.modes .on{background:#f1eeff;color:#5e50df;border-color:#d8d1ff}.cap{display:grid;align-content:center;justify-items:start;padding:10px 16px;overflow:auto;min-height:0}.label{font-size:9px;letter-spacing:.12em;font-weight:900;background:linear-gradient(90deg,#6d5dfc,#57d7ff,#ff76bc);-webkit-background-clip:text;color:transparent}.ko{display:block;width:100%;font-size:clamp(30px,2.8vw,40px);font-weight:800;line-height:1.22;margin-top:4px;letter-spacing:-.02em}.en{display:block;width:100%;font-size:clamp(16px,1.4vw,20px);font-weight:650;color:#596274;margin-top:6px;line-height:1.35}.meaningWait{opacity:.62;font-style:italic}
-.spokenWord{display:inline-block;padding:1px 3px;border-radius:7px;transition:color .08s ease,background .08s ease,box-shadow .08s ease}
+.spokenWord{display:inline-block;padding:1px 3px;border-radius:7px;transition:color .06s ease,background .06s ease,box-shadow .06s ease}
 .spokenWord.past{color:#6256cb}
-.spokenWord.active{color:#fff;background:linear-gradient(90deg,#6d5dfc 0%,#8d79ff var(--spoken-progress,50%),#e9e5ff var(--spoken-progress,50%),#e9e5ff 100%);box-shadow:0 4px 12px rgba(109,93,252,.2)}.syncPreview{font-size:9px;font-weight:850;letter-spacing:.06em;padding:4px 7px;border-radius:999px;background:#eefaf7;color:#23806d;margin-left:6px}
+.spokenWord.active{color:#fff;background:linear-gradient(135deg,#6d5dfc,#8d79ff);box-shadow:0 4px 12px rgba(109,93,252,.2)}.syncPreview{font-size:9px;font-weight:850;letter-spacing:.06em;padding:4px 7px;border-radius:999px;background:#eefaf7;color:#23806d;margin-left:6px}
 .wordExplain{border:1px solid #e5e7f1;border-radius:15px;padding:14px 15px;background:linear-gradient(135deg,#fbfbff,#f7fcff);margin-bottom:12px}
 .wordExplainTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .wordExplain h3{margin:4px 0 2px;font-size:28px;line-height:1.15}
@@ -252,15 +252,21 @@ function persistMeaningCache(id,map){
 async function preloadMeaningHead(id,list){
   if(!list||!list.length)return;
   hydrateMeaningCache(id);
-  const texts=[...new Set(list.slice(0,16).filter(c=>c&&hasKo(c.ko)&&!cleanEnglish(c.en)&&!meaningCache.has(c.ko)).map(c=>c.ko.trim()))];
+  const texts=[...new Set(list.slice(0,12).filter(c=>c&&hasKo(c.ko)&&!cleanEnglish(c.en)&&!meaningCache.has(c.ko)).map(c=>c.ko.trim()))];
   if(!texts.length)return;
   try{
     const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts})});
     const d=await r.json(),map=d&&d.meanings||{};
     Object.entries(map).forEach(([k,v])=>meaningCache.set(k,String(v||'').trim()||null));
-    persistMeaningCache(id,map);
-    if(sel&&sel.id===id&&cur())renderCap()
+    persistMeaningCache(id,map)
   }catch{}
+}
+async function prepareInitialEnglish(id,list){
+  hydrateMeaningCache(id);
+  const first=list&&list[0],already=first&&(cleanEnglish(first.en)||meaningCache.get(first.ko));
+  if(already)return;
+  const job=preloadMeaningHead(id,list);
+  await Promise.race([job,new Promise(r=>setTimeout(r,2200))])
 }
 async function preloadMeanings(id,list){
   if(!list||!list.length||bulkMeaningLoaded.has(id)||bulkMeaningPending.has(id))return;
@@ -705,19 +711,14 @@ function spokenIndex(c,ms){
   for(let i=0;i<tl.length;i++)if(ms<=tl[i].endMs)return i;
   return tl.length-1
 }
-function spokenProgress(c,ms,index){
-  const tl=adaptiveWordTimeline(c),x=tl[index];
-  if(!x)return 0;
-  return Math.max(0,Math.min(100,Math.round(((ms-x.startMs)/Math.max(80,x.endMs-x.startMs))*100)))
-}
 function wordStartMs(c,index){
   const tl=adaptiveWordTimeline(c);if(!tl.length)return Number(c&&c.startMs)||0;
   index=Math.max(0,Math.min(tl.length-1,index));
   return tl[index].startMs
 }
 function spokenHTML(c,ms){
-  const a=spokenTokens(c&&c.ko),n=spokenIndex(c,ms),progress=spokenProgress(c,ms,n);
-  return a.map((w,i)=>'<span class="spokenWord '+(i<n?'past ':i===n?'active':'')+'"'+(i===n?' style="--spoken-progress:'+progress+'%"':'')+'>'+esc(w)+'</span>').join(' ')
+  const a=spokenTokens(c&&c.ko),n=spokenIndex(c,ms);
+  return a.map((w,i)=>'<span class="spokenWord '+(i<n?'past ':i===n?'active':'')+'">'+esc(w)+'</span>').join(' ')
 }
 function wordMeaning(raw){
   const sv=semanticVocabFor(raw);if(sv&&sv.meaning)return sv.meaning;
@@ -794,15 +795,11 @@ function explainWordHTML(c){
 }
 function paintSpoken(ms){
   const c=cur();if(!c||(guess&&revealed!==cue))return;
-  const n=spokenIndex(c,ms),changed=n!==activeSpoken;
-  if(changed){
-    activeSpoken=n;
-    if($('ko'))$('ko').innerHTML=spokenHTML(c,ms);
-    if(tab==='explain'&&explainSelected===null)panel('explain');
-    return
-  }
-  const active=$('ko')&&$('ko').querySelector('.spokenWord.active');
-  if(active)active.style.setProperty('--spoken-progress',spokenProgress(c,ms,n)+'%')
+  const n=spokenIndex(c,ms);
+  if(n===activeSpoken)return;
+  activeSpoken=n;
+  if($('ko'))$('ko').innerHTML=spokenHTML(c,ms);
+  if(tab==='explain'&&explainSelected===null)panel('explain')
 }
 function words(c){if(!c)return[];return Object.entries(vocab).filter(([w])=>(c.ko||'').includes(w)).slice(0,8)}function explain(c){let t=c?.ko||'';if(!c)return['Waiting for a Korean line','Play the video and this explanation will change with the active cue.'];if(t.includes('없어요'))return['없어요 · absence','Use 없어요 when something is not there or does not exist.'];if(t.includes('있어요'))return['있어요 · presence','있어요 says something exists or is present; location is often marked with 에.'];if(t.includes('에서'))return['에서 · action location','에서 marks the place where an action happens.'];if(t.includes('안 '))return['안 + verb · negation','안 before a verb is a common everyday way to say not / do not.'];return['Listen to the word order','Replay this cue once without English, then compare Korean order with the meaning.']}function normKo(s){return String(s||'').replace(/\s+/g,'').replace(/[.,!?~…]/g,'').trim()}
 function semanticKey(){return sel&&sel.id?('haneulSemantic:v1:'+sel.id+'|'+(sel.level||'')):'none'}
@@ -1102,8 +1099,8 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
   if(captionCache.has(id)){
     const d=captionCache.get(id);
     if(sel.id!==id)return;
-    cues=d.cues;state='ready';if(sel){sel.readiness='ready'}hydrateMeaningCache(id);preloadMeaningHead(id,cues);preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4</span>';
+    cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4.1</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1114,8 +1111,8 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       if(!d.ok||!d.cues||!d.cues.length)throw Error(d.reason||'no transcript');
       captionCache.set(id,d);
       if(sel.id!==id)return;
-      cues=d.cues;state='ready';if(sel){sel.readiness='ready'}hydrateMeaningCache(id);preloadMeaningHead(id,cues);preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4</span>';
+      cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V4.1</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
