@@ -213,3 +213,21 @@ Production deployment:
 - 44 Ready lessons preserved
 - known-good caption route verified with 81 cues
 - no error/fatal runtime logs observed after deployment
+
+
+## Alignment V5.4 — 2026-09-11
+
+Fixed a clock mismatch between captions and word highlighting:
+
+- V5.3 delayed word highlighting but caption cue selection still used raw transcript timestamps
+- caption cue selection now applies a display lag (~460 ms default)
+- per-video cue-lag overrides are available
+- manual Next/Replay briefly holds the selected cue so the delayed clock does not snap back immediately after seeking
+- word highlight timing and caption switching now advance on compatible delayed timelines
+
+Production deployment:
+- `dpl_2YfZrkgh9pUtoNy4ZPe9KuJKqHqk`
+- stable URL preserved
+- 44 Ready lessons preserved
+- known-good caption route verified with 81 cues
+- no error/fatal runtime logs observed after deployment
