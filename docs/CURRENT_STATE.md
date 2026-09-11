@@ -194,3 +194,22 @@ Groq note:
 - it authenticates successfully against Groq
 - it is not an xAI/Grok key
 - Groq Whisper is a viable future source of real Korean word timestamps once a real media/audio file URL is available
+
+
+## Alignment V5.3 — 2026-09-11
+
+User feedback showed the estimated word highlight was still roughly two words ahead on a problematic lesson.
+
+Changes:
+- added an adaptive cue-level highlight lag based on average estimated word duration
+- default lag is about 1.65 average word durations
+- lag is clamped between ~170 ms and 520 ms
+- per-video lag-word overrides are available in `timingProfile()`
+- this affects highlight display timing only; caption cue timing and replay seeking remain unchanged
+
+Production deployment:
+- `dpl_DujZaoYir8yAPrfw1Aq3QVmTiDtu`
+- stable URL preserved
+- 44 Ready lessons preserved
+- known-good caption route verified with 81 cues
+- no error/fatal runtime logs observed after deployment
