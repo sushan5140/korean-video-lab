@@ -113,3 +113,26 @@ Production deployment:
 - 44 Ready lessons preserved
 - known-good caption test returned 81 cues
 - production error/fatal scan was clean after deployment
+
+
+## Alignment V4.1 — 2026-09-11
+
+User feedback changed the spoken-word highlight behavior:
+
+- progressive left-to-right fill inside a word was removed
+- the entire active word now highlights instantly for its estimated spoken duration
+- previously spoken words remain subtly marked
+
+Initial English caption startup was also adjusted:
+
+- first-line English is prepared during the transcript loading phase
+- the synced caption view waits briefly for the first translation batch instead of immediately showing “Getting English meaning…”
+- repeat visits still reuse per-video local translation cache
+- remaining meanings continue in the background after startup
+
+Production deployment:
+- `dpl_D3YWuRBxj69AzV1xruumqUgPMixP`
+- stable URL preserved
+- 44 Ready lessons preserved
+- production verification passed with 81 known-good caption cues
+- no error/fatal runtime logs observed after deployment
