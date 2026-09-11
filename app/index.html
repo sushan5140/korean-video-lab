@@ -682,9 +682,17 @@ function tokenWeight(w,power=.84,punct=.52){
 function timingProfile(){
   // Positive onset guard means: do not light a word until just after its
   // estimated acoustic onset. Per-video overrides can be added here.
-  if(sel&&sel.id==='in58DVfmxug')return{leadIn:44,onset:92,tail:10,power:.80,punct:.48,minWord:82};
-  if(sel&&sel.id==='kHsEZUcyD7c')return{leadIn:32,onset:78,tail:8,power:.88,punct:.62,minWord:96};
-  return{leadIn:38,onset:86,tail:9,power:.84,punct:.54,minWord:88}
+  if(sel&&sel.id==='in58DVfmxug')return{leadIn:44,onset:92,tail:10,power:.80,punct:.48,minWord:82,lagWords:1.75};
+  if(sel&&sel.id==='kHsEZUcyD7c')return{leadIn:32,onset:78,tail:8,power:.88,punct:.62,minWord:96,lagWords:1.55};
+  return{leadIn:38,onset:86,tail:9,power:.84,punct:.54,minWord:88,lagWords:1.65}
+}
+function cueHighlightLag(c,timeline){
+  if(!c||!timeline||!timeline.length)return 0;
+  const p=timingProfile();
+  const start=Number(timeline[0].startMs)||Number(c.startMs)||0;
+  const end=Number(timeline[timeline.length-1].endMs)||Number(c.endMs)||start+400;
+  const avg=Math.max(95,(end-start)/Math.max(1,timeline.length));
+  return Math.round(Math.max(170,Math.min(520,avg*(p.lagWords||1.65))))
 }
 function adaptiveWordTimeline(c){
   const a=spokenTokens(c&&c.ko);if(!a.length)return[];
@@ -718,10 +726,12 @@ function adaptiveWordTimeline(c){
 }
 function spokenIndex(c,ms){
   const tl=adaptiveWordTimeline(c);if(!tl.length)return-1;
-  if(ms<tl[0].startMs)return-1;
+  const lag=cueHighlightLag(c,tl);
+  const syncedMs=ms-lag;
+  if(syncedMs<tl[0].startMs)return-1;
   for(let i=0;i<tl.length;i++){
-    if(ms<tl[i].startMs)return Math.max(-1,i-1);
-    if(ms<=tl[i].endMs)return i
+    if(syncedMs<tl[i].startMs)return Math.max(-1,i-1);
+    if(syncedMs<=tl[i].endMs)return i
   }
   return tl.length-1
 }
@@ -1110,7 +1120,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.2</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.3</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1122,7 +1132,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.2</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT V5.3</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
