@@ -711,7 +711,7 @@ function adaptiveWordTimeline(c){
     const natural=Math.max(a.length*p.minWord,Math.round(units*p.targetUnit+pauses*85));
     const rawSpan=Math.max(0,en-st);
     const allowed=natural+(p.maxTailPad||0);
-    if(rawSpan>allowed+420){
+    if(rawSpan>allowed+950){
       const excess=rawSpan-allowed;
       st+=Math.round(excess*.88);
     }
