@@ -52,6 +52,24 @@ async function groqMicro(list,level,title){
  if(a>=0&&b>a){try{return JSON.parse(raw.slice(a,b+1))}catch{}}
  return null
 }
+function normalizeGroqLessons(raw,list){
+ const rows=[...list].filter(x=>Number.isInteger(Number(x.index))).sort((a,b)=>Number(a.index)-Number(b.index));
+ const byIndex=new Map(rows.map((x,i)=>[Number(x.index),i])),out=[];
+ for(const x of Array.isArray(raw)?raw:[]){
+  const anchor=Number(x.anchorCue??x.startCue);
+  if(!Number.isInteger(anchor)||!byIndex.has(anchor))continue;
+  const ai=byIndex.get(anchor);
+  let left=ai,right=ai;
+  const anchorStart=Number(rows[ai].startMs||0);
+  while(right<rows.length-1&&Number(rows[right].endMs||0)-Number(rows[left].startMs||0)<12000)right++;
+  while(Number(rows[right].endMs||0)-Number(rows[left].startMs||0)<12000&&left>0)left--;
+  while(Number(rows[right].endMs||0)-Number(rows[left].startMs||0)>60000&&right>ai)right--;
+  while(Number(rows[right].endMs||0)-Number(rows[left].startMs||0)>60000&&left<ai)left++;
+  const startCue=Number(rows[left].index),endCue=Number(rows[right].index);
+  out.push({...x,anchorCue:anchor,startCue,endCue});
+ }
+ return out
+}
 function enrichFallbackLessons(list,total){
  const base=micro(list,total),rows=[...list].sort((a,b)=>Number(a.index)-Number(b.index));
  return base.map(x=>{
@@ -71,6 +89,9 @@ function enrichFallbackLessons(list,total){
 }
 module.exports=async function(req,res){res.setHeader('Access-Control-Allow-Origin','*');res.setHeader('Cache-Control','public, s-maxage=86400, stale-while-revalidate=604800');if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});const b=req.body||{},list=cues(b),mode=String(b.mode||'');if(mode==='micro'){
  const ai=await groqMicro(list,String(b.level||''),String(b.title||''));
- if(ai&&Array.isArray(ai.lessons)&&ai.lessons.length)return res.status(200).json({ok:true,source:'groq-transcript-grounded',data:{lessons:ai.lessons}});
+ if(ai&&Array.isArray(ai.lessons)&&ai.lessons.length){
+   const normalized=normalizeGroqLessons(ai.lessons,list);
+   if(normalized.length)return res.status(200).json({ok:true,source:'groq-transcript-grounded',data:{lessons:normalized}})
+ }
  return res.status(200).json({ok:true,source:'deterministic-transcript',data:{lessons:enrichFallbackLessons(list,b.totalCues)}})
 };if(mode==='pattern'){const c=list.find(x=>Number(x.index)===Number(b.cueIndex))||list[Math.floor(list.length/2)]||{};let pattern=c.ko||'',meaning='Reusable expression from this scene',whenToUse='Use it in a similar real-life context.';if(pattern.includes('안 ')){pattern='안 + verb';meaning='simple everyday negation';whenToUse='Use before a verb to say you do not do something.'}return res.status(200).json({ok:true,source:'deterministic-transcript',data:{pattern,meaning,whenToUse,examples:[]}})}if(mode==='section'){const qs=lessonData(list).checkpoints.slice(0,3);return res.status(200).json({ok:true,source:'deterministic-transcript',data:{questions:qs}})}if(mode==='predict'){const idx=Number(b.cueIndex??-1),next=list.find(x=>Number(x.index)===idx+1)||list[list.length-1],alts=list.filter(x=>x!==next).slice(0,2).map(x=>x.ko);return res.status(200).json({ok:true,source:'deterministic-transcript',data:{options:next?[next.ko,...alts]:[],reason:'Choose the line that naturally follows in this transcript.'}})}if(mode==='sayit'||mode==='simplify'||mode==='reconstruct')return res.status(200).json({ok:false,error:'local_fallback_preferred'});return res.status(200).json({ok:true,source:'deterministic-transcript',data:lessonData(list)})};
