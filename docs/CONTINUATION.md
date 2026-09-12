@@ -338,3 +338,24 @@ Next safe step:
 - playback-check the three clean PASS-but-not-manual-ready candidates before durable promotion
 - manually review the two REVIEW candidates before any admission
 - do not reintroduce FAIL candidates unless their Korean transcript availability materially changes
+
+
+## SCALE V1 — Pending playback verification — 2026-09-12
+
+Production API verification completed for the three clean PASS candidates that are not yet durably admitted:
+
+- `Eo2I6voTVnA` — 230 Korean cues, provider-freetranscriptapi, English meaning path healthy
+- `g1Eaa3g-25U` — 372 Korean cues, provider-freetranscriptapi, English meaning path healthy
+- `cWcbK176lQs` — 52 Korean cues, provider-freetranscriptapi, English meaning path healthy
+
+All three previously returned quality `PASS 100`.
+
+They remain outside `VERIFIED_READY` because the final promotion rule requires a real playback sanity check for audio/caption timing. GitHub + Vercel API checks can verify transcript structure, Korean content, translations, routes, and deployment health, but they cannot prove real audio-to-caption sync.
+
+Do not promote these three until playback confirms:
+- cue entry timing is acceptable
+- sentence switching follows speech
+- word highlighting is not materially early/late
+- English meaning renders normally
+
+Current durable Ready count remains 48.
