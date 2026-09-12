@@ -7,7 +7,8 @@ function koUnits(s=''){
   return Math.max(1,h+l*.72)
 }
 function median(a){if(!a.length)return 0;const x=[...a].sort((m,n)=>m-n);return x[Math.floor(x.length/2)]}
-function transcriptMetrics(cues){
+function levelCfg(level){if(level==='Intermediate')return{targetUnit:205,maxTailPad:180,minWord:72};if(level==='Lower Intermediate')return{targetUnit:230,maxTailPad:220,minWord:80};return null}
+function transcriptMetrics(cues,level){
   let ko=0,total=0,overlaps=0,long=0,heavyPadding=0;
   const msPerUnit=[];
   for(let i=0;i<cues.length;i++){
@@ -19,8 +20,10 @@ function transcriptMetrics(cues){
     if(dur>6000)long++;
     if(i+1<cues.length&&Number(cues[i+1].startMs)<Number(c.endMs))overlaps++;
     if(u){
-      const levelNatural=Math.max(320,u*225+toks(text).length*35);
-      if(dur-levelNatural>1200)heavyPadding++;
+      const cfg=levelCfg(level);
+      const target=cfg?cfg.targetUnit:245,minWord=cfg?cfg.minWord:95,tail=cfg?cfg.maxTailPad:260;
+      const natural=Math.max(toks(text).length*minWord,u*target)+tail;
+      if(dur-natural>950)heavyPadding++;
     }
   }
   const transitions=Math.max(1,cues.length-1);
@@ -64,14 +67,14 @@ async function translations(base,cues){
     return{checked:true,successRatio:ok/sample.length,count:sample.length,source:d.source||null}
   }catch{return{checked:false,successRatio:0,count:sample.length}}
 }
-async function checkOne(base,id){
+async function checkOne(base,id,level='Beginner'){
   if(!YT_ID.test(id))return{videoId:id,status:'FAIL',score:0,reason:'invalid_video_id'};
   try{
     const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=8',{headers:{accept:'application/json'}});
     const d=await r.json();
     if(!d.ok||!Array.isArray(d.cues)||!d.cues.length)return{videoId:id,status:'FAIL',score:0,reason:d.reason||d.error||'no_usable_korean_transcript',captionSource:d.source||null};
-    const metrics=transcriptMetrics(d.cues),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
-    return{videoId:id,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,checkedAt:new Date().toISOString()}
+    const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
+    return{videoId:id,level,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,checkedAt:new Date().toISOString()}
   }catch(e){return{videoId:id,status:'FAIL',score:0,reason:'quality_check_failed'}}
 }
 module.exports=async function(req,res){
@@ -79,13 +82,16 @@ module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
   const host='https://korean-video-lab.vercel.app';
   if(req.method==='GET'){
-    const u=new URL(req.url||'/','https://haneul.local'),id=String(u.searchParams.get('videoId')||'');
-    return res.status(200).json(await checkOne(host,id))
+    const u=new URL(req.url||'/','https://haneul.local'),id=String(u.searchParams.get('videoId')||''),level=String(u.searchParams.get('level')||'Beginner');
+    return res.status(200).json(await checkOne(host,id,level))
   }
   if(req.method==='POST'){
+    const rows=Array.isArray(req.body?.videos)?req.body.videos.slice(0,8):[];
     const ids=[...new Set((req.body?.videoIds||[]).map(x=>String(x||'').trim()).filter(Boolean))].slice(0,8);
-    if(!ids.length)return res.status(400).json({ok:false,error:'missing_video_ids'});
-    const results=[];for(const id of ids)results.push(await checkOne(host,id));
+    if(!rows.length&&!ids.length)return res.status(400).json({ok:false,error:'missing_video_ids'});
+    const results=[];
+    if(rows.length){for(const x of rows){const id=String(x?.id||'').trim(),level=String(x?.level||'Beginner');results.push(await checkOne(host,id,level))}}
+    else{for(const id of ids)results.push(await checkOne(host,id,'Beginner'))}
     return res.status(200).json({ok:true,count:results.length,results})
   }
   return res.status(405).json({ok:false,error:'method_not_allowed'})
