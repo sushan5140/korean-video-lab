@@ -25,8 +25,8 @@ async function groqMicro(list,level,title){
  const compact=list.slice(0,110).map(x=>({index:Number(x.index),startMs:Number(x.startMs||0),endMs:Number(x.endMs||0),ko:String(x.ko||''),en:String(x.en||'')}));
  const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
   method:'POST',headers:{Authorization:'Bearer '+key,'content-type':'application/json'},
-  body:JSON.stringify({model,temperature:.2,max_tokens:2400,messages:[
-   {role:'system',content:'You are building Korean micro-lessons from a transcript. Return ONLY JSON. Choose 4-6 short, high-value learning moments. Every lesson must be grounded in one real cue index from the supplied transcript. Prefer reusable grammar/patterns and natural expressions, not random vocabulary. Keep explanations concise for learners.'},
+  body:JSON.stringify({model,temperature:.2,max_tokens:2400,response_format:{type:'json_object'},messages:[
+   {role:'system',content:'You are building Korean micro-lessons from a transcript. Return one valid JSON object only. Choose 4-6 short, high-value learning moments. Every lesson must be grounded in one real cue index from the supplied transcript. Prefer reusable grammar/patterns and natural expressions, not random vocabulary. Keep explanations concise for learners.'},
    {role:'user',content:JSON.stringify({
      task:'Create Korean micro lessons',
      title,level,
@@ -46,8 +46,11 @@ async function groqMicro(list,level,title){
   ]})
  });
  if(!r.ok)return null;
- const d=await r.json(),raw=stripFence(d?.choices?.[0]?.message?.content||'');
- try{return JSON.parse(raw)}catch{return null}
+ const d=await r.json();let raw=stripFence(d?.choices?.[0]?.message?.content||'');
+ try{return JSON.parse(raw)}catch{}
+ const a=raw.indexOf('{'),b=raw.lastIndexOf('}');
+ if(a>=0&&b>a){try{return JSON.parse(raw.slice(a,b+1))}catch{}}
+ return null
 }
 function enrichFallbackLessons(list,total){
  const base=micro(list,total),rows=[...list].sort((a,b)=>Number(a.index)-Number(b.index));
