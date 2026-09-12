@@ -489,3 +489,55 @@ Important boundary:
 - this gate is structural, not acoustic forced alignment
 - REVIEW videos require human playback verification before promotion
 - never promote candidates only because the caption endpoint returns HTTP 200
+
+
+## SCALE V1 — Content Quality Gate + conservative auto-admission — 2026-09-12
+
+A server-side admission gate now protects the Ready catalog.
+
+### Quality gate
+Endpoint:
+- `GET /api/quality?videoId=<id>&level=<level>`
+- `POST /api/quality` for small batches
+
+Checks include:
+- usable Korean transcript
+- cue count / transcript coverage
+- Hangul ratio
+- cue overlap / rolling-caption risk
+- long cue-window ratio
+- heavy padded-cue risk using level-aware timing expectations
+- English meaning health using the existing translation stack
+
+Gate result:
+- `PASS`
+- `REVIEW`
+- `FAIL`
+
+The response includes a numeric score, fail/review/pass reasons, transcript metrics, translation health, caption source, and timestamp.
+
+Verified examples:
+- `8rvv4RXQYb4` Self-introduction → `PASS`, score 100
+- `rj2j3Tes8q0` known bad candidate → `FAIL`, reason `provider-no-korean-track`
+
+### Learner catalog behavior
+- Existing 43 manually verified Ready lessons remain grandfathered and are never demoted by this new runtime gate.
+- Checking candidates can be tested automatically.
+- Only two unchecked candidates per selected level are probed in one browser session to protect transcript-provider limits.
+- A candidate must return `PASS` with score >= 82 to become Ready in that browser session.
+- PASS results are cached locally for 7 days.
+- REVIEW and FAIL candidates remain hidden from the learner feed.
+- Feed status can show how many lessons were auto-qualified.
+
+### Production
+- marker: `ALIGNMENT TRUSTED L3 · SCALE V1`
+- deployment: `dpl_s7ZYsmAyFW7r9rW3aMTrfgBQjr4S`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- 43 grandfathered Ready lessons preserved
+- known-good caption smoke test: 81 cues
+- no error/fatal runtime logs observed after deployment
+
+Operational rule:
+- Do not mass-audit all candidates on every page load.
+- Keep runtime admission conservative and low-volume.
+- For large catalog expansion, run explicit small-batch quality checks and persist approved IDs into the durable Ready set after human review when appropriate.
