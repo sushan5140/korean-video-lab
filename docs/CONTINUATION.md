@@ -150,3 +150,50 @@ Changing cue resets the sequence. Practice-specific replay buttons remain plain 
 Verification boundary:
 - Smart Replay and review signal logic were verified in deployed source/build, but not exhaustively browser-click-tested across every lesson.
 - batch Groq fallback for `/api/meanings` is deployed but was not independently POST-tested through the Vercel connector.
+
+
+## Review V2 — Scene-grounded Micro Lessons — 2026-09-12
+
+Micro Lessons were upgraded from generic section picks into scene-grounded teaching moments.
+
+### Backend
+- `api/semantic.js` now uses Groq for Micro Lesson enrichment when `GROQ_API_KEY` is available.
+- Groq output is constrained to transcript cue indexes and validated.
+- Each lesson can include:
+  - `anchorCue`
+  - contextual `startCue` / `endCue`
+  - title / why
+  - exact Korean pattern
+  - concise English meaning
+  - when-to-use note
+  - fresh Korean example + English translation
+  - up to 3 focus tags
+- AI picks are normalized into approximately 12–60 second contextual scenes around the anchor.
+- Deterministic transcript-grounded fallback remains if Groq fails.
+
+Production smoke test succeeded with source `groq-transcript-grounded` and 5 lessons.
+Example verified outputs included:
+- `안녕하세요` → “Hello”
+- `성함이 어떻게 되세요?` → “What is your name?”
+- each expanded into a surrounding scene rather than a single isolated cue.
+
+### Frontend
+- Micro Lesson cache version bumped to `haneulMicro:v2`.
+- Micro cards now show the actual pattern, meaning, usage note, and optional fresh example.
+- “Study scene” jumps to the exact anchor cue.
+- “Mark reviewed” persists locally via `haneulMicroReviewed:v1`.
+- reviewing a Micro Lesson feeds personal review memory and pattern mastery.
+- Micro Lesson interaction now contributes to Smart Rewatch ranking.
+
+### Production
+- marker: `ALIGNMENT TRUSTED L3 · REVIEW V2`
+- clean deployment: `dpl_p1MPSWDuu6i3QAh8i8P1mXEpyBW2`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- 43 Ready lessons preserved
+- known-good captions verified with 81 cues
+- temporary `/api/micro-smoke` route removed (404)
+- no error/fatal runtime logs observed after deployment
+
+Verification boundary:
+- Groq Micro Lesson generation was end-to-end smoke-tested on a real transcript.
+- UI source/build was verified, but not exhaustively browser-click-tested across every lesson.
