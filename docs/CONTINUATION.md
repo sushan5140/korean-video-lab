@@ -197,3 +197,46 @@ Example verified outputs included:
 Verification boundary:
 - Groq Micro Lesson generation was end-to-end smoke-tested on a real transcript.
 - UI source/build was verified, but not exhaustively browser-click-tested across every lesson.
+
+
+## Content Quality Gate + Scaling baseline — 2026-09-12
+
+Implemented `api/quality.js` as the automated admission gate for new video candidates.
+
+Gate outcomes:
+- `PASS` — automated checks are healthy; one short playback sanity check still required before promotion
+- `REVIEW` — transcript works but timing structure is risky; human playback verification required
+- `FAIL` — do not promote to Ready
+
+Checks currently include:
+- usable Korean transcript
+- cue count
+- Hangul ratio
+- cue overlap percentage
+- long cue percentage
+- heavy-padding ratio
+- median milliseconds per Korean unit
+- sampled English translation health
+
+English verification uses the existing `/api/meanings` path with Google primary + Groq fallback.
+
+Production calibration:
+- `8rvv4RXQYb4` Self-introduction → PASS 100
+- `paToZla2CK8` Supermarket Korean → REVIEW 88 (`heavy_padding`)
+- `NRcXaIUcEak` broken Intermediate Listening → FAIL (`provider-no-korean-track`)
+- `x031U15y6_U` 40-min Intermediate Podcast → PASS 100
+- `6Y7VwFR5cDg` 1-hour Natural Conversation → REVIEW 88 (`rolling_overlap`)
+
+Durable workflow documentation:
+- `docs/CONTENT_PIPELINE.md`
+
+Production deployment:
+- `dpl_5WPbrwEm8iHDcNw7ZfQmeXp1Fw7g`
+- stable URL preserved
+- learner UI unchanged
+- quality gate is server-side and candidate-admission-only; it is not called on normal browse/page load
+
+Important boundary:
+- this gate is structural, not acoustic forced alignment
+- REVIEW videos require human playback verification before promotion
+- never promote candidates only because the caption endpoint returns HTTP 200
