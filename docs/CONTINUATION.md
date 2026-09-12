@@ -292,3 +292,49 @@ Operational rule:
 - Do not mass-audit all candidates on every page load.
 - Keep runtime admission conservative and low-volume.
 - For large catalog expansion, run explicit small-batch quality checks and persist approved IDs into the durable Ready set after human review when appropriate.
+
+
+## SCALE V1 — Durable admission batch 1 — 2026-09-12
+
+Quality-gated the remaining non-durable catalog candidates in small batches.
+
+Durably promoted after clean PASS results plus existing curated manual-ready status:
+- `9rgKP4igcmk` — 달려라 예지 · Intermediate Short Story — PASS 100
+- `KMBYFe55isQ` — 신축치고 월세가 싸요 · Housing Story — PASS 100
+- `Ux-TMWnmntM` — Natural Korean Conversation with 태웅쌤 — PASS 100
+- `DI0lxAx1dwo` — Traditional Tea House Date · Korean Vlog — PASS 100
+- `ypK89NqZvAg` — 무슨 옷을 입을까요? · What Should I Wear? — PASS 100
+
+Still excluded:
+- `Yz1R55Opwwg` — FAIL: provider-no-korean-track
+- `mIBkzUdEXoQ` — FAIL: provider-no-korean-track
+- `TLgAJgYqIZk` — FAIL: provider-no-korean-track
+- `tZCeGRDmUdY` — FAIL: too_few_cues
+- `WFy6o--cocI` — REVIEW 52: korean_ratio_borderline, heavy_padding, rolling_overlap, many_long_cues
+- `_vt-tr4fnWg` — REVIEW 88: many_long_cues
+
+Clean PASS but not yet durably promoted because they lacked prior manual-ready status and still require a real playback sanity check:
+- `Eo2I6voTVnA` — PASS 100
+- `g1Eaa3g-25U` — PASS 100
+- `cWcbK176lQs` — PASS 100
+
+Known previously excluded candidates remain excluded:
+- `rj2j3Tes8q0` — provider-no-korean-track
+- `NRcXaIUcEak` — provider-no-korean-track
+- `wns9Ro1Nkb0` — earlier transcript-language failure; do not re-admit without fresh verification
+
+Durable Ready count is now 48.
+
+Production:
+- GitHub promotion commit: `b1cd64589e12f5261d5106f37bd1aefac07c39e6`
+- Vercel deployment: `dpl_2pTLUcG8a1rpLZbM6A6T4mf6XbzL`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- homepage verified HTTP 200 with 48 Ready IDs
+- known-good `8rvv4RXQYb4` captions verified at 81 cues
+- quality endpoint re-verified on promoted candidate `9rgKP4igcmk` → PASS 100
+- no error/fatal runtime logs observed after deployment
+
+Next safe step:
+- playback-check the three clean PASS-but-not-manual-ready candidates before durable promotion
+- manually review the two REVIEW candidates before any admission
+- do not reintroduce FAIL candidates unless their Korean transcript availability materially changes
