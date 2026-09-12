@@ -39,8 +39,8 @@ function verdict(metrics,translation){
   if(metrics.hangulRatio<.55)fail.push('korean_ratio_low');
   else if(metrics.hangulRatio<.82)review.push('korean_ratio_borderline');
   else pass.push('korean_ratio');
-  if(metrics.heavyPaddingPct>=.42)review.push('heavy_padding');
-  else if(metrics.heavyPaddingPct>=.22)review.push('some_padding');
+  if(metrics.heavyPaddingPct>=.5&&metrics.medianMsPerUnit>=580)review.push('heavy_padding');
+  else if(metrics.heavyPaddingPct>=.3&&metrics.medianMsPerUnit>=560)review.push('some_padding');
   else pass.push('padding');
   if(metrics.overlapPct>=.78)review.push('rolling_overlap');
   else if(metrics.overlapPct>=.45)review.push('heavy_overlap');
