@@ -1,6 +1,6 @@
 # Current State
 
-Last durable verification captured: 2026-09-11.
+Last durable verification captured: 2026-09-12.
 
 ## Production
 
@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_AdYX6UCjeAkgu48MYhiBQNWBfgDc`
+- current production deployment: `dpl_2pTLUcG8a1rpLZbM6A6T4mf6XbzL`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -36,13 +36,13 @@ The live frontend contains 60 curated candidates.
 
 Previously a hard-coded `VERIFIED_READY` gate exposed only 13 lessons even though many more candidates had already been prepared.
 
-The gate has now been expanded to **44 verified Ready videos** after transcript-quality checks.
+The durable Ready gate now contains **48 verified Ready videos** after the SCALE V1 admission batch.
 
 Current Ready distribution:
 
 - Beginner: 21
-- Lower Intermediate: 14
-- Intermediate: 9
+- Lower Intermediate: 16
+- Intermediate: 11
 
 The UI keeps the existing level-filter behavior, so the default Beginner view shows 21 Ready lessons and the other Ready lessons are available through the level filters.
 
