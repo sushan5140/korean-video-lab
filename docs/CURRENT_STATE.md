@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_J1KSQ4Vst7RtPePM21cKbvU9sKfE`
+- current production deployment: `dpl_6xWtZSXYh3MaMBiTNJsg3PTPFi57`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -575,3 +575,28 @@ Deployment:
 - no runtime errors observed in the post-deploy scan
 
 Durable Ready count remains 48. No candidate was promoted without acoustic playback evidence.
+
+
+## Word Sync V2 calibration — 2026-09-14
+
+User playback verification on pending candidate `Eo2I6voTVnA` showed the spoken audio running about two words ahead of the highlighted word.
+
+Implemented:
+- caption cues now preserve a `words[]` timing array whenever an upstream source exposes real word/segment timestamps
+- YouTube JSON3 fallback now preserves segment offsets and converts them into timed Korean word tokens
+- the frontend prefers exact `words[]` timing when the timed-token count matches the visible Korean token count
+- estimated timing remains the fallback when the current provider only supplies cue-level timestamps
+- `Eo2I6voTVnA` received a video-specific calibrated display advance of about 1.85 median-word durations, clamped to 420–760 ms
+- trusted Baby/Mina behavior and the global alignment model were left unchanged
+- caption cache version bumped from `cv=8` to `cv=9`
+
+Important boundary:
+- FreeTranscriptAPI currently returns cue-level `text/start/duration`, not true word timestamps, so `Eo2I6voTVnA` still uses the calibrated fallback rather than acoustic forced alignment
+- exact word timestamps will be used automatically if a future caption source supplies them
+
+Production:
+- deployment: `dpl_6xWtZSXYh3MaMBiTNJsg3PTPFi57`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- marker: `WORD SYNC V2`
+- candidate quality gate remains PASS 100
+- no runtime errors observed after deployment
