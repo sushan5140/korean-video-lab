@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`
+- current production deployment: `dpl_6vyG3tdxJ3obgGobFS9H99PMQt5D`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -619,4 +619,21 @@ Production:
 - deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`
 - stable URL preserved
 - `Eo2I6voTVnA` captions healthy at 230 cues
+- no runtime errors observed after deployment
+
+
+## Word Sync V2.2 micro word-boundary calibration — 2026-09-14
+
+User playback feedback on `Eo2I6voTVnA` found a remaining small intra-sentence lag: the speaker could begin the next word while the previous token was still highlighted.
+
+Fix:
+- added a lesson-specific `wordBoundaryLead: 110` ms
+- this extra lead applies only to per-word highlighting, not sentence handoff
+- exact upstream word timestamps, when available, bypass this compensation
+- global timing and trusted reference videos remain unchanged
+
+Production:
+- marker: `WORD SYNC V2.2`
+- deployment: `dpl_6vyG3tdxJ3obgGobFS9H99PMQt5D`
+- stable URL preserved
 - no runtime errors observed after deployment
