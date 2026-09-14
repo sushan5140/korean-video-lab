@@ -410,3 +410,26 @@ Current behavior:
 - change is isolated to `Eo2I6voTVnA`
 
 Production deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`.
+
+
+## Word Sync V3 source-timing switch — 2026-09-14
+
+Playback on `Eo2I6voTVnA` showed inconsistent intra-sentence behavior: some highlighted words ran ahead of speech while other spoken words ran ahead of the highlight. This proves a fixed timing offset is not sufficient for this video's variable speech rate.
+
+Repo changes completed:
+- `api/captions.js` now supports a caption-source override for verification
+- `Eo2I6voTVnA` now prefers the YouTube Korean JSON3 caption track before FreeTranscriptAPI
+- YouTube JSON3 segment offsets are preserved as timed `words[]` tokens
+- when a cue has matching timed `words[]`, the frontend bypasses manual word and statement timing compensation
+- manual V2.x calibration remains only as fallback if the timed YouTube source is unavailable
+- UI marker prepared as `WORD SYNC V3`
+
+Commits:
+- `2ad46d0` — Add caption source verification override
+- `a90d901` — Prefer segment-timed YouTube captions for calibration video
+- `144e5c8` — Bypass manual timing compensation for segment-timed cues
+
+Deployment blocker:
+- Vercel rejected the next production deployment because the project/account reached the free API deployment limit (`api-deployments-free-per-day`, 100/100 used)
+- current live production therefore remains V2.3 deployment `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
+- do not claim Word Sync V3 is live until a later production deployment succeeds and the target video's YouTube-timed response is verified
