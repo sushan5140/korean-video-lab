@@ -359,3 +359,25 @@ Do not promote these three until playback confirms:
 - English meaning renders normally
 
 Current durable Ready count remains 48.
+
+
+## Candidate playback verification mode — 2026-09-14
+
+A hidden deep-link was added to finish the SCALE V1 playback gate without exposing unverified candidates in Browse:
+
+`https://korean-video-lab.vercel.app/?verify=<videoId>`
+
+Use it for the five currently excluded review candidates:
+- clean PASS awaiting acoustic check: `Eo2I6voTVnA`, `g1Eaa3g-25U`, `cWcbK176lQs`
+- structural REVIEW: `WFy6o--cocI`, `_vt-tr4fnWg`
+
+Do not promote a clean PASS candidate until real playback confirms:
+- cue entry timing follows the spoken line
+- sentence switching follows speech
+- highlighted word is not materially early/late
+- English meaning renders normally
+
+The verification query does not change `VERIFIED_READY`; durable Ready remains 48.
+
+Production deployment: `dpl_J1KSQ4Vst7RtPePM21cKbvU9sKfE`
+GitHub implementation commit: `a208e804075c425b146f9edc53a7bb5fd207fa84`
