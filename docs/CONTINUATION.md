@@ -381,3 +381,18 @@ The verification query does not change `VERIFIED_READY`; durable Ready remains 4
 
 Production deployment: `dpl_J1KSQ4Vst7RtPePM21cKbvU9sKfE`
 GitHub implementation commit: `a208e804075c425b146f9edc53a7bb5fd207fa84`
+
+
+## Word Sync V2 continuation — 2026-09-14
+
+Playback feedback for `Eo2I6voTVnA` established that the speaker was roughly two words ahead of the highlighted token.
+
+Current production fix:
+- deployment `dpl_6xWtZSXYh3MaMBiTNJsg3PTPFi57`
+- exact `cue.words[]` timing is preferred when available
+- JSON3 segment offsets are preserved by the caption backend
+- `Eo2I6voTVnA` has a video-specific calibrated highlight advance (about 1.85 median-word durations, clamped 420–760 ms)
+- caption cache key is now `cv=9`
+- no global timing changes were made
+
+Do not call this true acoustic forced alignment while the active FreeTranscriptAPI response only provides cue-level timestamps. If later playback still reports a consistent lead/lag, calibrate this video-specific profile rather than changing Baby/Mina or the global curve.
