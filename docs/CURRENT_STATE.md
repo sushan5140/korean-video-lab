@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_6vyG3tdxJ3obgGobFS9H99PMQt5D`
+- current production deployment: `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -636,4 +636,21 @@ Production:
 - marker: `WORD SYNC V2.2`
 - deployment: `dpl_6vyG3tdxJ3obgGobFS9H99PMQt5D`
 - stable URL preserved
+- no runtime errors observed after deployment
+
+
+## Word Sync V2.3 statement-boundary calibration — 2026-09-14
+
+Further playback feedback on `Eo2I6voTVnA` showed a remaining delay when a new statement begins.
+
+Fix:
+- added `statementBoundaryLead: 170` ms for this lesson
+- statement handoff advance may now reach 850 ms instead of the previous 680 ms cap
+- near-contiguous cue allowance widened from 260 ms to 360 ms
+- per-word 110 ms boundary lead remains unchanged
+- calibration remains isolated to `Eo2I6voTVnA`; global timing stays untouched
+
+Production:
+- marker: `WORD SYNC V2.3`
+- deployment: `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
 - no runtime errors observed after deployment
