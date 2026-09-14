@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_6xWtZSXYh3MaMBiTNJsg3PTPFi57`
+- current production deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -599,4 +599,24 @@ Production:
 - stable URL preserved: https://korean-video-lab.vercel.app/
 - marker: `WORD SYNC V2`
 - candidate quality gate remains PASS 100
+- no runtime errors observed after deployment
+
+
+## Word Sync V2.1 sentence handoff — 2026-09-14
+
+User playback feedback on `Eo2I6voTVnA` showed that word highlighting could be corrected while sentence changes still waited on the raw cue timestamp.
+
+Fix:
+- added a shared calibrated clock via `cueClockAdvanceMs()`
+- `spokenIndex()` and cue switching now use the same lesson-specific timing advance
+- for `Eo2I6voTVnA`, adjacent cues hand off early when their raw gap is <=260 ms
+- early handoff is capped at 680 ms
+- larger real pauses are preserved; the app does not skip them
+- global Baby/Mina and other lesson timing remains unchanged
+
+Production:
+- marker: `WORD SYNC V2.1`
+- deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`
+- stable URL preserved
+- `Eo2I6voTVnA` captions healthy at 230 cues
 - no runtime errors observed after deployment
