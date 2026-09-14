@@ -1352,4 +1352,14 @@ $('x').onclick=()=>{cancelAnimationFrame(raf);try{if(player&&ready)player.pauseV
 $('pinModalClose').onclick=closePinModal;$('pinCancel').onclick=closePinModal;$('tagAddBtn').onclick=addPendingTag;
 $('tagInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPendingTag()}};
 $('pinSave').onclick=()=>{if(!pendingPin)return;pendingPin.tags=pendingTags.slice();recordReviewSignal('pin',Number.isInteger(pendingPin.cueIndex)?pendingPin.cueIndex:cue);pinnedPhrases.unshift(pendingPin);savePins();closePinModal();pendingPin=null;pendingTags=[];toast('Saved to Library');if(tab==='phrases')panel('phrases')};
-syncMasteryMemory();wireLessonJourney();home();loadVideoFeed();</script><script src="https://www.youtube.com/iframe_api"></script></body></html>
+syncMasteryMemory();wireLessonJourney();home();loadVideoFeed();
+const verificationCandidate=new URLSearchParams(location.search).get('verify');
+if(verificationCandidate){
+  const candidate=curatedCatalog.find(v=>v.id===verificationCandidate);
+  if(candidate){
+    setTimeout(()=>{
+      open(candidate.id,candidate.levelCode,candidate.level);
+      toast('Verification mode · candidate is not promoted');
+    },300);
+  }
+}</script><script src="https://www.youtube.com/iframe_api"></script></body></html>
