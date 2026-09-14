@@ -396,3 +396,17 @@ Current production fix:
 - no global timing changes were made
 
 Do not call this true acoustic forced alignment while the active FreeTranscriptAPI response only provides cue-level timestamps. If later playback still reports a consistent lead/lag, calibrate this video-specific profile rather than changing Baby/Mina or the global curve.
+
+
+## Word Sync V2.1 continuation — 2026-09-14
+
+Playback revealed a separate sentence-boundary lag on `Eo2I6voTVnA`: the word highlighter was advanced, but `findCue()` still waited for raw transcript timestamps.
+
+Current behavior:
+- shared calibrated clock drives both word highlight and sentence handoff
+- only near-contiguous cues (gap <=260 ms) may switch early
+- handoff lead is capped at 680 ms
+- real pauses stay intact
+- change is isolated to `Eo2I6voTVnA`
+
+Production deployment: `dpl_DLLQXjNi3Bz582H7VPdxYSfk7TYP`.
