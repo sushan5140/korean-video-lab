@@ -721,8 +721,8 @@ function findCue(ms){
   // effectively continuous, hand off to the next statement as soon as the
   // current spoken-word model says this statement has finished.
   if(sel&&sel.id==='Eo2I6voTVnA'&&b<cues.length-1){
-    const curCue=cues[b],nextCue=cues[b+1],gap=Number(nextCue.startMs)-Number(curCue.endMs),p=timingProfile();
-    if(gap<=360){
+    const curCue=cues[b],nextCue=cues[b+1],a=spokenTokens(curCue.ko),exact=Array.isArray(curCue.words)&&curCue.words.length===a.length,gap=Number(nextCue.startMs)-Number(curCue.endMs),p=timingProfile();
+    if(!exact&&gap<=360){
       const base=cueClockAdvanceMs(curCue),boundary=Number(p.statementBoundaryLead||0);
       const advance=Math.min(Number(p.statementAdvanceMax||850),base+boundary);
       const handoff=Math.min(Number(curCue.endMs),Number(nextCue.startMs))-advance;
@@ -1297,7 +1297,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.3 · SCALE V1</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3 · SCALE V1</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1309,7 +1309,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.3 · SCALE V1</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3 · SCALE V1</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
