@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_2pTLUcG8a1rpLZbM6A6T4mf6XbzL`
+- current production deployment: `dpl_J1KSQ4Vst7RtPePM21cKbvU9sKfE`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -541,3 +541,37 @@ Operational rule:
 - Do not mass-audit all candidates on every page load.
 - Keep runtime admission conservative and low-volume.
 - For large catalog expansion, run explicit small-batch quality checks and persist approved IDs into the durable Ready set after human review when appropriate.
+
+
+## Candidate playback verification mode — 2026-09-14
+
+The pending SCALE V1 review boundary has been preserved without promoting unverified lessons.
+
+A hidden production-only verification entry point is now available through:
+- `/?verify=<videoId>`
+
+Behavior:
+- accepts only candidates already present in the curated catalog
+- opens the candidate directly in the existing approved lesson player
+- does not add the candidate to `VERIFIED_READY`
+- does not expose a new learner-facing browse card or redesign the UI
+- shows a short verification-mode toast so manual reviewers know the lesson is not promoted
+
+Pending clean PASS candidates still awaiting real acoustic playback confirmation:
+- `Eo2I6voTVnA` — PASS 100
+- `g1Eaa3g-25U` — PASS 100
+- `cWcbK176lQs` — PASS 100
+
+Manual-review candidates remain excluded:
+- `WFy6o--cocI` — REVIEW 52
+- `_vt-tr4fnWg` — REVIEW 88
+
+Deployment:
+- GitHub commit: `a208e804075c425b146f9edc53a7bb5fd207fa84`
+- production deployment: `dpl_J1KSQ4Vst7RtPePM21cKbvU9sKfE`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- known-good caption smoke test: 81 cues
+- hidden verification code confirmed in production source
+- no runtime errors observed in the post-deploy scan
+
+Durable Ready count remains 48. No candidate was promoted without acoustic playback evidence.
