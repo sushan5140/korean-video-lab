@@ -811,7 +811,7 @@ function timingProfile(){
   // User playback on this lesson showed the speaker running about two words ahead
   // of the estimated highlight. Keep the trusted global model unchanged and
   // calibrate only this lesson until an acoustic word-timestamp source is available.
-  if(sel&&sel.id==='Eo2I6voTVnA')return{lead:4,tail:8,power:.64,punct:.26,gapTrim:.24,minWord:66,targetUnit:188,maxTailPad:150,advanceWords:1.85,advanceMin:420,advanceMax:760};
+  if(sel&&sel.id==='Eo2I6voTVnA')return{lead:4,tail:8,power:.64,punct:.26,gapTrim:.24,minWord:66,targetUnit:188,maxTailPad:150,advanceWords:1.85,advanceMin:420,advanceMax:760,wordBoundaryLead:110};
   if(sel&&sel.level==='Intermediate')return{lead:6,tail:10,power:.68,punct:.30,gapTrim:.30,minWord:72,targetUnit:205,maxTailPad:180};
   if(sel&&sel.level==='Lower Intermediate')return{lead:7,tail:12,power:.70,punct:.34,gapTrim:.26,minWord:80,targetUnit:230,maxTailPad:220};
   return{lead:8,tail:18,power:.72,punct:.40,gapTrim:.20,minWord:100}
@@ -862,7 +862,8 @@ function adaptiveWordTimeline(c){
 }
 function spokenIndex(c,ms){
   const tl=adaptiveWordTimeline(c);if(!tl.length)return-1;
-  const clock=(Number(ms)||0)+cueClockAdvanceMs(c);
+  const a=spokenTokens(c&&c.ko),exact=Array.isArray(c&&c.words)&&c.words.length===a.length,p=timingProfile();
+  const clock=(Number(ms)||0)+cueClockAdvanceMs(c)+(exact?0:Number(p.wordBoundaryLead||0));
   if(clock<tl[0].startMs)return-1;
   for(let i=0;i<tl.length;i++){
     if(clock>=tl[i].startMs&&clock<tl[i].endMs)return i;
@@ -1295,7 +1296,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.1 · SCALE V1</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.2 · SCALE V1</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1307,7 +1308,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.1 · SCALE V1</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V2.2 · SCALE V1</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
