@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_ATNhJ1Ac18LNtPC45Vajx2cSioAK`
+- current production deployment: `dpl_FFgcTeBdZWzNfxsNgEug53DJMW9r`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -711,3 +711,62 @@ Alignment freeze:
 - do not change the frozen timing profile without new acoustic playback evidence or a genuine word-timestamp source
 
 Production deployment: `dpl_D8xasJMZf6kqr7ww39AQsiAiwRxv`.
+
+
+## Learning Loop V2 — 2026-09-16
+
+Implemented the next learner-experience milestone without changing the approved Video Lab visual system or the frozen Word Sync V3.1 timing baseline.
+
+### Cross-video Review Today
+- added a new Library tab: `Review Today`
+- combines repeated Smart Replay lines, practice retries, saved words, mined phrases and stolen reusable patterns into one ranked queue
+- queue is deduplicated by video + cue
+- up to 12 highest-value review moments are shown
+- completed items can be marked `Done today` and disappear until the next local day
+- reviewing a cue also advances matching saved-word review counts
+
+### Smart Replay -> review capture
+- replay signals now persist enough cue metadata to reopen the exact lesson moment later
+- a cue replayed twice is automatically treated as a review candidate
+- the second replay visibly confirms `added to Review Today`
+- existing Normal -> Slow 0.8x -> Korean only -> Shadow replay cycle is preserved
+
+### Sentence mining upgrade
+Pinned phrases now preserve more than Korean + English:
+- reusable pattern when semantic analysis has one
+- pattern meaning
+- previous Korean cue
+- next Korean cue
+- review metadata
+- existing custom tags remain supported
+
+The Library phrase card renders the mined pattern and surrounding context when available.
+
+### Listening progress
+- added persistent local listening-time tracking
+- counts only while the YouTube player is actively playing inside the open lesson
+- normal playback, replays and shadowing all count
+- Progress now shows today minutes, total listening minutes, lessons watched and active study days
+
+### Progress integration
+The Progress tab now combines:
+- active-video completion
+- listening time
+- cross-video Review Today summary
+- Haneul Memory mastery snapshot
+- Smart Rewatch for the current lesson
+
+### Safety / stability
+- Word Sync V3.1 remains frozen and unchanged
+- `VERIFIED_READY` remains unchanged at 48
+- no candidates were silently promoted
+- quality route continues to test `cv=10`
+- experimental public Whisper alignment probe was removed before this milestone
+
+Production verification:
+- deployment: `dpl_FFgcTeBdZWzNfxsNgEug53DJMW9r`
+- stable URL preserved: https://korean-video-lab.vercel.app/
+- Learning Loop V2 marker present in production
+- `g1Eaa3g-25U` caption smoke test: 372 Korean cues, provider-freetranscriptapi
+- `g1Eaa3g-25U` quality recheck: PASS 100, English translation 5/5 healthy
+- no runtime errors found after deployment
