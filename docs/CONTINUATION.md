@@ -488,3 +488,22 @@ Do not change Word Sync V3.1 as part of learner-feature work unless new acoustic
 Ready count remains 48. Candidate promotion gate is unchanged.
 
 Production deployment: `dpl_FFgcTeBdZWzNfxsNgEug53DJMW9r`.
+
+
+## Nine-plan merged continuation — 2026-09-16
+
+Current product state after merging the older nine-item roadmap:
+
+- Smart Replay: keep current Learning Loop V2 version
+- Sentence Mining: keep current context-rich version
+- Review Today: now Review V3 spaced scheduling
+- Micro Lessons: Listen -> Practice -> Save pattern -> Reviewed, reusing existing practice/mining systems
+- Progress: listening + completion + familiar vocab + pattern exposure + active days + level catalog progress
+- catalog: 11 new checking candidates added; 7 PASS / 3 REVIEW / 1 FAIL structurally
+- Ready gate: API PASS is never enough for Browse/Ready; manual playback approval is still required
+- durable Ready count remains 48
+- Word Sync V3.1 remains frozen
+
+Next safe catalog work is playback verification of PASS candidates. Priority order from structural cleanliness should start with shorter/cleaner candidates, but no candidate should be promoted without a real listening verdict.
+
+Production: `dpl_8xjCcwsEHGpZ9oTNmVi5c6oZdK6f`.
