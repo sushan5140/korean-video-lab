@@ -70,7 +70,7 @@ async function translations(base,cues){
 async function checkOne(base,id,level='Beginner'){
   if(!YT_ID.test(id))return{videoId:id,status:'FAIL',score:0,reason:'invalid_video_id'};
   try{
-    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=8',{headers:{accept:'application/json'}});
+    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=10',{headers:{accept:'application/json'}});
     const d=await r.json();
     if(!d.ok||!Array.isArray(d.cues)||!d.cues.length)return{videoId:id,status:'FAIL',score:0,reason:d.reason||d.error||'no_usable_korean_transcript',captionSource:d.source||null};
     const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
