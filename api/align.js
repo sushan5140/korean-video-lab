@@ -33,17 +33,18 @@ async function directAudioUrl(videoId){
 
 async function groqAlign(audio){
   const key=process.env.GROQ_API_KEY;if(!key)throw new Error('groq_key_missing');
+  const form=new FormData();
+  form.append('model','whisper-large-v3-turbo');
+  form.append('url',audio.url);
+  form.append('language','ko');
+  form.append('response_format','verbose_json');
+  form.append('timestamp_granularities[]','word');
+  form.append('timestamp_granularities[]','segment');
+  form.append('temperature','0');
   const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
     method:'POST',
-    headers:{Authorization:'Bearer '+key,'content-type':'application/json'},
-    body:JSON.stringify({
-      model:'whisper-large-v3-turbo',
-      url:audio.url,
-      language:'ko',
-      response_format:'verbose_json',
-      timestamp_granularities:['word','segment'],
-      temperature:0
-    })
+    headers:{Authorization:'Bearer '+key},
+    body:form
   });
   const text=await r.text();
   let d;try{d=JSON.parse(text)}catch{d={raw:text.slice(0,500)}}
