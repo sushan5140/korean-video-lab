@@ -682,3 +682,32 @@ Production:
 - stable URL: https://korean-video-lab.vercel.app/
 - frontend syntax verification passed
 - no runtime errors observed after deployment
+
+
+## SCALE playback milestone closed — 2026-09-16
+
+Final production audit after Word Sync V3.1:
+
+- `Eo2I6voTVnA` — PASS 100, 230 cues, Hangul ratio 0.998, overlap 0, long-cue ratio 0.387, heavy-padding ratio 0.713, median 296 ms/unit, English translation 5/5 healthy
+- `g1Eaa3g-25U` — PASS 100, 372 cues, Hangul ratio 0.998, overlap 0, long-cue ratio 0, heavy-padding ratio 0.167, median 262 ms/unit, English translation 5/5 healthy
+- `cWcbK176lQs` — PASS 100, 52 cues, Hangul ratio 1.000, overlap 0, long-cue ratio 0.058, heavy-padding ratio 0.442, median 250 ms/unit, English translation 5/5 healthy
+
+Acoustic verdict:
+- none of the three has a true upstream word-timestamp source
+- YouTube Korean JSON3 returned no usable caption track for these candidates
+- experimental Groq Whisper alignment was tested but YouTube exposed only ciphered media URLs and Groq rejected a normal YouTube watch URL as non-media
+- the public Whisper probe route was removed after testing to avoid accidental paid transcription calls
+- therefore no candidate is promoted solely from structural PASS 100
+
+Promotion result:
+- promoted in this milestone: 0
+- durable Ready count remains 48
+- all three candidates remain in playback verification until real listening confirms Word Sync V3.1 is not materially a full word early/late
+
+Alignment freeze:
+- Word Sync V3.1 is now the frozen fallback baseline
+- accept tiny millisecond drift; reject visible full-word lead/lag
+- do not add new multi-word fixed offsets
+- do not change the frozen timing profile without new acoustic playback evidence or a genuine word-timestamp source
+
+Production deployment: `dpl_D8xasJMZf6kqr7ww39AQsiAiwRxv`.
