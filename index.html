@@ -655,12 +655,16 @@ function addPendingTag(){
 function isCurrentPinned(){const c=cur();return !!(c&&pinnedPhrases.some(p=>p.key===pinKey(sel.id,c.startMs)))}
 function renderLibrary(){
  const page=$('libraryPage');if(!page)return;
- const counts={phrases:pinnedPhrases.length,words:savedWords.length,stolen:stolenSentences.length,recent:practiceHistory.length};
+ dailyReviewQueue=buildDailyReviewQueue(12);
+ const counts={review:dailyReviewQueue.length,phrases:pinnedPhrases.length,words:savedWords.length,stolen:stolenSentences.length,recent:practiceHistory.length};
  const total=counts.phrases+counts.words+counts.stolen;
- const tabs='<div class="libraryTabs">'+[['phrases','Phrases'],['words','Words'],['stolen','Stolen'],['recent','Recent']].map(x=>'<button class="'+(libraryView===x[0]?'on':'')+'" data-library-view="'+x[0]+'">'+x[1]+' <span class="miniCount">'+counts[x[0]]+'</span></button>').join('')+'</div>';
+ const tabs='<div class="libraryTabs">'+[['review','Review Today'],['phrases','Phrases'],['words','Words'],['stolen','Stolen'],['recent','Recent']].map(x=>'<button class="'+(libraryView===x[0]?'on':'')+'" data-library-view="'+x[0]+'">'+x[1]+' <span class="miniCount">'+counts[x[0]]+'</span></button>').join('')+'</div>';
  let body='';
- if(libraryView==='phrases'){
-  body=pinnedPhrases.length?'<div class="libraryList">'+pinnedPhrases.map((p,i)=>'<article class="libCard"><img class="libThumb" src="'+esc(p.thumb)+'"><div><div class="libKo">'+esc(p.ko)+'</div><div class="libEn">'+esc(p.en||'English meaning saved with the lesson')+'</div><div class="libMeta"><span>'+fmt((p.startMs||0)/1000)+'</span><span>·</span><span>'+esc(p.channel||'Haneul')+'</span>'+(p.tags||[]).map(t=>'<span class="libTag">'+esc(t)+'</span>').join('')+'</div></div><div class="libActions"><button data-open-pin="'+i+'">▶ Open</button><button data-remove-pin="'+i+'">Remove</button></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>No pinned phrases yet</b><p>Pin useful lines while watching a lesson.</p></div>'
+ if(libraryView==='review'){
+  const est=Math.max(2,Math.ceil(dailyReviewQueue.length*.6));
+  body=dailyReviewQueue.length?'<div class="masteryFocus"><div class="ey">REVIEW TODAY · '+dailyReviewQueue.length+' ITEMS</div><b>A short queue built from your actual friction.</b><p>About '+est+' minutes. Repeated lines, retries, saved words and mined patterns are ranked together instead of reviewed in separate silos.</p></div><div class="libraryList">'+dailyReviewQueue.map((x,i)=>'<article class="libCard"><img class="libThumb" src="'+esc(x.thumb)+'"><div><div class="libKo">'+esc(x.ko||x.title)+'</div><div class="libEn">'+esc(x.en||'Replay it in context before marking it done.')+'</div><div class="libMeta"><span>'+fmt((x.startMs||0)/1000)+'</span><span>·</span><span>'+esc(x.channel||'Haneul')+'</span>'+x.reasons.slice(0,3).map(r=>'<span class="libTag">'+esc(r)+'</span>').join('')+'</div></div><div class="libActions"><button class="openPhrase" data-open-review="'+i+'">▶ Review</button><button data-done-review="'+i+'">✓ Done today</button></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>Review queue cleared ✓</b><p>Keep watching. Haneul will add lines automatically when you replay, retry, save or mine something useful.</p></div>'
+ }else if(libraryView==='phrases'){
+  body=pinnedPhrases.length?'<div class="libraryList">'+pinnedPhrases.map((p,i)=>'<article class="libCard"><img class="libThumb" src="'+esc(p.thumb)+'"><div><div class="libKo">'+esc(p.ko)+'</div><div class="libEn">'+esc(p.en||'English meaning saved with the lesson')+'</div>'+(p.pattern?'<div class="libPattern"><b>'+esc(p.pattern)+'</b>'+(p.patternMeaning?' · '+esc(p.patternMeaning):'')+'</div>':'')+((p.beforeKo||p.afterKo)?'<div class="wordContext">'+esc(p.beforeKo||'')+(p.beforeKo&&p.afterKo?' → ':'')+esc(p.afterKo||'')+'</div>':'')+'<div class="libMeta"><span>'+fmt((p.startMs||0)/1000)+'</span><span>·</span><span>'+esc(p.channel||'Haneul')+'</span>'+(p.tags||[]).map(t=>'<span class="libTag">'+esc(t)+'</span>').join('')+'</div></div><div class="libActions"><button data-open-pin="'+i+'">▶ Open</button><button data-remove-pin="'+i+'">Remove</button></div></article>').join('')+'</div>':'<div class="libraryEmpty"><b>No pinned phrases yet</b><p>Pin useful lines while watching a lesson.</p></div>'
  }else if(libraryView==='words'){
   body=savedWords.length?'<div class="libraryList">'+savedWords.map((w,i)=>{const st=reviewState(w);return '<article class="libCard"><img class="libThumb" src="'+esc(w.thumb)+'"><div><div class="libKo">'+esc(w.word)+' <span class="reviewPill '+st+'">'+(st==='new'?'New':st==='reviewing'?'Reviewing':'Familiar')+'</span></div><div class="libEn">'+esc(w.meaning||'Contextual meaning')+'</div><div class="wordDetails"><span>Base form</span><b>'+esc(w.base||'—')+'</b><span>Role</span><b>'+esc(w.role||'—')+'</b><span>Context</span><b>'+esc(w.contextKo||'—')+'</b></div><div class="libMeta"><span>'+fmt((w.startMs||0)/1000)+'</span><span>·</span><span>'+esc(w.channel||'Haneul')+'</span><span>·</span><span>'+Number(w.reviewCount||0)+' reviews</span></div></div><div class="libActions"><button data-review-word="'+i+'">✓ Reviewed</button><button data-open-word="'+i+'">▶ Context</button><button data-remove-word="'+i+'">Remove</button></div></article>'}).join('')+'</div>':'<div class="libraryEmpty"><b>No saved words yet</b><p>Open a lesson → Words → Save.</p></div>'
  }else if(libraryView==='stolen'){
@@ -670,6 +674,8 @@ function renderLibrary(){
  }
  page.innerHTML='<div class="libraryHead"><div><div class="ey">YOUR LEARNING LIBRARY</div><h1>Keep what matters.</h1><p>Saved language and the practice trail behind it.</p></div><div class="libraryCount"><b>'+total+'</b>saved items</div></div>'+tabs+body;
  page.querySelectorAll('[data-library-view]').forEach(b=>b.onclick=()=>{libraryView=b.dataset.libraryView;renderLibrary()});
+ page.querySelectorAll('[data-open-review]').forEach(b=>b.onclick=()=>openDailyReviewItem(dailyReviewQueue[+b.dataset.openReview]));
+ page.querySelectorAll('[data-done-review]').forEach(b=>b.onclick=()=>markDailyReviewDone(dailyReviewQueue[+b.dataset.doneReview]));
  page.querySelectorAll('[data-open-pin]').forEach(b=>b.onclick=()=>{const p=pinnedPhrases[+b.dataset.openPin];if(!p)return;window.__pendingPinnedSeek=p.startMs;showMainPage('discover');open(p.videoId,p.lessonLevel)});
  page.querySelectorAll('[data-remove-pin]').forEach(b=>b.onclick=()=>{pinnedPhrases.splice(+b.dataset.removePin,1);savePins();renderLibrary()});
  page.querySelectorAll('[data-review-word]').forEach(b=>b.onclick=()=>markWordReviewed(+b.dataset.reviewWord));
@@ -1352,13 +1358,13 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
   $('panel').innerHTML=r+'<div class="sect">WORDS FROM THE CURRENT CAPTION <span class="miniCount">'+savedWords.length+' saved</span></div>'+
     (tokens.length?tokens.map((raw,i)=>{const d=wordInfoAt(raw,i),saved=isWordSaved(raw,i);return '<article class="wordSaveCard"><div class="wordSaveMain"><b>'+esc(raw)+'</b><p>'+esc(d.meaning||'Contextual meaning')+'</p><div class="wordContext">'+esc(c.ko)+'</div></div><div class="wordSaveActions"><button data-word-jump="'+i+'">▶ '+fmt(wordStartMs(c,i)/1000)+'</button><button class="'+(saved?'saved':'')+'" data-save-word="'+i+'">'+(saved?'✓ Saved':'+ Save')+'</button></div></article>'}).join(''):'<div class="item"><b>Waiting for Korean speech</b></div>');
   setTimeout(()=>{document.querySelectorAll('[data-word-jump]').forEach(b=>b.onclick=()=>seekWord(+b.dataset.wordJump));document.querySelectorAll('[data-save-word]').forEach(b=>b.onclick=()=>saveWordAt(+b.dataset.saveWord))},0)
-}if(t==='explain'){$('panel').innerHTML=r+(c?explainWordHTML(c):'<div class="item"><b>Waiting for the next spoken word</b><p>Play the video and Explain will follow the highlighted word.</p></div>');setTimeout(()=>{if($('er'))$('er').onclick=replay;document.querySelectorAll('[data-explain-word]').forEach(b=>b.onclick=()=>{explainSelected=+b.dataset.explainWord;panel('explain')});if($('followSpeaker'))$('followSpeaker').onclick=()=>{explainSelected=null;panel('explain')}},0)}if(t==='quiz'){$('panel').innerHTML=r+renderSectionCheckpoint();setTimeout(wireSectionCheckpoint,0)}if(t==='progress'){$('panel').innerHTML=r+`<div class="practiceHero"><div class="ey">LIVE SESSION PROGRESS</div><h3>${pct}% through this video.</h3><p>Haneul uses your mistakes and listening behavior to build the next pass.</p></div><div class="metrics"><div class="metric"><strong>${pct}%</strong><small>viewed</small></div><div class="metric"><strong>${savedWords.filter(w=>sel&&w.videoId===sel.id).length}</strong><small>words saved</small></div><div class="metric"><strong>${replays}×</strong><small>session replays</small></div></div>`+renderMasterySnapshot()+renderSmartRewatch();setTimeout(()=>{wireMasteryFocus();wireSmartRewatch()},0)}}async function caps(id){
+}if(t==='explain'){$('panel').innerHTML=r+(c?explainWordHTML(c):'<div class="item"><b>Waiting for the next spoken word</b><p>Play the video and Explain will follow the highlighted word.</p></div>');setTimeout(()=>{if($('er'))$('er').onclick=replay;document.querySelectorAll('[data-explain-word]').forEach(b=>b.onclick=()=>{explainSelected=+b.dataset.explainWord;panel('explain')});if($('followSpeaker'))$('followSpeaker').onclick=()=>{explainSelected=null;panel('explain')}},0)}if(t==='quiz'){$('panel').innerHTML=r+renderSectionCheckpoint();setTimeout(wireSectionCheckpoint,0)}if(t==='progress'){$('panel').innerHTML=r+`<div class="practiceHero"><div class="ey">LIVE SESSION PROGRESS</div><h3>${pct}% through this video.</h3><p>Haneul uses your mistakes and listening behavior to build the next pass.</p></div><div class="metrics"><div class="metric"><strong>${pct}%</strong><small>viewed</small></div><div class="metric"><strong>${savedWords.filter(w=>sel&&w.videoId===sel.id).length}</strong><small>words saved</small></div><div class="metric"><strong>${replays}×</strong><small>session replays</small></div></div>`+renderStudyStats()+renderDailyReviewSummary()+renderMasterySnapshot()+renderSmartRewatch();setTimeout(()=>{wireDailyReviewSummary();wireMasteryFocus();wireSmartRewatch()},0)}}async function caps(id){
   state='loading';cues=[];cue=-1;renderCap();panel();
   if(captionCache.has(id)){
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · SCALE V1</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · LEARNING LOOP V2</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1370,14 +1376,14 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · SCALE V1</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · LEARNING LOOP V2</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
   }
   state='bad';renderCap();panel()
 }
-function tick(){cancelAnimationFrame(raf);const f=()=>{if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000;if($('time'))$('time').textContent=fmt(s);let n=findCue(ms);if(n!==cue){resetSmartReplay();cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;if(n>=0&&sel)preloadMeaningWindow(sel.id,cues,n);renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}
+function tick(){cancelAnimationFrame(raf);const f=()=>{const wall=performance.now();if(lastStudyWall){const delta=Math.max(0,Math.min(1250,wall-lastStudyWall));try{if(ready&&$('ov').classList.contains('open')&&player&&player.getPlayerState&&player.getPlayerState()===1)noteWatchTime(delta)}catch{}}lastStudyWall=wall;if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000;if($('time'))$('time').textContent=fmt(s);let n=findCue(ms);if(n!==cue){resetSmartReplay();cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;if(n>=0&&sel)preloadMeaningWindow(sel.id,cues,n);renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};lastStudyWall=performance.now();raf=requestAnimationFrame(f)}
 function resetSmartReplay(){
  smartReplayStage=0;smartReplayCue=-1;smartReplayPreviousMode=null;
  if(smartReplayTimer){clearTimeout(smartReplayTimer);smartReplayTimer=null}
@@ -1398,29 +1404,30 @@ function smartReplay(){
  const c=cur();if(!c)return toast('No active cue');
  if(smartReplayCue!==cue){resetSmartReplay();smartReplayCue=cue}
  const stage=smartReplayStage;
- replays++;recordCueReplay();
+ replays++;const replayCount=recordCueReplay();let message='';
  if(smartReplayTimer){clearTimeout(smartReplayTimer);smartReplayTimer=null}
  if(stage===0){
-   playCurrentCue(1);toast('Smart Replay · Normal')
+   playCurrentCue(1);message='Smart Replay · Normal'
  }else if(stage===1){
-   playCurrentCue(.8);toast('Smart Replay · Slow 0.8×');
+   playCurrentCue(.8);message='Smart Replay · Slow 0.8×';
    smartReplayTimer=setTimeout(()=>{try{player.setPlaybackRate(1)}catch{}},Math.max(1400,(Number(c.endMs)-Number(c.startMs))*1.4))
  }else if(stage===2){
    if(smartReplayPreviousMode===null)smartReplayPreviousMode=mode;
    mode='ko';document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));renderCap();
-   playCurrentCue(1);toast('Smart Replay · Korean only')
+   playCurrentCue(1);message='Smart Replay · Korean only'
  }else{
    if(smartReplayPreviousMode===null)smartReplayPreviousMode=mode;
    mode='ko';practiceMode='shadowing';shadowStep=0;
    document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
-   renderCap();panel('practice');playCurrentCue(1);toast('Smart Replay · Shadow it aloud')
+   renderCap();panel('practice');playCurrentCue(1);message='Smart Replay · Shadow it aloud'
  }
  smartReplayStage=(stage+1)%4;
  if(smartReplayStage===0&&smartReplayPreviousMode!==null){
    const restore=smartReplayPreviousMode;smartReplayPreviousMode=null;
    smartReplayTimer=setTimeout(()=>{mode=restore;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));renderCap();updateSmartReplayButton()},Math.max(1600,(Number(c.endMs)-Number(c.startMs))+500))
  }
- updateSmartReplayButton()
+ if(replayCount===2)message+=' · added to Review Today';
+ toast(message);updateSmartReplayButton()
 }
 function makePlayer(id){
   window.pending=id;
@@ -1452,10 +1459,10 @@ function seek(i){if(!ready||!cues.length)return;resetSmartReplay();cue=Math.max(
   sel=curatedCatalog.find(v=>v.id===id&&(!lessonBand||v.level===lessonBand))||curatedCatalog.find(v=>v.id===id&&(!lessonLevel||v.levelCode===lessonLevel))||curatedCatalog.find(v=>v.id===id)||videos.find(v=>v.id===id)||videos[0];
   $('lt').textContent=sel.title;$('lm').textContent=sel.level+' · '+sel.channel;$('level').textContent=sel.level;
   $('ov').classList.add('open');document.body.style.overflow='hidden';
-  cues=[];cue=-1;semanticIntel=null;semanticLoading=false;microLessons=null;microPending=false;microFailed=false;simplifyFailed=new Set();predictFailed=new Set();sectionQuizAnswers={};sectionCheckpointFailed=new Set();rewatchQueue=[];rewatchPos=-1;resetSmartReplay();activeSpoken=-1;explainSelected=null;guess=false;loop=false;saved=new Set();replays=0;tab='overview';practiceMode='reconstruct';practiceFeedback='';predictFeedback='';sayItFeedback=null;sayItDraft='';shadowStep=0;
+  cues=[];cue=-1;lastStudyWall=0;semanticIntel=null;semanticLoading=false;microLessons=null;microPending=false;microFailed=false;simplifyFailed=new Set();predictFailed=new Set();sectionQuizAnswers={};sectionCheckpointFailed=new Set();rewatchQueue=[];rewatchPos=-1;resetSmartReplay();activeSpoken=-1;explainSelected=null;guess=false;loop=false;saved=new Set();replays=0;tab='overview';practiceMode='reconstruct';practiceFeedback='';predictFeedback='';sayItFeedback=null;sayItDraft='';shadowStep=0;
   makePlayer(id);caps(id);panel()
 }
-$('x').onclick=()=>{cancelAnimationFrame(raf);try{if(player&&ready)player.pauseVideo()}catch(e){}$('ov').classList.remove('open');document.body.style.overflow=''};$('modes').onclick=e=>{if(e.target.matches('button')){mode=e.target.dataset.m;$('cap').onclick=null;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b===e.target));renderCap()}};$('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('active',guess);renderCap();panel()};$('prev').onclick=()=>seek(cue-1);$('next').onclick=()=>seek(cue+1);$('replay').onclick=smartReplay;$('loop').onclick=()=>{loop=!loop;$('loop').classList.toggle('active',loop);toast(loop?'Loop on':'Loop off')};$('tabs').onclick=e=>{if(e.target.matches('button')){const t=e.target.dataset.t;if(t==='explain')recordReviewSignal('explain');panel(t)}};
+$('x').onclick=()=>{cancelAnimationFrame(raf);saveStudyStats();lastStudyWall=0;try{if(player&&ready)player.pauseVideo()}catch(e){}$('ov').classList.remove('open');document.body.style.overflow=''};$('modes').onclick=e=>{if(e.target.matches('button')){mode=e.target.dataset.m;$('cap').onclick=null;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b===e.target));renderCap()}};$('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('active',guess);renderCap();panel()};$('prev').onclick=()=>seek(cue-1);$('next').onclick=()=>seek(cue+1);$('replay').onclick=smartReplay;$('loop').onclick=()=>{loop=!loop;$('loop').classList.toggle('active',loop);toast(loop?'Loop on':'Loop off')};$('tabs').onclick=e=>{if(e.target.matches('button')){const t=e.target.dataset.t;if(t==='explain')recordReviewSignal('explain');panel(t)}};
 $('pinModalClose').onclick=closePinModal;$('pinCancel').onclick=closePinModal;$('tagAddBtn').onclick=addPendingTag;
 $('tagInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPendingTag()}};
 $('pinSave').onclick=()=>{if(!pendingPin)return;pendingPin.tags=pendingTags.slice();recordReviewSignal('pin',Number.isInteger(pendingPin.cueIndex)?pendingPin.cueIndex:cue);pinnedPhrases.unshift(pendingPin);savePins();closePinModal();pendingPin=null;pendingTags=[];toast('Saved to Library');if(tab==='phrases')panel('phrases')};
