@@ -433,3 +433,19 @@ Deployment blocker:
 - Vercel rejected the next production deployment because the project/account reached the free API deployment limit (`api-deployments-free-per-day`, 100/100 used)
 - current live production therefore remains V2.3 deployment `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
 - do not claim Word Sync V3 is live until a later production deployment succeeds and the target video's YouTube-timed response is verified
+
+
+## Word Sync V3.1 continuation — 2026-09-16
+
+`Eo2I6voTVnA` cannot currently use YouTube JSON3 timing because production returns `no-caption-track`, so it falls back to cue-level FreeTranscriptAPI timing.
+
+The fallback has been rebuilt to prioritize avoiding full-word mismatch rather than chasing zero-millisecond alignment:
+- near-linear Korean syllable pacing
+- only 70–165 ms whole-clock lead
+- 28 ms additional word-boundary lead
+- small 72 ms statement-boundary lead, max 255 ms
+- no targetUnit/right-anchor compensation on this lesson
+
+Production deployment: `dpl_ATNhJ1Ac18LNtPC45Vajx2cSioAK`, marker `WORD SYNC V3.1`.
+
+Next playback criterion: accept minor millisecond drift; reject any case where the highlight remains a full word behind/ahead. If further calibration is needed, adjust token weighting or a very small boundary lead, not multi-word fixed offsets.
