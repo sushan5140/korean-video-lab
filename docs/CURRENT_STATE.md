@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_FFgcTeBdZWzNfxsNgEug53DJMW9r`
+- current production deployment: `dpl_8xjCcwsEHGpZ9oTNmVi5c6oZdK6f`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -770,3 +770,85 @@ Production verification:
 - `g1Eaa3g-25U` caption smoke test: 372 Korean cues, provider-freetranscriptapi
 - `g1Eaa3g-25U` quality recheck: PASS 100, English translation 5/5 healthy
 - no runtime errors found after deployment
+
+
+## Nine-item plan merge — 2026-09-16
+
+The earlier nine-item roadmap was merged against the stronger Learning Loop V2 implementation instead of adding duplicate/weaker versions.
+
+### 1–3. Existing playback candidates
+- `g1Eaa3g-25U`: remains playback-gated; structural quality PASS 100
+- `cWcbK176lQs`: remains playback-gated; structural quality PASS 100
+- `Eo2I6voTVnA`: remains review/high-risk; Word Sync V3.1 stays frozen
+
+No one was promoted from API quality alone.
+
+### 4. Catalog expansion
+Added 11 fresh listening candidates as `checking` only. Production quality audit:
+
+PASS 100:
+- `9W4jYPAn1GY` — 141 cues
+- `4rGYvyIP5sI` — 57 cues
+- `k1_co9zWaUI` — 56 cues
+- `so6Ej6wviQI` — 145 cues
+- `eJbK2QB9XWg` — 163 cues
+- `sjlTT6oVm5E` — 152 cues
+- `QjjImkCnTqQ` — 120 cues
+
+REVIEW:
+- `o-X_6t45Sic` — REVIEW 88, heavy_padding
+- `MHO9U-DEqoU` — REVIEW 64, heavy_padding + rolling_overlap + many_long_cues
+- `sc_Ok6mX2zY` — REVIEW 88, many_long_cues
+
+FAIL:
+- `FciY1CF7uOM` — FAIL 29, korean_ratio_low; also heavy_padding + rolling_overlap + many_long_cues
+
+All 11 remain outside `VERIFIED_READY`. The FAIL candidate must not be promoted unless its transcript source materially changes.
+
+### 5. Smart Replay
+Kept the existing Learning Loop V2 implementation because it is stronger than the older roadmap version:
+- Normal -> 0.8x -> Korean only -> Shadow
+- repeated lines automatically feed Review Today
+- exact cue/timestamp metadata is preserved
+
+### 6. Sentence Mining
+Kept the current richer version instead of replacing it:
+- Korean + English
+- exact timestamp
+- reusable pattern + meaning
+- previous/next Korean context
+- custom tags
+- reopen-in-context behavior
+
+### 7. Personalized Review V3
+Upgraded Review Today to spaced scheduling:
+- `Again`: returns after about 10 minutes
+- `Good`: expands through 1d -> 3d -> 7d -> 14d -> 30d -> 60d -> 90d
+- `Easy`: starts farther out and expands faster
+- saved words on successfully reviewed cues advance their review state
+- legacy V2 same-day completion remains backward compatible
+
+### 8. Micro Lessons V3
+Existing transcript-grounded Micro Lessons now reuse the best current systems:
+- Listen — jump to the real anchor cue
+- Practice — opens production/Say It practice on that cue
+- Save pattern — routes into the existing Stolen Sentence/pattern-mining system
+- Mark reviewed — keeps mastery/pattern memory integration
+
+No parallel micro-lesson save system was created.
+
+### 9. Progress V3
+Progress now includes:
+- active listening minutes today + total
+- videos completed (>=90% watched)
+- familiar vocabulary
+- grammar/reusable patterns encountered
+- active study days
+- Ready-catalog progress for TOPIK 1 / TOPIK 2 / TOPIK 2+ bands
+
+The level percentages are explicitly catalog-learning signals, not predicted TOPIK exam scores.
+
+### Ready gate correction
+`effectiveReady()` now returns true only for durable `readiness==='ready'` entries. A local/API quality PASS can no longer silently surface a candidate as Ready.
+
+Production deployment: `dpl_8xjCcwsEHGpZ9oTNmVi5c6oZdK6f`.
