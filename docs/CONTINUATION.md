@@ -463,3 +463,28 @@ Risk order from structural timing evidence:
 - `g1Eaa3g-25U`: cleanest structural candidate (0 long-cue ratio, 0.167 heavy padding), but still requires playback confirmation
 
 Ready remains 48. Promotion requires a real listening verdict under the user-approved criterion: minor millisecond drift is acceptable; a full-word lead/lag is not.
+
+
+## Learning Loop V2 continuation — 2026-09-16
+
+Current production milestone is `WORD SYNC V3.1 · LEARNING LOOP V2`.
+
+What is now live:
+- Library -> Review Today cross-video review queue
+- automatic weak-line capture after repeated Smart Replay
+- richer mined-sentence metadata (pattern + surrounding context)
+- persistent listening-time stats
+- Review Today summary inside Progress
+- existing Smart Rewatch / Haneul Memory / Micro Lessons remain intact
+
+Important behavior:
+- Review Today is local-device memory and is generated from actual learner signals
+- marking an item Done today hides it for the local calendar day
+- saved words on that cue receive a review increment
+- repeated replays save enough cue metadata to reopen the exact timestamp later
+
+Do not change Word Sync V3.1 as part of learner-feature work unless new acoustic playback evidence requires it.
+
+Ready count remains 48. Candidate promotion gate is unchanged.
+
+Production deployment: `dpl_FFgcTeBdZWzNfxsNgEug53DJMW9r`.
