@@ -449,3 +449,17 @@ The fallback has been rebuilt to prioritize avoiding full-word mismatch rather t
 Production deployment: `dpl_ATNhJ1Ac18LNtPC45Vajx2cSioAK`, marker `WORD SYNC V3.1`.
 
 Next playback criterion: accept minor millisecond drift; reject any case where the highlight remains a full word behind/ahead. If further calibration is needed, adjust token weighting or a very small boundary lead, not multi-word fixed offsets.
+
+
+## Frozen alignment handoff — 2026-09-16
+
+Word Sync V3.1 is frozen after the three-candidate production audit.
+
+Do not promote `Eo2I6voTVnA`, `g1Eaa3g-25U`, or `cWcbK176lQs` from API quality alone. All three are PASS 100 with healthy English translation, but none currently has true word timestamps or post-V3.1 acoustic confirmation.
+
+Risk order from structural timing evidence:
+- `Eo2I6voTVnA`: highest manual-review priority because heavy-padding ratio is 0.713 and the user previously heard real sync drift
+- `cWcbK176lQs`: moderate review priority because heavy-padding ratio is 0.442 despite otherwise clean structure
+- `g1Eaa3g-25U`: cleanest structural candidate (0 long-cue ratio, 0.167 heavy padding), but still requires playback confirmation
+
+Ready remains 48. Promotion requires a real listening verdict under the user-approved criterion: minor millisecond drift is acceptable; a full-word lead/lag is not.
