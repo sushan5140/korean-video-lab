@@ -53,3 +53,11 @@ Use repository + deployment state as source of truth. Do not depend on a huge pr
 ## Change scope rule
 
 Avoid unrelated refactors. Make narrowly scoped changes that solve the requested task while preserving stable behavior.
+
+
+## Ready admission gate
+
+- `PASS` from `/api/quality` is a structural/transcript gate only.
+- A candidate may enter `VERIFIED_READY` only after real playback confirms cue entry, sentence switching, word highlighting, and English meaning are acceptable.
+- Client-side/local quality cache must never auto-promote or expose a checking candidate as Ready.
+- REVIEW and FAIL candidates remain outside Ready unless their underlying transcript/timing evidence materially changes and they are re-audited.
