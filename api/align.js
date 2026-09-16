@@ -66,7 +66,9 @@ module.exports=async function(req,res){
   const u=new URL(req.url||'/','https://haneul.local'),videoId=String(u.searchParams.get('videoId')||'');
   if(!YT_ID.test(videoId))return res.status(400).json({ok:false,error:'invalid_video_id'});
   try{
-    const audio=await directAudioUrl(videoId);
+    let audio;
+    try{audio=await directAudioUrl(videoId)}
+    catch(e){audio={url:'https://www.youtube.com/watch?v='+encodeURIComponent(videoId),mimeType:'youtube-watch-url',contentLength:0,durationMs:0,fallback:true}}
     const aligned=await groqAlign(audio);
     res.setHeader('Cache-Control','public, s-maxage=604800, stale-while-revalidate=2592000');
     return res.status(200).json({ok:true,source:'groq-whisper-word',videoId,audio:{contentLength:audio.contentLength,durationMs:audio.durationMs},wordCount:aligned.words.length,segmentCount:aligned.segments.length,words:aligned.words});
