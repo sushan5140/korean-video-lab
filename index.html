@@ -798,12 +798,12 @@ function koreanUnits(w=''){
   const hangul=(clean.match(/[가-힣]/g)||[]).length,latin=(clean.match(/[A-Za-z0-9]/g)||[]).length;
   return Math.max(1,hangul+latin*.72)
 }
-function tokenWeight(w,power=.84,punct=.52){
+function tokenWeight(w,power=.84,punct=.52,base=.45){
   const n=koreanUnits(w);
-  let x=.45+Math.pow(n,power);
+  let x=base+Math.pow(n,power);
   if(/[,，]$/.test(String(w)))x+=punct*.45;
   if(/[.!?…~]$/.test(String(w)))x+=punct;
-  return Math.min(x,5)
+  return Math.min(x,7)
 }
 function timingProfile(){
   // Beginner keeps the original Baby/Mina behavior exactly.
@@ -812,7 +812,7 @@ function timingProfile(){
   // User playback on this lesson showed the speaker running about two words ahead
   // of the estimated highlight. Keep the trusted global model unchanged and
   // calibrate only this lesson until an acoustic word-timestamp source is available.
-  if(sel&&sel.id==='Eo2I6voTVnA')return{lead:4,tail:8,power:.64,punct:.26,gapTrim:.24,minWord:66,targetUnit:188,maxTailPad:150,advanceWords:1.85,advanceMin:420,advanceMax:760,wordBoundaryLead:110,statementBoundaryLead:170,statementAdvanceMax:850};
+  if(sel&&sel.id==='Eo2I6voTVnA')return{lead:6,tail:10,power:.96,punct:.10,baseWeight:.16,gapTrim:.12,minWord:58,cueTailTrim:90,advanceWords:.34,advanceMin:70,advanceMax:165,wordBoundaryLead:28,statementBoundaryLead:72,statementAdvanceMax:255};
   if(sel&&sel.level==='Intermediate')return{lead:6,tail:10,power:.68,punct:.30,gapTrim:.30,minWord:72,targetUnit:205,maxTailPad:180};
   if(sel&&sel.level==='Lower Intermediate')return{lead:7,tail:12,power:.70,punct:.34,gapTrim:.26,minWord:80,targetUnit:230,maxTailPad:220};
   return{lead:8,tail:18,power:.72,punct:.40,gapTrim:.20,minWord:100}
@@ -852,7 +852,8 @@ function adaptiveWordTimeline(c){
     }
   }
   en=Math.max(st+Math.max(260,a.length*p.minWord),en);
-  const weights=a.map(w=>tokenWeight(w,p.power,p.punct));
+  if(p.cueTailTrim)en=Math.max(st+Math.max(260,a.length*p.minWord),en-Math.min(Number(p.cueTailTrim),Math.max(0,(en-st)*.05)));
+  const weights=a.map(w=>tokenWeight(w,p.power,p.punct,p.baseWeight==null?.45:p.baseWeight));
   const sum=weights.reduce((x,y)=>x+y,0),span=en-st;
   let acc=0;
   return a.map((word,i)=>{
@@ -1297,7 +1298,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
     const d=captionCache.get(id);
     if(sel.id!==id)return;
     cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3 · SCALE V1</span>';
+    $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · SCALE V1</span>';
     cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
     renderCap();panel();return
   }
@@ -1309,7 +1310,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       captionCache.set(id,d);
       if(sel.id!==id)return;
       cues=d.cues;hydrateMeaningCache(id);await prepareInitialEnglish(id,cues);if(sel.id!==id)return;state='ready';if(sel){sel.readiness='ready'}preloadMeanings(id,cues);getLessonIntel();loadSemanticIntel();loadMicroLessons();
-      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3 · SCALE V1</span>';
+      $('sync').innerHTML='● Synced transcript · <span id="time">'+fmt(ready&&player?player.getCurrentTime():0)+'</span><span class="syncPreview">ALIGNMENT TRUSTED L3 · WORD SYNC V3.1 · SCALE V1</span>';
       cue=findCue((ready&&player?player.getCurrentTime():0)*1000);if(window.__pendingPinnedSeek!=null&&sel.id===id&&ready&&player){player.seekTo(window.__pendingPinnedSeek/1000,true);window.__pendingPinnedSeek=null;cue=findCue((player.getCurrentTime()||0)*1000)}
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
