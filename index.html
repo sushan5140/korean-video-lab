@@ -761,11 +761,7 @@ function readQuality(v){
   }catch{return null}
 }
 function writeQuality(v,x){try{localStorage.setItem(qualityKey(v),JSON.stringify(x))}catch{}}
-function effectiveReady(v){
-  if(v.readiness==='ready')return true;
-  const q=readQuality(v);
-  return !!(q&&q.status==='PASS'&&Number(q.score)>=82)
-}
+function effectiveReady(v){return v.readiness==='ready'}
 async function checkCandidateQuality(v){
   if(!v||v.readiness==='ready'||qualityChecking.has(v.id))return null;
   const cached=readQuality(v);if(cached)return cached;
@@ -798,8 +794,8 @@ function lessonMatches(v){
 function loadVideoFeed(fromQuality=false){
   videos=curatedCatalog.filter(lessonMatches).map(v=>({...v,readiness:'ready',band:v.level,level:v.levelCode||mappedLevel(v.level)}));
   const total=curatedCatalog.filter(v=>v.level===videoFilters.level).length;
-  const auto=curatedCatalog.filter(v=>v.level===videoFilters.level&&v.readiness!=='ready'&&effectiveReady(v)).length;
-  if($('feedStatus'))$('feedStatus').textContent=videos.length?(videos.length+' Ready lessons'+(auto?' · '+auto+' auto-qualified':'')+' · '+total+' curated candidates in '+videoFilters.level):('No transcript-verified Ready lesson yet for this combination · '+total+' curated candidates exist');
+  const qualityPass=curatedCatalog.filter(v=>v.level===videoFilters.level&&v.readiness!=='ready'&&readQuality(v)?.status==='PASS').length;
+  if($('feedStatus'))$('feedStatus').textContent=videos.length?(videos.length+' Ready lessons · '+qualityPass+' quality-cleared candidates awaiting playback · '+total+' curated candidates in '+videoFilters.level):('No manually verified Ready lesson yet for this combination · '+qualityPass+' quality-cleared candidates await playback');
   home($('q')?$('q').value:'');
   if(!fromQuality)setTimeout(runCandidateQualityChecks,0)
 }
@@ -1344,7 +1340,7 @@ function renderMicroLessons(){
  return '<div class="microHero"><div class="ey">MICRO LESSONS · '+reviewed+'/'+microLessons.length+' REVIEWED</div><h3>Learn the Korean this video actually uses.</h3><p>Every lesson is anchored to a real scene. Jump back, hear the expression in context, then mark it reviewed.</p></div><div class="microGrid">'+microLessons.map((m,i)=>{
    const c=cues[m.anchorCue]||cues[m.startCue],done=microReviewed.has(microReviewKey(m));
    const detail=(m.pattern||m.meaning||m.whenToUse)?'<div class="wordExplain" style="margin:10px 0 0"><div class="ey">PATTERN FROM THIS SCENE</div><h3 style="font-size:20px;margin:5px 0">'+esc(m.pattern||c?.ko||'')+'</h3>'+(m.meaning?'<p style="margin:4px 0;color:#5f6678">'+esc(m.meaning)+'</p>':'')+(m.whenToUse?'<div class="realExample"><b>When to use it</b><br>'+esc(m.whenToUse)+'</div>':'')+(m.exampleKo?'<div class="realExample"><b>Fresh example</b><br>'+esc(m.exampleKo)+(m.exampleEn?'<br><span style="color:#6d7485">'+esc(m.exampleEn)+'</span>':'')+'</div>':'')+'</div>':'';
-   return '<article class="microCard"><div class="microNum">'+fmt((c?.startMs||0)/1000)+'</div><div><h4>'+esc(m.title)+'</h4><p>'+esc(m.why)+'</p>'+detail+'<div class="microMeta">'+m.focus.map(x=>'<span class="microTag">'+esc(x)+'</span>').join('')+'<span class="microTag">'+fmt(((cues[m.endCue]?.endMs||0)-(cues[m.startCue]?.startMs||0))/1000)+'</span></div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="microOpen" data-micro="'+i+'">▶ Study scene</button><button class="microOpen" data-micro-review="'+i+'">'+(done?'✓ Reviewed':'Mark reviewed')+'</button></div></article>'
+   return '<article class="microCard"><div class="microNum">'+fmt((c?.startMs||0)/1000)+'</div><div><h4>'+esc(m.title)+'</h4><p>'+esc(m.why)+'</p>'+detail+'<div class="microMeta">'+m.focus.map(x=>'<span class="microTag">'+esc(x)+'</span>').join('')+'<span class="microTag">'+fmt(((cues[m.endCue]?.endMs||0)-(cues[m.startCue]?.startMs||0))/1000)+'</span></div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="microOpen" data-micro="'+i+'">▶ Listen</button><button class="microOpen" data-micro-practice="'+i+'">Practice</button><button class="microOpen" data-micro-save="'+i+'">Save pattern</button><button class="microOpen" data-micro-review="'+i+'">'+(done?'✓ Reviewed':'Mark reviewed')+'</button></div></article>'
  }).join('')+'</div>'
 }
 function wireMicroLessons(){
@@ -1354,6 +1350,15 @@ function wireMicroLessons(){
    recordReviewSignal('micro',m.anchorCue);
    seek(m.anchorCue);
    toast('Micro lesson · '+m.title)
+ });
+ document.querySelectorAll('[data-micro-practice]').forEach(b=>b.onclick=()=>{
+   const m=microLessons&&microLessons[+b.dataset.microPractice];if(!m)return;
+   recordReviewSignal('micro',m.anchorCue);seek(m.anchorCue);practiceMode='sayit';
+   setTimeout(()=>panel('practice'),40);toast('Practice the pattern in your own Korean')
+ });
+ document.querySelectorAll('[data-micro-save]').forEach(b=>b.onclick=()=>{
+   const m=microLessons&&microLessons[+b.dataset.microSave];if(!m)return;
+   seek(m.anchorCue);setTimeout(()=>{Promise.resolve(stealCurrentSentence()).catch(()=>{})},40)
  });
  document.querySelectorAll('[data-micro-review]').forEach(b=>b.onclick=()=>{
    const m=microLessons&&microLessons[+b.dataset.microReview];if(!m)return;
