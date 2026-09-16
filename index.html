@@ -853,7 +853,7 @@ function adaptiveWordTimeline(c){
   }
   en=Math.max(st+Math.max(260,a.length*p.minWord),en);
   if(p.cueTailTrim)en=Math.max(st+Math.max(260,a.length*p.minWord),en-Math.min(Number(p.cueTailTrim),Math.max(0,(en-st)*.05)));
-  const weights=a.map(w=>tokenWeight(w,p.power,p.punct,p.baseWeight==null?.45:p.baseWeight));
+  const weights=a.map(w=>tokenWeight(w,p.power,p.punct,p.baseWeight==null?0.45:p.baseWeight));
   const sum=weights.reduce((x,y)=>x+y,0),span=en-st;
   let acc=0;
   return a.map((word,i)=>{
