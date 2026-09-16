@@ -13,7 +13,7 @@ Vercel project:
 - name: `korean-video-lab`
 - project ID: `prj_KXwOs8YsAKgQvcKJrcWdRywB9Zgf`
 - team ID: `team_2qP7AnUVZ2NnshuJiNVh464v`
-- current production deployment: `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
+- current production deployment: `dpl_ATNhJ1Ac18LNtPC45Vajx2cSioAK`
 - production domain preserved
 
 The current production build was verified READY after the catalog-scaling recovery.
@@ -653,4 +653,32 @@ Fix:
 Production:
 - marker: `WORD SYNC V2.3`
 - deployment: `dpl_Fw9QA1kMS8qw5dQcvAm4z8zDzNCi`
+- no runtime errors observed after deployment
+
+
+## Word Sync V3.1 syllable-paced fallback — 2026-09-16
+
+User playback requirement: a tiny millisecond mismatch is acceptable, but the highlight must not visibly trail or lead by a whole word.
+
+Production verification showed the target video `Eo2I6voTVnA` has no usable Korean YouTube caption track (`no-caption-track`), so Word Sync V3 correctly falls back to FreeTranscriptAPI cue-level timestamps.
+
+The previous fallback used a strongly concave word-weight curve plus a large whole-word advance. That could make long Korean words advance too quickly while short words linger too long, producing alternating early/late behavior inside the same sentence.
+
+V3.1 changes for `Eo2I6voTVnA` only:
+- token pacing is now near-linear by Korean syllable count (`power: .96`)
+- per-token base weight reduced to `.16`
+- punctuation timing reduced so sentence-final punctuation does not artificially hold the last word
+- removed the right-anchored natural-envelope profile for this lesson
+- cue tail trimmed by up to 90 ms
+- fallback clock lead reduced from roughly 420–760 ms to 70–165 ms
+- extra word-boundary lead reduced from 110 ms to 28 ms
+- statement-boundary lead reduced to 72 ms, capped at 255 ms
+- exact timed `words[]`, if ever available, still bypass all fallback compensation
+- Baby/Mina and other lessons remain untouched
+
+Production:
+- marker: `WORD SYNC V3.1`
+- deployment: `dpl_ATNhJ1Ac18LNtPC45Vajx2cSioAK`
+- stable URL: https://korean-video-lab.vercel.app/
+- frontend syntax verification passed
 - no runtime errors observed after deployment
