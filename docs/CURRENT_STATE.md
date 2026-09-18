@@ -852,3 +852,32 @@ The level percentages are explicitly catalog-learning signals, not predicted TOP
 `effectiveReady()` now returns true only for durable `readiness==='ready'` entries. A local/API quality PASS can no longer silently surface a candidate as Ready.
 
 Production deployment: `dpl_8xjCcwsEHGpZ9oTNmVi5c6oZdK6f`.
+
+
+## UI V2 production promotion staged — 2026-09-19
+
+The redesigned Haneul Video Lab frontend has been promoted from `redesign-v2/index.html` to the repository root `index.html`.
+
+Preserved:
+- 48 durable Ready lessons
+- 71 curated catalog entries
+- production caption / meaning / semantic API routes
+- trusted word-sync and learning-loop behavior
+- Library, Review Today, Micro Lessons, practice modes, saved words/patterns, and learner memory
+
+New production-root UI includes:
+- onboarding-led proficiency path + learner interests
+- Discover session filters for context + listening format
+- Profile as the control center for proficiency, interests, daily goal, and learner memory
+- AI learning analysis embedded inside Profile
+- interest-weighted recommendations with a small exploration share
+- responsive 5-tab mobile dock with direct Practice action
+
+Rollback safety:
+- branch `production-pre-ui-v2-2026-09-19` preserves the exact pre-promotion main state
+- promotion commit: `452b9bba7142fab89d72d53995bf130e42f7cbef`
+
+Deployment status:
+- GitHub source promotion is complete
+- stable Vercel production project `korean-video-lab` has NOT yet been updated because the connected Vercel deployment write action returned an internal `Tool deploy_to_vercel not found` error
+- do not claim the stable production URL is on UI V2 until a new deployment is created and verified
