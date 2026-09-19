@@ -48,13 +48,13 @@ async function init(){
    el('gate').hidden=false;
    el('gate').querySelector('h2').textContent='Your creator community is not linked yet.';
    el('gate').querySelector('p').textContent='Redeem a collaborator referral code in Haneul or ask the Haneul owner to assign your creator signature. Then return here.';
-   ui('No connected collaborator communities on this account.');return
+   ui('This Google account has no creator assignment. Signed in as '+String(user?.email||'unknown account')+'. If you are the Haneul owner, switch to the Google account authorized in Admin Panel.');return
   }
   el('workspace').hidden=false;el('gate').hidden=true;
   el('community').innerHTML=communities.map(x=>'<option value="'+safe(x.code)+'">'+safe(x.label||x.code)+' · '+safe(x.code)+'</option>').join('');
   el('community').onchange=()=>void load(el('community').value);
   const requested=new URLSearchParams(location.search).get('code')||'';
-  const choice=communities.find(c=>c.code===requested)?.code||communities[0].code;
+  const choice=communities.find(c=>c.code===requested)?.code||communities.find(c=>c.code==='HNL-X-OWNER-PREVIEW-SIG00')?.code||communities[0].code;
   el('community').value=choice;
   await load(choice);
  }catch(e){ui(e?.message||'Could not load creator community.',true)}
@@ -66,8 +66,9 @@ async function load(code){
   if(!s?.code)throw Error('Creator space not found');
   space=s;dashboard=d||{};selected=(s.days||[]).sort((a,b)=>a.day-b.day).map(x=>x.videoId);
   el('heroCreator').textContent=space.title||'Your learning circle';el('heroIntro').textContent=space.introduction||'A dedicated place to learn Korean together.';
-  el('role').textContent=space.is_owner?'Creator / admin':'Community learner';
-  el('codeNote').textContent='Signature: '+space.code+' · Access is tied to your Google account.';
+  const ownerPreview=space.code==='HNL-X-OWNER-PREVIEW-SIG00';
+  el('role').textContent=ownerPreview?'OWNER PREVIEW · private':space.is_owner?'Creator / admin':'Community learner';
+  el('codeNote').textContent=ownerPreview?'Owner sandbox · referral code is PAUSED, so learners cannot join this preview.':('Signature: '+space.code+' · Access is tied to your Google account.');
   el('creatorTab').hidden=!space.is_owner;
   el('challengeName').textContent=space.challenge_title||'7 days of real Korean';
   el('weeklyPrompt').textContent=space.weekly_prompt||'Introduce yourself in Korean.';
@@ -77,7 +78,7 @@ async function load(code){
   el('rankPublic').checked=space.my_public===true;
   renderDays();renderVideos();renderDashboard();renderCreator();
   ui('',false);
-  tab('challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code));
+  tab(ownerPreview?'creator':'challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code));
  }catch(e){ui(e?.message||'Could not load community',true)}
 }
 function renderDays(){
