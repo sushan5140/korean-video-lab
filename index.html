@@ -1313,7 +1313,7 @@ function renderAuthAccountCard(){
 }
 
 let inviteAuthorized=false,inviteAdmin=false,inviteCode='',aiAccessEnabled=false,authRevision=0;
-let authReady=false,authBootPromise=null,authVerification=null,authVerificationUser='';
+let authReady=false,authBootPromise=null,authVerification=null,authVerificationUser='',pendingAuthEvent=null;
 const PENDING_REFERRAL_KEY='haneulPendingReferral:v1';
 function normalizeInvite(x){return String(x||'').trim().toUpperCase()}
 function readPendingInvite(){
@@ -1494,13 +1494,19 @@ async function restoreHaneulSession(){
  if(authBootPromise)return authBootPromise;
  const work=(async()=>{
   try{
-   const {data,error}=await haneulAuth.auth.getSession();
+   const {data,error}=await Promise.race([
+    haneulAuth.auth.getSession(),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('Session restoration timed out')),15000))
+   ]);
    if(error)throw error;
+   const buffered=pendingAuthEvent;pendingAuthEvent=null;
+   const restored=buffered?.event==='SIGNED_OUT'?null:
+    (data?.session?.user?data.session:buffered?.session?.user?buffered.session:null);
    authReady=true;
-   handleHaneulAuthEvent('INITIAL_SESSION',data?.session||null);
+   if(restored?.user)handleHaneulAuthEvent(buffered?.event||'INITIAL_SESSION',restored);
    // A truly absent saved session is the only initial condition that shows login.
-   if(!data?.session?.user){authUser=null;resetAuthRestore();showAuthGate()}
-   else await ensureHaneulAuthorized()
+   else{authUser=null;resetAuthRestore();showAuthGate()}
+   if(restored?.user)await ensureHaneulAuthorized()
   }catch(e){
    console.warn('Haneul saved session restoration:',e?.message||'unavailable');
    showAuthRestoreProblem('We could not check your saved session. Retry without signing out.')
@@ -1524,7 +1530,7 @@ async function initAuth(){
  haneulAuth.auth.onAuthStateChange((event,session)=>{
   // Supabase may deliver INITIAL_SESSION and TOKEN_REFRESHED while getSession()
   // is still settling. Do not show a sign-in form for either of those.
-  if(!authReady)return;
+  if(!authReady){pendingAuthEvent={event,session};return}
   handleHaneulAuthEvent(event,session)
  });
  await restoreHaneulSession()
