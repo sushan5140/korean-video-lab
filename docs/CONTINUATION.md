@@ -507,3 +507,16 @@ Current product state after merging the older nine-item roadmap:
 Next safe catalog work is playback verification of PASS candidates. Priority order from structural cleanliness should start with shorter/cleaner candidates, but no candidate should be promoted without a real listening verdict.
 
 Production: `dpl_8xjCcwsEHGpZ9oTNmVi5c6oZdK6f`.
+
+
+## Beginner expansion continuation — 2026-09-19
+
+The canonical root `index.html` now carries **82 curated videos, 63 Ready overall, 36 Ready Beginner** after a batch of fifteen Beginner videos (4 promoted checking entries + 11 new).
+
+All fifteen returned timed Korean captions through the existing production caption endpoint; exact IDs, creators, Context and Listening format tags, cue counts, and audit limitations are recorded in `docs/BEGINNER_EXPANSION_2026-09-19.md`.
+
+The previous 48 Ready lessons and the existing account/auth, admin panel, referral, AI access, saved learner state and player/memory/practice features were preserved.
+
+Important Browse behavior: unfiltered Discover should render nine personalized suggestions followed by the remaining Ready videos in the selected proficiency path. Previously it rendered only nine suggestions, concealing most of the Beginner library. Context and Listening format filters still show the exact ready match set.
+
+This audit only proves the caption route produced Korean timed cues, not human confirmation of word-to-audio acoustic alignment or YouTube iframe playback. Review learner reports and demote any entry with wrong/broken captions, unavailable video, or serious timing drift. Never promote the known no-Korean-track candidates `rj2j3Tes8q0`, `wns9Ro1Nkb0` or the English-heavy `FciY1CF7uOM`, `MHO9U-DEqoU` without repairs.
