@@ -1279,49 +1279,142 @@ function renderAuthAccountCard(){
  const u=authUser;
  if(!u)return '<div class="profileCard authAccountCard"><div class="authIdentity"><span class="authFallback">G</span><div><b>Connect your Google account</b><small>Sign in so this profile has a real identity.</small></div></div><div class="authActions"><button class="authConnect" id="profileGoogleConnect">Continue with Google</button></div></div>';
  const avatar=googleUserAvatar();
- return '<div class="profileCard authAccountCard"><div class="authIdentity">'+(avatar?'<img src="'+esc(avatar)+'" alt="">':'<span class="authFallback">G</span>')+'<div><b>'+esc(googleUserName())+'</b><small>'+esc(u.email||'Google account')+' · Signed in with Google</small></div></div><div class="authActions"><button class="authSignOut" id="profileSignOut">Sign out</button></div></div>'
+ return '<div class="profileCard authAccountCard"><div class="authIdentity">'+(avatar?'<img src="'+esc(avatar)+'" alt="">':'<span class="authFallback">G</span>')+'<div><b>'+esc(googleUserName())+'</b><small>'+esc(u.email||'Google account')+(inviteCode?' · Invited via '+esc(inviteCode):'')+'</small></div></div><div class="authActions">'+(inviteAdmin?'<a class="adminProfileLink" href="/internal/collaborators/">Manage collaborator codes ↗</a>':'')+'<button class="authSignOut" id="profileSignOut">Sign out</button></div></div>'
+}
+
+let inviteAuthorized=false,inviteAdmin=false,inviteCode='',authRevision=0;
+const PENDING_REFERRAL_KEY='haneulPendingReferral:v1';
+function normalizeInvite(x){return String(x||'').trim().toUpperCase()}
+function readPendingInvite(){
+ try{
+  const p=JSON.parse(sessionStorage.getItem(PENDING_REFERRAL_KEY)||'null');
+  return p&&Date.now()-Number(p.at)<30*60*1000&&/^[A-Z0-9_-]{2,48}$/.test(p.code)?p.code:'';
+ }catch{return''}
+}
+function referralNotice(message,bad=false,good=false){
+ const el=$('referralMessage');
+ if(el){el.textContent=message;el.className='inviteNotice'+(bad?' bad':good?' good':'')}
+}
+function referralControls(){
+ const input=$('referralCodeInput'),button=$('googleAuthBtn');
+ if(!input||!button)return;
+ const code=normalizeInvite(input.value),valid=/^[A-Z0-9_-]{2,48}$/.test(code);
+ button.disabled=!valid;
+ if(!code)referralNotice('Enter the code shared by your collaborator.');
+ else if(!valid)referralNotice('Use 2–48 letters, numbers, _ or -.',true);
+ else referralNotice('Ready to continue with Google.');
+}
+function closeAuthGate(startOnboarding=true){
+ if(!inviteAuthorized)return;
+ const gate=$('authGate');if(gate)gate.classList.remove('open');
+ document.body.classList.remove('haneulAuthPending');
+ if(startOnboarding)setTimeout(initOnboarding,80)
+}
+function showAuthGate(message){
+ inviteAuthorized=false;
+ const gate=$('authGate');if(gate)gate.classList.add('open');
+ document.body.classList.add('haneulAuthPending');
+ referralControls();
+ if(message)referralNotice(message,true)
 }
 async function signInWithGoogle(){
- if(!haneulAuth){toast('Google sign-in is not available right now');return}
- const {error}=await haneulAuth.auth.signInWithOAuth({provider:'google',options:{redirectTo:HANEUL_REDIRECT}});
- if(error){console.error(error);toast('Google sign-in needs Auth provider setup')}
+ const input=$('referralCodeInput'),button=$('googleAuthBtn');
+ const code=normalizeInvite(input?.value);
+ if(!haneulAuth){showAuthGate('Google sign-in is unavailable right now.');return}
+ if(!/^[A-Z0-9_-]{2,48}$/.test(code)){referralControls();input?.focus();return}
+ if(button)button.disabled=true;
+ referralNotice('Checking your collaborator code…');
+ try{
+  const {data:available,error:checkError}=await haneulAuth.rpc('haneul_check_code',{p_code:code});
+  if(checkError||!available){referralNotice(checkError?'Could not verify your code. Please try again.':'This collaborator code is not active. Check the code and try again.',true);return}
+  if(authUser){
+   const {data:redeemed,error:redeemError}=await haneulAuth.rpc('haneul_redeem_code',{p_code:code});
+   if(redeemError){referralNotice(redeemError.message||'This invitation could not be applied.',true);return}
+   inviteCode=String(redeemed||code);await authorizeHaneulSession();return
+  }
+  sessionStorage.setItem(PENDING_REFERRAL_KEY,JSON.stringify({code,at:Date.now()}));
+  referralNotice('Connecting with Google…',false,true);
+  const {error}=await haneulAuth.auth.signInWithOAuth({provider:'google',options:{redirectTo:HANEUL_REDIRECT}});
+  if(error){referralNotice('Google sign-in could not start. Please try again.',true);console.error('Haneul OAuth start:',error.message)}
+ }catch(e){referralNotice('Could not check your invitation. Please try again.',true);console.error('Haneul invite:',e?.message||'error')}
+ finally{if(button)button.disabled=false}
 }
 async function signOutGoogle(){
  if(!haneulAuth)return;
  const {error}=await haneulAuth.auth.signOut();
  if(error){toast('Could not sign out');return}
- authUser=null;updateSidebarProfile();renderProfilePage();toast('Signed out')
-}
-function closeAuthGate(startOnboarding=true){
- const g=$('authGate');if(g)g.classList.remove('open');
- if(startOnboarding)setTimeout(initOnboarding,80)
-}
-function showAuthGate(){
- const g=$('authGate');if(g)g.classList.add('open')
+ authUser=null;inviteAuthorized=false;inviteAdmin=false;inviteCode='';
+ sessionStorage.removeItem(PENDING_REFERRAL_KEY);
+ showAuthGate();updateSidebarProfile();toast('Signed out')
 }
 function applyAuthIdentity(){
  const av=$('sideMiniAvatar');
  if(av){const src=googleUserAvatar();av.innerHTML=authUser&&src?'<img src="'+esc(src)+'" alt="">':'한'}
  updateSidebarProfile()
 }
+async function authorizeHaneulSession(){
+ const revision=++authRevision,uid=authUser?.id;
+ if(!haneulAuth||!uid){showAuthGate();return}
+ try{
+  const {data:allowed,error}=await haneulAuth.rpc('haneul_has_invite');
+  if(revision!==authRevision||authUser?.id!==uid)return;
+  if(error){showAuthGate('Could not verify account access. Please retry your code.');return}
+  if(allowed){
+   inviteAuthorized=true;
+   const {data:isAdmin}=await haneulAuth.rpc('is_haneul_admin');
+   if(revision!==authRevision||authUser?.id!==uid)return;
+   inviteAdmin=!!isAdmin;inviteCode='';
+   if(!inviteAdmin){
+    const {data:own}=await haneulAuth.from('haneul_referrals').select('code').eq('user_id',uid).maybeSingle();
+    if(revision!==authRevision||authUser?.id!==uid)return;
+    inviteCode=String(own?.code||'')
+   }
+   sessionStorage.removeItem(PENDING_REFERRAL_KEY);
+   applyProfileToFeed();applyAuthIdentity();closeAuthGate(false);
+   if($('profilePage')&&!$('profilePage').hidden)renderProfilePage();
+   void hydrateCloudProfile();return
+  }
+  const pending=readPendingInvite();
+  if(pending){
+   const {data:redeemed,error:redeemError}=await haneulAuth.rpc('haneul_redeem_code',{p_code:pending});
+   if(revision!==authRevision||authUser?.id!==uid)return;
+   if(!redeemError&&redeemed){inviteCode=String(redeemed);sessionStorage.removeItem(PENDING_REFERRAL_KEY);void authorizeHaneulSession();return}
+   sessionStorage.removeItem(PENDING_REFERRAL_KEY);
+   $('referralCodeInput').value=pending;
+   showAuthGate('That invitation could not be applied. Check the code or ask your collaborator.');
+   return
+  }
+  showAuthGate('Enter your collaborator code to finish connecting your account.');
+ }catch(e){if(revision===authRevision)showAuthGate('Could not check account access. Please try again.')}
+}
 async function initAuth(){
- if(!haneulAuth){setTimeout(initOnboarding,80);return}
+ const input=$('referralCodeInput'),button=$('googleAuthBtn');
+ if(input){
+  const supplied=new URLSearchParams(location.search).get('ref');
+  input.value=String(supplied||readPendingInvite()||'').slice(0,48).toUpperCase();
+  input.addEventListener('input',referralControls);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!button.disabled)void signInWithGoogle()}});
+ }
+ if(button)button.onclick=signInWithGoogle;
+ referralControls();
+ if(!haneulAuth){showAuthGate('Google sign-in is unavailable. Please try again later.');return}
+ haneulAuth.auth.onAuthStateChange((_event,session)=>{
+  const next=session?.user||null;
+  if(authUser?.id!==next?.id){
+   grokProfileState={loading:false,analysis:'',model:'',error:''};
+   cloudProfileHydratingFor='';
+   authRevision++;inviteAuthorized=false;inviteAdmin=false;inviteCode='';
+  }
+  authUser=next;
+  if(!next){showAuthGate();return}
+  if(inviteAuthorized)return;
+  setTimeout(()=>void authorizeHaneulSession(),0)
+ });
  const {data,error}=await haneulAuth.auth.getSession();
  if(!error)authUser=data?.session?.user||null;
- applyProfileToFeed();applyAuthIdentity();
- haneulAuth.auth.onAuthStateChange((_event,session)=>{
-   const nextUser=session?.user||null;if(authUser?.id!==nextUser?.id){grokProfileState={loading:false,analysis:'',model:'',error:''};cloudProfileHydratingFor=''};
-   authUser=nextUser;applyProfileToFeed();applyAuthIdentity();
-   if(authUser){localStorage.removeItem('haneulAuthPromptDismissed:v1');closeAuthGate(false);void hydrateCloudProfile()}
-   if($('profilePage')&&!$('profilePage').hidden)renderProfilePage()
- });
- const sign=$('googleAuthBtn'),skip=$('authSkipBtn');
- if(sign)sign.onclick=signInWithGoogle;
- if(skip)skip.onclick=()=>{localStorage.setItem('haneulAuthPromptDismissed:v1','1');closeAuthGate(true)};
- if(authUser){void hydrateCloudProfile()}else if(!localStorage.getItem('haneulAuthPromptDismissed:v1'))showAuthGate();
- else setTimeout(initOnboarding,80)
+ if(authUser)await authorizeHaneulSession();
+ else showAuthGate()
 }
-
 let cloudProfileHydratingFor='';
 async function persistProfileToCloud(){
  const uid=authUser?.id;
