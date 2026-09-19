@@ -1,63 +1,64 @@
 {
-  "version": "2026-09-19-lower-intermediate-curation-v1",
-  "curated": 175,
+  "version": "2026-09-19-lower-preview-15plus-v2",
+  "curated": 280,
   "ready": 140,
   "beginnerReady": 113,
   "lowerIntermediate": {
-    "curated": 38,
+    "curated": 143,
     "ready": 15,
-    "checking": 23,
-    "contextCounts": [
-      {
-        "topic": "Daily Life",
+    "checking": 128,
+    "stage": "Preview is not Ready; video must pass caption and manual playback verification before promotion.",
+    "contextCounts": {
+      "Daily Life": {
         "ready": 12,
-        "checking": 17
+        "preview": 28,
+        "total": 40
       },
-      {
-        "topic": "Food",
+      "Food": {
         "ready": 2,
-        "checking": 1
+        "preview": 20,
+        "total": 22
       },
-      {
-        "topic": "Travel",
+      "Travel": {
         "ready": 2,
-        "checking": 2
+        "preview": 15,
+        "total": 17
       },
-      {
-        "topic": "Shopping",
+      "Shopping": {
         "ready": 1,
-        "checking": 2
+        "preview": 14,
+        "total": 15
       },
-      {
-        "topic": "School",
+      "School": {
         "ready": 1,
-        "checking": 4
+        "preview": 16,
+        "total": 17
       },
-      {
-        "topic": "Culture",
+      "Culture": {
         "ready": 3,
-        "checking": 10
+        "preview": 46,
+        "total": 49
       },
-      {
-        "topic": "Weather",
+      "Weather": {
         "ready": 0,
-        "checking": 2
+        "preview": 17,
+        "total": 17
       },
-      {
-        "topic": "Family",
+      "Family": {
         "ready": 0,
-        "checking": 2
+        "preview": 15,
+        "total": 15
       },
-      {
-        "topic": "Work",
+      "Work": {
         "ready": 2,
-        "checking": 2
+        "preview": 14,
+        "total": 16
       },
-      {
-        "topic": "Hobbies",
+      "Hobbies": {
         "ready": 1,
-        "checking": 2
+        "preview": 14,
+        "total": 15
       }
-    ]
+    }
   }
 }

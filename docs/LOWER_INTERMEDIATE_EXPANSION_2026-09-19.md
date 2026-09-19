@@ -40,3 +40,30 @@
 Choisusu IDs are linked from the episode-specific publisher podcast descriptions on Apple Podcasts/Podtail/Metacast; one syndicated iVoox page copied a wrong adjacent episode ID, so distinct episode links were taken from other podcast listings. Family and shopping conversation IDs came from their YouTube listings. This validates identification, not Haneul Korean cue timing or player availability.
 
 Admission workflow: run production quality checks; exclude FAIL, manually review REVIEW, and test real playback plus English and word synchronization for PASS. Only then modify `VERIFIED_READY` and redeploy. Do not mislabel these 16 as learner-facing Ready or recycle Beginner videos for inflated counts.
+
+## Large Lower Intermediate discovery batch — 2026-09-19
+
+**User target:** 15–20 genuinely usable Ready videos per Context. **Status: NOT COMPLETE.**
+
+- Added **105 distinct externally discovered YouTube video candidates** in `data/lower-intermediate-candidates.js` to the 38 existing Lower Intermediate entries (including the original 16 staged on 2026-09-19), giving **143 curated Lower Intermediate IDs: 15 Ready + 128 Checking/Preview**.
+- Every context has at least **15 unique curated candidate/Ready IDs combined**, but **this is NOT 15 Ready videos per category**. The source data/manifest preserves the distinction and the UI shows e.g. `0 Ready · 17 Preview`, never `17 Ready`.
+- The new learner-visible, visually separate **More Korean to explore** section appears only on Lower Intermediate Browse, filtered by Context, format, and search. Cards are explicitly labeled Preview. Clicking runs a fresh production quality check; a missing/invalid Korean transcript blocks in-site playback; structural PASS or REVIEW allows a preview with an explicit timing/translation warning. Neither preview nor a PASS/REVIEW automatically enters VERIFIED_READY or progress level totals.
+- Existing Ready lists, Beginner video counts, personalized recommendations, login, referral, player and learner memory are preserved.
+- The previous owner-only review queue remains available for curator QA; source has no new credentials. Google/YouTube API rateLimitExceeded prevented a complete independent pass through all 105 videos. Metadata may be imperfect, and entries with no track remain unavailable until repaired or replaced.
+
+| Context | Ready | Preview | Total unique IDs |
+| --- | ---: | ---: | ---: |
+| Daily Life | 12 | 28 | 40 |
+| Food | 2 | 20 | 22 |
+| Travel | 2 | 15 | 17 |
+| Shopping | 1 | 14 | 15 |
+| School | 1 | 16 | 17 |
+| Culture | 3 | 46 | 49 |
+| Weather | 0 | 17 | 17 |
+| Family | 0 | 15 | 15 |
+| Work | 2 | 14 | 16 |
+| Hobbies | 1 | 14 | 15 |
+
+Quality evidence: specific previous 16 staged videos returned REVIEW (not PASS) from production; spot checks on newly discovered entries found PASS (e.g. `4A3swSZkuDs`, `NwoQy9PvvE0`, `bHOrV3lAUtU`, `OR_GmRjY8WE`) and FAIL/no-Korean-track examples. This justifies click-time gating, not blanket Ready promotion. Real iframe/acoustic synchronization was not established for all candidates; review and promote only individually.
+
+Deployment verification must check manifest, candidate JS file accessibility and that selecting the lower intermediate topics updates both counts and Explore cards. Version: `2026-09-19-lower-preview-15plus-v2`.
