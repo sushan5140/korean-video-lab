@@ -617,11 +617,11 @@ body.haneulAuthPending .app,body.haneulAuthPending .mobileNav{visibility:hidden!
   <div class="authMark">한</div>
   <div class="ey">HANEUL · COLLABORATOR ACCESS</div>
   <h1>Your Korean journey starts here.</h1>
-  <p>Enter your collaborator code to connect your account and begin learning Korean with Haneul.</p>
+  <p>Make real Korean part of your day, one video at a time.</p>
   <div class="inviteField"><label for="referralCodeInput">COLLABORATOR CODE</label><input id="referralCodeInput" maxlength="48" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Enter your code" aria-describedby="referralMessage"></div>
-  <div class="inviteNotice" role="status" id="referralMessage">Checking your access…</div>
-  <button class="googleAuthBtn" id="googleAuthBtn" disabled><span class="googleG">G</span>Continue with Google</button>
-  <p class="inviteInfo">Your invitation stays connected to your Haneul account.</p>
+  <div class="inviteNotice" role="status" id="referralMessage"> </div>
+  <button class="googleAuthBtn" id="googleAuthBtn"><span class="googleG">G</span>Continue with Google</button>
+  <p class="inviteInfo">Referral codes unlock extra features, including Grok learning insights.</p>
  </div>
 </div><div class="onboard" id="onboard">
   <div class="onboardCard">
@@ -1299,10 +1299,10 @@ function referralControls(){
  const input=$('referralCodeInput'),button=$('googleAuthBtn');
  if(!input||!button)return;
  const code=normalizeInvite(input.value),valid=/^[A-Z0-9_-]{2,48}$/.test(code);
- button.disabled=!valid;
- if(!code)referralNotice('Enter the code shared by your collaborator.');
+ if(!code)referralNotice('');
  else if(!valid)referralNotice('Use 2–48 letters, numbers, _ or -.',true);
- else referralNotice('Ready to continue with Google.');
+ else referralNotice('Code ready to apply after Google sign-in.',false,true);
+ if(!button.dataset.busy)button.disabled=false;
 }
 function closeAuthGate(startOnboarding=true){
  if(!inviteAuthorized)return;
@@ -1321,23 +1321,28 @@ async function signInWithGoogle(){
  const input=$('referralCodeInput'),button=$('googleAuthBtn');
  const code=normalizeInvite(input?.value);
  if(!haneulAuth){showAuthGate('Google sign-in is unavailable right now.');return}
- if(!/^[A-Z0-9_-]{2,48}$/.test(code)){referralControls();input?.focus();return}
- if(button)button.disabled=true;
- referralNotice('Checking your collaborator code…');
+ if(code&&!/^[A-Z0-9_-]{2,48}$/.test(code)){referralControls();input?.focus();return}
+ if(button){button.dataset.busy='1';button.disabled=true}
  try{
-  const {data:available,error:checkError}=await haneulAuth.rpc('haneul_check_code',{p_code:code});
-  if(checkError||!available){referralNotice(checkError?'Could not verify your code. Please try again.':'This collaborator code is not active. Check the code and try again.',true);return}
-  if(authUser){
-   const {data:redeemed,error:redeemError}=await haneulAuth.rpc('haneul_redeem_code',{p_code:code});
-   if(redeemError){referralNotice(redeemError.message||'This invitation could not be applied.',true);return}
-   inviteCode=String(redeemed||code);await authorizeHaneulSession();return
+  if(code){
+   referralNotice('Checking your collaborator code…');
+   const {data:available,error:checkError}=await haneulAuth.rpc('haneul_check_code',{p_code:code});
+   if(checkError||!available){referralNotice(checkError?'Could not verify your code. Please try again.':'This collaborator code is not active. Check the code and try again.',true);return}
+   if(authUser){
+    const {data:redeemed,error:redeemError}=await haneulAuth.rpc('haneul_redeem_code',{p_code:code});
+    if(redeemError){referralNotice(redeemError.message||'This code could not be applied.',true);return}
+    inviteCode=String(redeemed==='ADMIN'?'':redeemed||code);await authorizeHaneulSession();return
+   }
+   sessionStorage.setItem(PENDING_REFERRAL_KEY,JSON.stringify({code,at:Date.now()}))
+  }else{
+   sessionStorage.removeItem(PENDING_REFERRAL_KEY);
+   if(authUser){await authorizeHaneulSession();return}
   }
-  sessionStorage.setItem(PENDING_REFERRAL_KEY,JSON.stringify({code,at:Date.now()}));
   referralNotice('Connecting with Google…',false,true);
   const {error}=await haneulAuth.auth.signInWithOAuth({provider:'google',options:{redirectTo:HANEUL_REDIRECT}});
   if(error){referralNotice('Google sign-in could not start. Please try again.',true);console.error('Haneul OAuth start:',error.message)}
- }catch(e){referralNotice('Could not check your invitation. Please try again.',true);console.error('Haneul invite:',e?.message||'error')}
- finally{if(button)button.disabled=false}
+ }catch(e){referralNotice('Could not connect right now. Please try again.',true);console.error('Haneul login:',e?.message||'error')}
+ finally{if(button){delete button.dataset.busy;button.disabled=false}}
 }
 async function signOutGoogle(){
  if(!haneulAuth)return;
@@ -1356,36 +1361,31 @@ async function authorizeHaneulSession(){
  const revision=++authRevision,uid=authUser?.id;
  if(!haneulAuth||!uid){showAuthGate();return}
  try{
-  const {data:allowed,error}=await haneulAuth.rpc('haneul_has_invite');
-  if(revision!==authRevision||authUser?.id!==uid)return;
-  if(error){showAuthGate('Could not verify account access. Please retry your code.');return}
-  if(allowed){
-   inviteAuthorized=true;
-   const {data:isAdmin}=await haneulAuth.rpc('is_haneul_admin');
-   if(revision!==authRevision||authUser?.id!==uid)return;
-   inviteAdmin=!!isAdmin;inviteCode='';
-   if(!inviteAdmin){
-    const {data:own}=await haneulAuth.from('haneul_referrals').select('code').eq('user_id',uid).maybeSingle();
-    if(revision!==authRevision||authUser?.id!==uid)return;
-    inviteCode=String(own?.code||'')
-   }
-   sessionStorage.removeItem(PENDING_REFERRAL_KEY);
-   applyProfileToFeed();applyAuthIdentity();closeAuthGate(false);
-   if($('profilePage')&&!$('profilePage').hidden)renderProfilePage();
-   void hydrateCloudProfile();return
-  }
   const pending=readPendingInvite();
+  let referralError='';
   if(pending){
-   const {data:redeemed,error:redeemError}=await haneulAuth.rpc('haneul_redeem_code',{p_code:pending});
+   const {data:redeemed,error}=await haneulAuth.rpc('haneul_redeem_code',{p_code:pending});
    if(revision!==authRevision||authUser?.id!==uid)return;
-   if(!redeemError&&redeemed){inviteCode=String(redeemed);sessionStorage.removeItem(PENDING_REFERRAL_KEY);void authorizeHaneulSession();return}
-   sessionStorage.removeItem(PENDING_REFERRAL_KEY);
-   $('referralCodeInput').value=pending;
-   showAuthGate('That invitation could not be applied. Check the code or ask your collaborator.');
-   return
+   if(error)referralError='That referral code could not be applied. You can enter another one in Profile.';
+   else inviteCode=redeemed==='ADMIN'?'':String(redeemed||pending);
+   sessionStorage.removeItem(PENDING_REFERRAL_KEY)
   }
-  showAuthGate('Enter your collaborator code to finish connecting your account.');
- }catch(e){if(revision===authRevision)showAuthGate('Could not check account access. Please try again.')}
+  const {data:isAdmin,error:adminError}=await haneulAuth.rpc('is_haneul_admin');
+  if(revision!==authRevision||authUser?.id!==uid)return;
+  if(adminError)throw adminError;
+  inviteAdmin=!!isAdmin;
+  inviteCode='';
+  if(!inviteAdmin){
+   const {data:own,error:referralReadError}=await haneulAuth.from('haneul_referrals').select('code').eq('user_id',uid).maybeSingle();
+   if(revision!==authRevision||authUser?.id!==uid)return;
+   if(referralReadError)throw referralReadError;
+   inviteCode=String(own?.code||'');
+  }
+  inviteAuthorized=true;applyProfileToFeed();applyAuthIdentity();closeAuthGate(false);
+  if($('profilePage')&&!$('profilePage').hidden)renderProfilePage();
+  if(referralError)toast(referralError);
+  void hydrateCloudProfile()
+ }catch(e){if(revision===authRevision)showAuthGate('Could not check your account. Please try Google sign-in again.')}
 }
 async function initAuth(){
  const input=$('referralCodeInput'),button=$('googleAuthBtn');
@@ -1393,7 +1393,7 @@ async function initAuth(){
   const supplied=new URLSearchParams(location.search).get('ref');
   input.value=String(supplied||readPendingInvite()||'').slice(0,48).toUpperCase();
   input.addEventListener('input',referralControls);
-  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!button.disabled)void signInWithGoogle()}});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void signInWithGoogle()}});
  }
  if(button)button.onclick=signInWithGoogle;
  referralControls();
