@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Collaborator access · Haneul Video Lab</title>
-<meta name="description" content="Join Haneul Video Lab with your collaborator code and Google account.">
+<title>Start learning Korean · Haneul Video Lab</title>
+<meta name="description" content="Learn Korean through Haneul Video Lab with Google sign-in and collaborator privileges.">
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f7f4ed;color:#25221e;font-family:Inter,system-ui,-apple-system,sans-serif}
 .shell{max-width:1120px;min-height:100vh;margin:auto;display:grid;grid-template-columns:1fr 470px;align-items:center;gap:70px;padding:48px}
@@ -23,39 +23,50 @@ button:disabled{opacity:.43;cursor:not-allowed}.g{background:#fff;color:#4285f4;
 <div class="ey" style="margin-top:54px;font-size:10px;font-weight:900;letter-spacing:.15em">LEARN WITH A COLLABORATOR</div>
 <h1>Real Korean.<br><em>Your way in.</em></h1>
 <p>Learn through real Korean videos, with timed captions, personalized practice and review that remembers what you have learned.</p></section>
-<section class="card"><div class="ey">COLLABORATOR ACCESS</div><h2>Your invitation<br>starts here.</h2>
-<p>Enter the code you received, then connect your Google account to begin.</p>
+<section class="card"><div class="ey">START LEARNING WITH HANEUL</div><h2>Your Korean journey<br>starts here.</h2>
+<p>Real Korean videos, personalized practice and progress that grows with you.</p>
 <div class="field"><label for="code">YOUR COLLABORATOR CODE</label><input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="48" placeholder="Enter your code" aria-describedby="status"></div>
-<div class="status" id="status" role="status">Enter your code to continue.</div>
-<button id="login" disabled><span class="g">G</span>Continue with Google</button>
-<p class="foot">Your collaborator invitation stays linked to your Haneul profile.</p></section></main>
+<div class="status" id="status" role="status"></div>
+<button id="login"><span class="g">G</span>Continue with Google</button>
+<p class="foot">Referral codes unlock extra features, including Grok learning insights.</p></section></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
 <script>
 const API_URL='https://uyltjaftajwkujjhuric.supabase.co',PUBLISHABLE_KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW',DESTINATION='https://korean-video-lab.vercel.app/';
 const client=window.supabase?.createClient(API_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const input=document.getElementById('code'),btn=document.getElementById('login'),message=document.getElementById('status');
 function show(text,error=false){message.textContent=text;message.className='status'+(error?' error':'')}
-function update(){const code=input.value.trim().toUpperCase();btn.disabled=!/^[A-Z0-9_-]{2,48}$/.test(code);show(code?(btn.disabled?'Use 2–48 letters, numbers, _ or -.':'Ready to continue with Google.'):'Enter your code to continue.',btn.disabled&&!!code)}
+function update(){
+ const code=input.value.trim().toUpperCase();
+ btn.disabled=false;
+ show(code&&!/^[A-Z0-9_-]{2,48}$/.test(code)?'Use 2–48 letters, numbers, _ or -.':'',!!code&&!/^[A-Z0-9_-]{2,48}$/.test(code))
+}
 input.value=(new URLSearchParams(location.search).get('ref')||'').slice(0,48).toUpperCase();input.addEventListener('input',update);
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!btn.disabled){e.preventDefault();btn.click()}});update();
+input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();btn.click()}});update();
 btn.onclick=async()=>{
  const code=input.value.trim().toUpperCase();
- if(!client||!code)return;
- btn.disabled=true;show('Checking your collaborator code…');
+ if(!client)return;
+ if(code&&!/^[A-Z0-9_-]{2,48}$/.test(code)){show('Use 2–48 letters, numbers, _ or -.',true);input.focus();return}
+ btn.disabled=true;
  try{
-  const {data:active,error:checkError}=await client.rpc('haneul_check_code',{p_code:code});
-  if(checkError||!active){show('This collaborator code is not active. Please check it.',true);return}
+  if(code){
+   show('Checking collaborator code…');
+   const {data:active,error:checkError}=await client.rpc('haneul_check_code',{p_code:code});
+   if(checkError||!active){show('This collaborator code is not active. Please check it.',true);return}
+  }
   const {data:{session}}=await client.auth.getSession();
   if(session){
-   const {error}=await client.rpc('haneul_redeem_code',{p_code:code});
-   if(error){show(error.message||'This invitation could not be applied.',true);return}
+   if(code){
+    const {error}=await client.rpc('haneul_redeem_code',{p_code:code});
+    if(error){show(error.message||'This code could not be applied.',true);return}
+   }
    location.assign(DESTINATION);return
   }
-  sessionStorage.setItem('haneulPendingReferral:v1',JSON.stringify({code,at:Date.now()}));
-  show('Connecting to Google…');
+  if(code)sessionStorage.setItem('haneulPendingReferral:v1',JSON.stringify({code,at:Date.now()}));
+  else sessionStorage.removeItem('haneulPendingReferral:v1');
+  show('Connecting with Google…');
   const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:DESTINATION}});
   if(error){show('Google sign-in could not start. Please try again.',true);console.error(error.message)}
- }catch(e){show('Could not verify your code right now. Try again.',true)}
- finally{update()}
+ }catch(e){show('Could not connect right now. Please try again.',true)}
+ finally{btn.disabled=false}
 };
 </script></body></html>
