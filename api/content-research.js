@@ -34,7 +34,13 @@ work5:'Korean beginner work conversation',
 hobbies5:'Korean beginner hobbies listening',
 school5:'Korean beginner school conversation',
 shopping5:'Korean beginner shopping conversation',
-travel5:'Korean beginner travel conversation'
+travel5:'Korean beginner travel conversation',
+school6:'초급 한국어 학교 대화 듣기',
+school7:'학교 생활 한국어 듣기 초급 학생',
+school8:'Korean conversation at school beginner Korean',
+school9:'몰입한국어 학교 공부 A1',
+family6:'가족 한국어 대화 초급 가족소개',
+weather6:'날씨 비 눈 한국어 팟캐스트 초급'
 };
 module.exports=async function(req,res){
  res.setHeader('Content-Type','application/json; charset=utf-8');
