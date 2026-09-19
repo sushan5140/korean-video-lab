@@ -1027,3 +1027,11 @@ Deployment verification must check manifest, candidate JS file accessibility and
 | Hobbies | 1 | 20 | 21 |
 
 Temporary public RSS research endpoint removed after sourcing to preserve the approved API footprint. No YouTube API key was copied or exposed. Production version: `2026-09-19-intermediate-preview-podcasts-v1`.
+
+## Intermediate+ Shopping and Weather repair — 2026-09-19
+
+After user identified sparse Intermediate+ Shopping and Weather Contexts, added 20 distinct video IDs from directly inspected YouTube search metadata, 12 Shopping and 8 Weather. All 20 were individually checked via production `/api/quality?videoId=…&level=Intermediate`: 8 structural PASS and 12 REVIEW (Korean timed cues and sampled English meanings), no FAIL; no Ready promotions without manual iframe, caption/word timing validation. The cards remain `Preview` and click-time caption-gated.
+
+- Intermediate+: **Shopping 18 (Ready 1 / Preview 17), Weather 18 (Ready 1 / Preview 17)**. Overall Intermediate+ 207 curated, 12 Ready, 195 Preview; entire site 467 distinct video IDs, 140 Ready.
+- No duplication with canonical or Lower Intermediate catalogs, no retagging unrelated videos, no change to protected Beginner/Lower Intermediate/Ready counts, auth/referral/learning player. Preview status is NOT proof that 15–20 fully Ready lessons per Context have been achieved.
+- Production manifest `2026-09-19-intermediate-shopping-weather-v2`; one-shot temporary quota-free research endpoint `api/content-target-research.js` removed following selection so that the content curation tool does not remain public. IDs and titles are in `data/intermediate-candidates.js`, and their original YouTube URLs are in each record's `sourceUrl`.
