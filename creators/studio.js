@@ -32,7 +32,7 @@ function tab(name){
  document.querySelectorAll('[data-section]').forEach(e=>e.hidden=e!==desired);
  document.querySelectorAll('#tabs button').forEach(e=>e.classList.toggle('on',e.dataset.tab===name));
  if(name==='dashboard')void refreshDashboard();
- if(name==='videos'){renderVideos();renderSharedVideos()}
+ if(name==='videos'){renderVideos();renderSharedVideos();const requestedVideo=new URLSearchParams(location.search).get('video');if(requestedVideo&&/^[A-Za-z0-9_-]{11}$/.test(requestedVideo)){const card=el('ambSharedVideos')?.querySelector('[data-share-video="'+requestedVideo+'"]');card?.closest('.videoCard')?.scrollIntoView({behavior:'smooth',block:'center'})}}
 }
 async function init(){
  if(!client){ui('Haneul login could not initialize. Refresh or disable a blocker.',true);return}
@@ -78,7 +78,7 @@ async function load(code){
   el('rankPublic').checked=space.my_public===true;
   renderDays();renderVideos();renderDashboard();renderCreator();await refreshAmbPosts();
   ui('',false);
-  tab(ownerPreview?'creator':'challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code));
+  tab(ownerPreview?'ambassador':'challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code));
  }catch(e){ui(e?.message||'Could not load community',true)}
 }
 function renderDays(){
@@ -101,7 +101,7 @@ async function refreshAmbPosts(){if(!space?.code)return;try{const rows=await rpc
 function renderSharedVideos(){const box=el('ambSharedVideos');if(!box)return;
 const rows=ambPosts.filter(p=>p.kind==='video'&&p.published&&/^[A-Za-z0-9_-]{11}$/.test(p.body?.videoId||''));
 box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+safe(p.body.videoId)+'/hqdefault.jpg"><div><h3>'+safe(p.title)+'</h3><small>'+safe(String(p.body.note||'New from your ambassador').slice(0,240))+'</small></div><a class="btn small alt" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v='+encodeURIComponent(p.body.videoId)+'">Watch ↗</a><button class="btn small alt" data-share-video="'+safe(p.body.videoId)+'">Copy link</button></article>').join(''):'<div class="empty">Your ambassador has not shared a YouTube video yet.</div>';
-box.querySelectorAll('[data-share-video]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/creators/?code='+encodeURIComponent(space.code));ui('Community link copied.',false,true)}catch{ui('Copy the community URL from the address bar.',true)}})}
+box.querySelectorAll('[data-share-video]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/creators/?code='+encodeURIComponent(space.code)+'&video='+encodeURIComponent(b.dataset.shareVideo));ui('Community video link copied.',false,true)}catch{ui('Copy the community URL from the address bar.',true)}})}
 function renderPublishedPosts(){
  const box=el('ambPublishedPosts');if(!box)return;
  const rows=ambPosts.filter(p=>p.published&&(p.kind==='quiz'||p.kind==='content_kit'));
