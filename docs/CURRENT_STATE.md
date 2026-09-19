@@ -967,3 +967,11 @@ Refresh repair: the root Browse now displays live per-filter Ready counts in top
 ## Lower Intermediate candidate staging — 2026-09-19
 
 Staged 16 externally sourced Korean listening video IDs as Checking (never Ready without production caption and manual playback checks). Lower Intermediate 15 Ready / 23 Checking, Beginner unchanged; 15–20 Ready per Context is still open. Added owner-only Discover review tray and exact audit `docs/LOWER_INTERMEDIATE_EXPANSION_2026-09-19.md`. Manifest 2026-09-19-lower-intermediate-curation-v1.
+
+## Lower Intermediate correction and blocked research — 2026-09-19
+
+The user's explicit target is **at least 15–20 distinct, genuinely usable Lower Intermediate videos PER Context**, not 15 overall, and not merely an owner-only Checking queue. Earlier progress reporting mistakenly treated staging as fulfilment. Actual learner-facing distribution remains Daily Life 12, Food 2, Travel 2, Shopping 1, School 1, Culture 3, Weather 0, Family 0, Work 2, Hobbies 1. The goal is not met, and the user must not be told otherwise.
+
+Follow-up production QA of the 16 staged candidates: all returned Korean timed cues and five successful sampled English translations, but **all 16 were REVIEW** (mainly long caption windows), none PASS. Real iframe playback and acoustic word timing have not been certified; no candidate was promoted to Ready. YouTube metadata research of additional topics encountered `rateLimitExceeded` on the configured YouTube Data API key. Do not continue YouTube search calls until quota/restriction is diagnosed; cannot assert new videos have been added. Both temporary public research endpoints are removed to avoid third-party quota spend, leaving the existing owner-only `api/youtube-discover.js` unchanged.
+
+Do not pad topic counts by retagging unrelated lessons, relabel Beginner videos as Lower Intermediate, count Checking as Ready, or create duplicate video cards. Obtain full caption and playback evidence before Ready admission.
