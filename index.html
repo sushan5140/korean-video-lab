@@ -2688,6 +2688,7 @@ if(verificationCandidate){
       toast('Verification mode · candidate is not promoted');
     },300);
   }
+}
 
 const creatorWatchParams=new URLSearchParams(location.search);
 const creatorWatchId=String(creatorWatchParams.get('creatorVideo')||'').trim();
@@ -2712,5 +2713,4 @@ if(/^[A-Za-z0-9_-]{11}$/.test(creatorWatchId)&&/^[A-Z0-9_-]{2,48}$/.test(creator
    open(lesson.id,lesson.levelCode,lesson.level)
   }catch(e){toast(e?.message||'Could not open this creator video')}
  },250)
-}
 }</script><script src="https://www.youtube.com/iframe_api"></script></body></html>
