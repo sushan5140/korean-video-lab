@@ -73,7 +73,7 @@ async function load(code){
   el('weeklyPrompt').textContent=space.weekly_prompt||'Introduce yourself in Korean.';
   el('tutorTitle').textContent='Learn Korean with '+(space.label||space.title)+'.';
   el('challengePlan').textContent=space.challenge_plan||'';el('planPanel').hidden=!space.challenge_plan;
-  el('rankName').value=String(JSON.parse(localStorage.getItem('haneulLearnerProfile:v3')||'{}')?.name||user?.user_metadata?.full_name||user?.user_metadata?.name||'Learner').slice(0,32);
+  el('rankName').value=String(JSON.parse(localStorage.getItem('haneulProfile:v2:user:'+user.id)||'{}')?.name||user?.user_metadata?.full_name||user?.user_metadata?.name||'Learner').slice(0,32);
   el('rankPublic').checked=space.my_public===true;
   renderDays();renderVideos();renderDashboard();renderCreator();
   ui('',false);
@@ -155,12 +155,12 @@ function renderCatalog(){
 el('catalogSearch').addEventListener('input',renderCatalog);
 el('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)tab(b.dataset.tab)});
 el('saveCreator').onclick=()=>busy(el('saveCreator'),async()=>{
- if(!selected.length)throw Error('Add at least one Ready Korean video before publishing.');
+ if(selected.length!==7)throw Error('Choose exactly seven different Ready Korean videos to publish a seven-day challenge.');
  await rpc('haneul_creator_save',{p_code:ensureCode(),p_title:el('creatorTitle').value,p_intro:el('creatorIntro').value,p_challenge:el('creatorChallenge').value,p_prompt:el('creatorPrompt').value,p_videos:selected});
  await load(space.code);tab('creator');
 },()=>ui('Your creator experience is published.',false,true));
 el('generatePlan').onclick=()=>busy(el('generatePlan'),async()=>{
- if(!selected.length)throw Error('Choose at least one Ready video first.');
+ if(selected.length!==7)throw Error('Choose all seven Ready videos before generating your seven-day plan.');
  const content=selected.map((id,i)=>(i+1)+'. '+videoMeta(id).title+' ('+videoMeta(id).level+')').join('\n');
  const prompt='Challenge title: '+el('creatorChallenge').value+'; weekly speaking: '+el('creatorPrompt').value;
  return ai('challenge',{context:content,prompt});
