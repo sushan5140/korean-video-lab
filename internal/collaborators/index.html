@@ -1,0 +1,81 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collaborator codes · Haneul Internal</title><meta name="robots" content="noindex,nofollow">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f4ee;color:#211e1b;font-family:Inter,system-ui,-apple-system,sans-serif}
+.main{max-width:1150px;margin:auto;padding:38px 25px 80px}.ey{font-size:10px;letter-spacing:.14em;font-weight:900;color:#908478}
+header{display:flex;align-items:start;justify-content:space-between;gap:15px;flex-wrap:wrap}header h1{font-size:clamp(32px,5vw,52px);letter-spacing:-.07em;line-height:1.05;margin:9px 0}
+a{color:inherit}header a{font-size:12px;text-decoration:none;font-weight:800;background:#ebe6dc;padding:11px 14px;border-radius:12px}
+.card{background:#fffdf9;border:1px solid #e8e0d6;border-radius:22px;padding:24px;margin-top:22px;box-shadow:0 8px 25px #32271c08}
+.card h2{font-size:22px;letter-spacing:-.04em;margin:9px 0 6px}.card p{color:#83796e;font-size:12px;line-height:1.6;margin:0 0 18px}
+input{border:1px solid #e1d8cb;background:#fff;color:#241f1a;border-radius:12px;padding:13px 14px;min-width:0;width:100%;font:inherit;font-size:13px}
+button{border:0;background:#1d1d1f;color:#fff;border-radius:12px;padding:13px 17px;font-weight:850;font:inherit;font-size:12px;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a}.danger{background:#fff0ed;color:#a74e44;border:1px solid #f0d8d2}
+.create{display:grid;grid-template-columns:1.1fr 1fr auto;gap:10px}
+.message{font-size:11px;color:#7a7166;min-height:17px;margin-top:13px}.message.bad{color:#aa433b}
+.metric{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.metric span{display:grid;gap:3px;padding:13px 18px;background:#f4efe7;border-radius:14px}.metric b{font-size:25px}.metric small{font-size:10px;color:#84786b}
+.row{display:grid;grid-template-columns:minmax(145px,1.3fr) minmax(90px,1fr) 75px 80px auto;gap:12px;align-items:center;padding:17px 0;border-top:1px solid #eee7dd}
+.row strong{display:block;overflow-wrap:anywhere;letter-spacing:.02em}.row small{color:#877b6e;display:block;font-size:10px}.pill{display:inline-block;padding:7px 9px;border-radius:99px;font-size:10px;font-weight:850;color:#357a5d;background:#e5f5ec}.pill.paused{color:#a16e32;background:#fff0d8}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:9px 11px;font-size:10px}
+.hidden{display:none!important}
+@media(max-width:850px){.create{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.row .actions{grid-column:1/-1}}
+@media(max-width:410px){.main{padding:25px 15px}.row{grid-template-columns:1fr 1fr;gap:9px}.card{padding:17px}}
+</style></head><body>
+<main class="main"><header><div><div class="ey">HANEUL INTERNAL · OWNER ACCESS</div><h1>Collaborator codes.</h1><div id="owner" class="ey">Checking your account…</div></div><a href="/">← Back to Haneul</a></header>
+<section id="gate" class="card"><h2>Checking admin access…</h2><p>Only an account in Haneul's private admin allowlist can create or manage collaborator codes.</p></section>
+<div id="dashboard" class="hidden">
+<section class="card"><div class="ey">CREATE AN INVITATION</div><h2>Make your own referral code.</h2>
+<p>Choose any unique code using 2–48 letters, numbers, _ or -. Add an optional collaborator name so you remember whose code it is.</p>
+<form id="form" class="create"><input id="code" maxlength="48" required placeholder="YOUR-COLLABORATOR-CODE" autocomplete="off" aria-label="New referral code">
+<input id="label" maxlength="80" placeholder="Collaborator / creator name (optional)" aria-label="Collaborator name">
+<button id="create" type="submit">Create code</button></form><div id="message" class="message" role="status"></div></section>
+<section class="card"><div class="ey">REFERRAL DASHBOARD</div><h2>Invitations and signups.</h2>
+<p>Pausing a code prevents new signups through it; learners who already redeemed it keep access and their original attribution.</p>
+<div class="metric"><span><b id="totalCodes">0</b><small>TOTAL CODES</small></span><span><b id="activeCodes">0</b><small>ACTIVE</small></span><span><b id="totalSignups">0</b><small>REFERRED LEARNERS</small></span></div>
+<div id="entries"><p>No referral codes created yet.</p></div></section>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
+<script>
+const URL='https://uyltjaftajwkujjhuric.supabase.co',KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
+const client=window.supabase?.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const el=id=>document.getElementById(id);
+const safe=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function notice(message,bad=false){el('message').textContent=message;el('message').className='message'+(bad?' bad':'')}
+async function refresh(){
+ const {data,error}=await client.rpc('haneul_admin_referral_dashboard');
+ if(error){notice(error.message,true);return}
+ const rows=data||[];
+ el('totalCodes').textContent=rows.length;
+ el('activeCodes').textContent=rows.filter(x=>x.active).length;
+ el('totalSignups').textContent=rows.reduce((sum,x)=>sum+Number(x.signups||0),0);
+ el('entries').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+(x.active?'':'paused')+'">'+(x.active?'Active':'Paused')+'</span></div><div class="actions"><button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button><button class="'+(x.active?'danger':'subtle')+'" data-toggle="'+safe(x.code)+'" data-active="'+(!x.active)+'">'+(x.active?'Pause':'Reactivate')+'</button></div></div>').join(''):'<p>No referral codes created yet.</p>';
+ el('entries').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
+  try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/collaborators/?ref='+encodeURIComponent(b.dataset.copy));notice('Collaborator link copied.')}
+  catch{notice('Could not copy automatically. Please copy the code manually.',true)}
+ });
+ el('entries').querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{
+  b.disabled=true;const {error}=await client.rpc('haneul_set_code_active',{p_code:b.dataset.toggle,p_active:b.dataset.active==='true'});
+  if(error)notice(error.message,true);else {notice('Code updated.');await refresh()}
+  b.disabled=false
+ });
+}
+async function init(){
+ if(!client){el('gate').innerHTML='<h2>Auth unavailable</h2><p>Try again later.</p>';return}
+ const {data:{session},error}=await client.auth.getSession();
+ if(error||!session){el('gate').innerHTML='<h2>Sign in as owner.</h2><p>Use your Google account first, then open Profile → Manage collaborator codes.</p><button id="login">Continue with Google</button>';el('login').onclick=async()=>{const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://korean-video-lab.vercel.app/'}});if(error)el('gate').querySelector('p').textContent='Google sign-in could not start.'};return}
+ const {data:isAdmin,error:accessError}=await client.rpc('is_haneul_admin');
+ if(accessError||!isAdmin){el('gate').innerHTML='<h2>Private admin area.</h2><p>This Google account does not have code-management access.</p><a href="/collaborators/">Open collaborator sign-in →</a>';return}
+ el('owner').textContent=session.user?.email||'Owner';
+ el('gate').classList.add('hidden');el('dashboard').classList.remove('hidden');
+ await refresh()
+}
+el('form').onsubmit=async e=>{
+ e.preventDefault();const code=el('code').value.trim().toUpperCase(),label=el('label').value.trim();
+ if(!/^[A-Z0-9_-]{2,48}$/.test(code)){notice('Use 2–48 letters, numbers, _ or -.',true);return}
+ el('create').disabled=true;
+ const {data,error}=await client.rpc('haneul_create_code',{p_code:code,p_label:label});
+ if(error)notice(error.message.includes('duplicate')?'That referral code already exists.':error.message,true);
+ else{el('code').value='';el('label').value='';notice('Created '+data+'. You can now share the collaborator link.');await refresh()}
+ el('create').disabled=false
+};
+init();
+</script></body></html>
