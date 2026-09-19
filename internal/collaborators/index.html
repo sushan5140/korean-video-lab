@@ -48,8 +48,9 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 </div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
 <script>
-const URL='https://uyltjaftajwkujjhuric.supabase.co',KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
-const client=window.supabase?.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const SUPABASE_URL='https://uyltjaftajwkujjhuric.supabase.co',KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
+let client=null,authInitError='';
+try{client=window.supabase?.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}catch(e){authInitError=e?.message||'Could not initialize Google login';console.error('Haneul admin Auth startup:',e)}
 const el=id=>document.getElementById(id);
 const safe=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function notice(message,bad=false){el('message').textContent=message;el('message').className='message'+(bad?' bad':'')}
@@ -104,15 +105,54 @@ async function refreshAiUsers(){
  finally{if(button)button.disabled=false}
 }
 el('aiSearchForm').onsubmit=e=>{e.preventDefault();void refreshAiUsers()};
+function adminGate(title,description,retry=true){
+ const gate=el('gate');
+ gate.classList.remove('hidden');
+ el('dashboard').classList.add('hidden');
+ el('owner').textContent='Admin console';
+ gate.replaceChildren();
+ const heading=document.createElement('h2');heading.textContent=title;gate.append(heading);
+ const detail=document.createElement('p');detail.textContent=description;gate.append(detail);
+ if(retry){const button=document.createElement('button');button.textContent='Try again';button.onclick=()=>void init();gate.append(button)}
+}
+async function withAdminTimeout(promise,timeout=12000){
+ let timer;
+ try{return await Promise.race([
+  promise,
+  new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('The account check took too long. Please retry.')),timeout)})
+ ])}finally{clearTimeout(timer)}
+}
 async function init(){
- if(!client){el('gate').innerHTML='<h2>Auth unavailable</h2><p>Try again later.</p>';return}
- const {data:{session},error}=await client.auth.getSession();
- if(error||!session){el('gate').innerHTML='<h2>Sign in as owner.</h2><p>Use your Google account first, then open Profile → Manage collaborator codes.</p><button id="login">Continue with Google</button>';el('login').onclick=async()=>{const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://korean-video-lab.vercel.app/'}});if(error)el('gate').querySelector('p').textContent='Google sign-in could not start.'};return}
- const {data:isAdmin,error:accessError}=await client.rpc('is_haneul_admin');
- if(accessError||!isAdmin){el('gate').innerHTML='<h2>Private admin area.</h2><p>This Google account does not have code-management access.</p><a href="/collaborators/">Open collaborator sign-in →</a>';return}
- el('owner').textContent=session.user?.email||'Owner';
- el('gate').classList.add('hidden');el('dashboard').classList.remove('hidden');
- await refresh();await refreshAiUsers()
+ adminGate('Checking admin access…','Verifying your Google session and admin permissions.',false);
+ if(!client){adminGate('Google login could not load.',authInitError||'Reload this page or disable an extension blocking the Supabase script.');return}
+ try{
+  const {data,error}=await withAdminTimeout(client.auth.getSession());
+  if(error)throw error;
+  const session=data?.session;
+  if(!session){
+   adminGate('Sign in as owner.','Use the Google account linked to your Haneul Admin Panel.',false);
+   const button=document.createElement('button');button.textContent='Continue with Google';el('gate').append(button);
+   button.onclick=async()=>{
+    button.disabled=true;
+    try{
+     const {error:signInError}=await withAdminTimeout(client.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://korean-video-lab.vercel.app/internal/collaborators/'}}));
+     if(signInError)throw signInError;
+    }catch(e){adminGate('Google sign-in could not start.',e?.message||'Please retry.')}
+    finally{button.disabled=false}
+   };
+   return
+  }
+  el('owner').textContent=session.user?.email||'Owner';
+  const {data:isAdmin,error:accessError}=await withAdminTimeout(client.rpc('is_haneul_admin'));
+  if(accessError)throw accessError;
+  if(!isAdmin){adminGate('Private admin area.','This Google account is signed in but is not on the Haneul admin allowlist.',false);return}
+  el('gate').classList.add('hidden');
+  el('dashboard').classList.remove('hidden');
+  await Promise.allSettled([refresh(),refreshAiUsers()])
+ }catch(e){
+  console.error('Haneul admin access check:',e);
+  adminGate('Unable to load the Admin Panel.',e?.message||'Check your connection, then try again.')
+ }
 }
 el('form').onsubmit=async e=>{
  e.preventDefault();const code=el('code').value.trim().toUpperCase(),label=el('label').value.trim();
@@ -124,4 +164,8 @@ el('form').onsubmit=async e=>{
  el('create').disabled=false
 };
 init();
+window.addEventListener('unhandledrejection',event=>{
+ if(!el('gate')?.classList.contains('hidden')&&el('gate')?.textContent?.includes('Checking admin access'))
+ adminGate('Admin Panel needs a retry.',event.reason?.message||'The account check was interrupted.');
+});
 </script></body></html>
