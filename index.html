@@ -2688,4 +2688,29 @@ if(verificationCandidate){
       toast('Verification mode · candidate is not promoted');
     },300);
   }
+
+const creatorWatchParams=new URLSearchParams(location.search);
+const creatorWatchId=String(creatorWatchParams.get('creatorVideo')||'').trim();
+const creatorWatchCode=String(creatorWatchParams.get('creatorCode')||'').trim().toUpperCase();
+if(/^[A-Za-z0-9_-]{11}$/.test(creatorWatchId)&&/^[A-Z0-9_-]{2,48}$/.test(creatorWatchCode)){
+ let creatorWaits=0;
+ const creatorOpenTimer=setInterval(async()=>{
+  if(!authUser||!inviteAuthorized){if(++creatorWaits>=100)clearInterval(creatorOpenTimer);return}
+  clearInterval(creatorOpenTimer);
+  try{
+   const {data:space,error}=await haneulAuth.rpc('haneul_creator_space',{p_code:creatorWatchCode});
+   if(error||!space?.videos?.some(v=>v.videoId===creatorWatchId))throw Error('This video has not been shared with your referral community.');
+   const r=await fetch('/api/quality?videoId='+encodeURIComponent(creatorWatchId)+'&level=Intermediate',{cache:'no-store'});
+   const quality=await r.json();
+   if(quality.status==='FAIL'||Number(quality.metrics?.cueCount||0)<12)throw Error('The creator video needs a usable Korean transcript before it can open.');
+   const posted=space.videos.find(v=>v.videoId===creatorWatchId);
+   let lesson=curatedCatalog.find(v=>v.id===creatorWatchId);
+   if(!lesson){
+    lesson={id:creatorWatchId,title:String(posted.title||'Creator Korean lesson'),channel:String(space.title||'Creator community'),desc:'Interactive Korean video from your creator community.',thumb:'https://i.ytimg.com/vi/'+creatorWatchId+'/hqdefault.jpg',level:'Intermediate',levelCode:'TOPIK 2+',topics:['Daily Life'],styles:['Vlog'],readiness:'checking',ready:false};
+    curatedCatalog.push(lesson)
+   }
+   open(lesson.id,lesson.levelCode,lesson.level)
+  }catch(e){toast(e?.message||'Could not open this creator video')}
+ },250)
+}
 }</script><script src="https://www.youtube.com/iframe_api"></script></body></html>
