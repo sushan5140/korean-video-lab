@@ -102,11 +102,56 @@ function renderSharedVideos(){const box=el('ambSharedVideos');if(!box)return;
 const rows=ambPosts.filter(p=>p.kind==='video'&&p.published&&/^[A-Za-z0-9_-]{11}$/.test(p.body?.videoId||''));
 box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+safe(p.body.videoId)+'/hqdefault.jpg"><div><h3>'+safe(p.title)+'</h3><small>'+safe(String(p.body.note||'New from your ambassador').slice(0,240))+'</small></div><a class="btn small alt" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v='+encodeURIComponent(p.body.videoId)+'">Watch ↗</a><button class="btn small alt" data-share-video="'+safe(p.body.videoId)+'">Copy link</button></article>').join(''):'<div class="empty">Your ambassador has not shared a YouTube video yet.</div>';
 box.querySelectorAll('[data-share-video]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/creators/?code='+encodeURIComponent(space.code)+'&video='+encodeURIComponent(b.dataset.shareVideo));ui('Community video link copied.',false,true)}catch{ui('Copy the community URL from the address bar.',true)}})}
+function parseAmbQuiz(raw){
+ const cleaned=String(raw||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+ let parsed;try{parsed=JSON.parse(cleaned)}catch{throw Error('This AI model did not return a playable JSON quiz. Try generating again, or select another OpenRouter model.')}
+ const list=parsed?.questions||parsed?.quiz;
+ if(!Array.isArray(list)||list.length!==5)throw Error('The quiz needs exactly five questions. Please regenerate it.');
+ return list.map((q,i)=>{
+  if(typeof q.question!=='string'||q.question.trim().length<3||!Array.isArray(q.options)||q.options.length!==3||
+    q.options.some(x=>typeof x!=='string'||!x.trim())||!Number.isInteger(q.answer)||q.answer<0||q.answer>2)
+     throw Error('Quiz question '+(i+1)+' is missing three options or a valid answer index. Regenerate or correct the JSON.');
+  return{question:q.question.trim().slice(0,450),options:q.options.map(x=>x.trim().slice(0,200)),answer:q.answer,explanation:String(q.explanation||'').slice(0,500)}
+ })
+}
+let activeQuizPost=null;
+async function showQuizRanking(postId){
+ const box=el('quizRanking');box.textContent='Loading the opt-in ranking…';
+ try{const ranks=await rpc('haneul_ambassador_quiz_ranking',{p_code:ensureCode(),p_post_id:Number(postId)});
+  box.innerHTML='<h3 style="font-size:14px">Community quiz ranking</h3>'+(Array.isArray(ranks)&&ranks.length?
+   ranks.map((r,i)=>'<div class="rank"><b class="place">#'+(i+1)+'</b><b>'+safe(r.name)+'</b><span>'+Number(r.points||0)+' / 50</span></div>').join(''):
+   '<p class="muted">No learners have opted into this quiz ranking yet. Public nicknames can be enabled in Community ranking.</p>')
+ }catch(e){box.textContent=e?.message||'Ranking not available'}
+}
+function launchQuiz(post){
+ const questions=post.body?.quiz;if(!Array.isArray(questions)||questions.length!==5){ui('This older quiz is only available as a text worksheet.',true);return}
+ activeQuizPost=post;el('ambPublishedText').hidden=true;
+ el('quizPlay').hidden=false;el('quizTitle').textContent=post.title;
+ el('quizFeedback').hidden=true;el('quizSubmit').disabled=false;
+ el('quizQuestions').innerHTML=questions.map((q,i)=>
+  '<fieldset class="quizQuestion"><legend>'+(i+1)+'. '+safe(q.question)+'</legend>'+
+  (q.options||[]).map((opt,k)=>'<label class="quizChoice"><input type="radio" name="haneulQuiz-'+i+'" value="'+k+'"><span>'+['A','B','C'][k]+'. '+safe(opt)+'</span></label>').join('')+'</fieldset>').join('');
+ void showQuizRanking(post.id);
+ el('quizPlay').scrollIntoView({behavior:'smooth',block:'start'})
+}
+el('quizSubmit').onclick=()=>busy(el('quizSubmit'),async()=>{
+ if(!activeQuizPost)throw Error('Open a published quiz first.');
+ const selected=[0,1,2,3,4].map(i=>document.querySelector('input[name="haneulQuiz-'+i+'"]:checked'));
+ if(selected.some(x=>!x))throw Error('Answer all five questions before submitting.');
+ const out=await rpc('haneul_ambassador_quiz_submit',{p_code:ensureCode(),p_post_id:Number(activeQuizPost.id),p_answers:selected.map(x=>Number(x.value))});
+ return out
+},async result=>{
+ el('quizFeedback').hidden=false;
+ const explanations=(result.answers||[]).map((a,i)=>'<div class="quizResult"><b>Question '+(i+1)+': '+['A','B','C'][Number(a.answer)]+'</b><br>'+safe(a.explanation||'Read the answer and practise again.')+'</div>').join('');
+ el('quizFeedback').innerHTML='<b>'+Number(result.points||0)+' / 50 points</b>'+(result.alreadyPlayed?' · Previous recorded attempt':' · Recorded for this community')+explanations;
+ el('quizQuestions').querySelectorAll('input').forEach(x=>x.disabled=true);
+ await showQuizRanking(activeQuizPost.id);
+});
 function renderPublishedPosts(){
  const box=el('ambPublishedPosts');if(!box)return;
  const rows=ambPosts.filter(p=>p.published&&(p.kind==='quiz'||p.kind==='content_kit'));
- box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><div style="flex:1"><h3>'+safe(p.title)+'</h3><small>'+safe(p.kind==='quiz'?'Community quiz battle':'Korean learning content')+'</small></div><button class="btn small alt" data-read-post="'+Number(p.id)+'">Read ↗</button></article>').join(''):'<div class="empty">Your ambassador has not shared a quiz or content kit yet.</div>';
- box.querySelectorAll('[data-read-post]').forEach(b=>b.onclick=()=>{const p=rows.find(x=>Number(x.id)===Number(b.dataset.readPost));if(!p)return;el('ambPublishedText').hidden=false;el('ambPublishedText').textContent=String(p.body?.text||'');el('ambPublishedText').scrollIntoView({behavior:'smooth',block:'center'})});
+ box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><div style="flex:1"><h3>'+safe(p.title)+'</h3><small>'+safe(p.kind==='quiz'?'Community quiz battle':'Korean learning content')+'</small></div><button class="btn small alt" data-read-post="'+Number(p.id)+'">'+(p.kind==='quiz'&&Array.isArray(p.body?.quiz)?'Play quiz ↗':'Read ↗')+'</button></article>').join(''):'<div class="empty">Your ambassador has not shared a quiz or content kit yet.</div>';
+ box.querySelectorAll('[data-read-post]').forEach(b=>b.onclick=()=>{const p=rows.find(x=>Number(x.id)===Number(b.dataset.readPost));if(!p)return;if(p.kind==='quiz'&&Array.isArray(p.body?.quiz)){launchQuiz(p);return}el('quizPlay').hidden=true;el('ambPublishedText').hidden=false;el('ambPublishedText').textContent=String(p.body?.text||'');el('ambPublishedText').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 function renderAmbLibrary(){const box=el('ambLibrary');if(!box)return;
 const rows=ambPosts.filter(p=>p.kind==='content_kit'||p.kind==='quiz');
@@ -253,11 +298,11 @@ const aggregate={members:Number(dashboard?.members||0),challengeDays:Number(dash
 const context=mode==='learningDoctor'?JSON.stringify(aggregate):el('ambContext').value;
 const r=await fetch('/api/ambassador-ai',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token,'x-openrouter-key':ambKey},body:JSON.stringify({code:ensureCode(),mode,model,topic:el('ambTopic').value,platform:el('ambPlatform').value,level:el('ambLevel').value,context,creator:space.title})});
 const response=await r.json().catch(()=>null);if(!r.ok||!response?.ok)throw Error(response?.error||'AI generation failed');
-ambLastKind=mode==='quizBattle'?'quiz':'content_kit';el('ambOutputWrap').hidden=false;el('ambOutput').value=response.text;
+ambLastKind=mode==='quizBattle'?'quiz':'content_kit';el('ambOutputWrap').hidden=false;el('ambOutput').value=mode==='quizBattle'?JSON.stringify({questions:parseAmbQuiz(response.text)},null,2):response.text;
 el('ambPostTitle').value=el('ambTopic').value.trim().slice(0,140)||(mode==='learningDoctor'?'Community content plan':mode==='quizBattle'?'Korean quiz battle':'Korean content kit')
 }
 for(const [id,mode] of [['ambGenerateKit','contentKit'],['ambGenerateQuiz','quizBattle'],['ambGenerateDoctor','learningDoctor']])el(id).onclick=()=>busy(el(id),()=>ambassadorGenerate(mode),()=>ui('Generated. Review the Korean before sharing.',false,true));
-el('ambSavePost').onclick=()=>busy(el('ambSavePost'),async()=>{const title=el('ambPostTitle').value.trim(),content=el('ambOutput').value.trim();if(title.length<3||content.length<5)throw Error('Add a title and content.');await rpc('haneul_ambassador_save_post',{p_code:ensureCode(),p_kind:ambLastKind,p_title:title,p_body:{text:content},p_published:false});await refreshAmbPosts()},()=>ui('Saved privately. Share it from your library.',false,true));
+el('ambSavePost').onclick=()=>busy(el('ambSavePost'),async()=>{const title=el('ambPostTitle').value.trim(),content=el('ambOutput').value.trim();if(title.length<3||content.length<5)throw Error('Add a title and content.');await rpc('haneul_ambassador_save_post',{p_code:ensureCode(),p_kind:ambLastKind,p_title:title,p_body:ambLastKind==='quiz'?{text:content,quiz:parseAmbQuiz(content)}:{text:content},p_published:false});await refreshAmbPosts()},()=>ui('Saved privately. Share it from your library.',false,true));
 el('ambCopy').onclick=async()=>{try{await navigator.clipboard.writeText(el('ambOutput').value);ui('Copied.',false,true)}catch{ui('Select and copy the text manually.',true)}};
 el('ambShareVideo').onclick=()=>busy(el('ambShareVideo'),async()=>{const videoId=idFromUrl(el('ambVideoLink').value),title=el('ambVideoTitle').value.trim(),note=el('ambVideoNote').value.trim();if(!videoId)throw Error('Enter a valid YouTube link.');if(title.length<3)throw Error('Add a video title.');await rpc('haneul_ambassador_save_post',{p_code:ensureCode(),p_kind:'video',p_title:title,p_body:{videoId,note},p_published:true});await refreshAmbPosts()},()=>{ui('YouTube video shared with your referral community.',false,true);el('ambVideoLink').value='';el('ambVideoTitle').value='';el('ambVideoNote').value=''});
 void init();
