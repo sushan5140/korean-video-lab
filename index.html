@@ -614,7 +614,19 @@ body.haneulAuthPending .app,body.haneulAuthPending .mobileNav{visibility:hidden!
 .referralRedeem button{border:0;border-radius:12px;background:#242226;color:#fff;font-size:11px;font-weight:850;padding:12px 16px;cursor:pointer}
 .referralRedeem button:disabled{opacity:.55}
 .referralPerks .referralFeedback{display:block;margin-top:9px;color:#a64040;font-size:10px}
-</style></head><body data-ui="haneul-v2" class="haneulAuthPending"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="sideFooter"><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
+</style><style id="haneul-sidebar-admin-v1">
+.sideFooter{display:grid;gap:9px}
+.sideAdminPanelLink{display:flex;align-items:center;gap:10px;padding:12px 10px;border:1px solid #e6dfef;border-radius:15px;background:linear-gradient(110deg,#f8f5ff,#f4f0fc);color:#383047;text-decoration:none;transition:background .16s ease,transform .16s ease,border-color .16s ease}
+.sideAdminPanelLink[hidden]{display:none!important}
+.sideAdminPanelLink:hover{background:#eeebfa;border-color:#d6c9ed;transform:translateY(-1px)}
+.sideAdminPanelLink:focus-visible{outline:2px solid #816ac4;outline-offset:3px}
+.sideAdminPanelIcon{width:31px;height:31px;flex:none;display:grid;place-items:center;border-radius:11px;background:#e9dfff;color:#614c94;font-size:18px}
+.sideAdminPanelLink span:nth-child(2){flex:1;min-width:0}
+.sideAdminPanelLink b{display:block;font-size:11px}
+.sideAdminPanelLink small{display:block;font-size:9px;color:#82738f;margin-top:3px}
+.sideAdminPanelArrow{font-size:16px;color:#82738f}
+@media(prefers-reduced-motion:reduce){.sideAdminPanelLink{transition:none}.sideAdminPanelLink:hover{transform:none}}
+</style></head><body data-ui="haneul-v2" class="haneulAuthPending"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="sideFooter"><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
   <div class="compassHead"><div><div class="ey">TODAY'S LISTENING</div><h3>Shape the session, not your level.</h3><p>Your proficiency path comes from Profile. Pick the context and listening format you want right now.</p></div></div>
   <div class="personalHeader"><div><div class="ey">ACTIVE PATH</div><h3 id="activePathTitle">Beginner</h3></div><span class="pathBadge" id="activePathBadge">TOPIK 1 · profile setting</span></div>
   <div class="filterStudio">
@@ -1470,6 +1482,7 @@ function profilePath(){const p=loadLearnerProfile();return FILTERS&&FILTERS.leve
 function profileInterests(){const p=loadLearnerProfile();return Array.isArray(p.interests)?p.interests.filter(Boolean):[]}
 function applyProfileToFeed(){const path=profilePath();if(videoFilters.level!==path)videoFilters.level=path}
 function updateSidebarProfile(){
+ const adminLink=$('sideAdminPanelLink');if(adminLink)adminLink.hidden=!(authUser&&inviteAuthorized&&inviteAdmin);
  const n=$('sideProfileName'),l=$('sideProfileLevel');if(n)n.textContent=learnerDisplayName();if(l)l.textContent=profilePath()+' · '+masterySnapshot().score+'% signal score';
  const t=$('activePathTitle'),b=$('activePathBadge');if(t)t.textContent=profilePath();if(b)b.textContent=mappedLevel(profilePath())+' · change in Profile'
 }
