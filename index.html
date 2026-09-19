@@ -1292,16 +1292,55 @@ async function initAuth(){
  if(!error)authUser=data?.session?.user||null;
  applyProfileToFeed();applyAuthIdentity();
  haneulAuth.auth.onAuthStateChange((_event,session)=>{
-   const nextUser=session?.user||null;if(authUser?.id!==nextUser?.id)grokProfileState={loading:false,analysis:'',model:'',error:''};
+   const nextUser=session?.user||null;if(authUser?.id!==nextUser?.id){grokProfileState={loading:false,analysis:'',model:'',error:''};cloudProfileHydratingFor=''};
    authUser=nextUser;applyProfileToFeed();applyAuthIdentity();
-   if(authUser){localStorage.removeItem('haneulAuthPromptDismissed:v1');closeAuthGate(true)}
+   if(authUser){localStorage.removeItem('haneulAuthPromptDismissed:v1');closeAuthGate(false);void hydrateCloudProfile()}
    if($('profilePage')&&!$('profilePage').hidden)renderProfilePage()
  });
  const sign=$('googleAuthBtn'),skip=$('authSkipBtn');
  if(sign)sign.onclick=signInWithGoogle;
  if(skip)skip.onclick=()=>{localStorage.setItem('haneulAuthPromptDismissed:v1','1');closeAuthGate(true)};
- if(!authUser&&!localStorage.getItem('haneulAuthPromptDismissed:v1'))showAuthGate();
+ if(authUser){void hydrateCloudProfile()}else if(!localStorage.getItem('haneulAuthPromptDismissed:v1'))showAuthGate();
  else setTimeout(initOnboarding,80)
+}
+
+let cloudProfileHydratingFor='';
+async function persistProfileToCloud(){
+ const uid=authUser?.id;
+ if(!uid||!haneulAuth)return;
+ const p=loadLearnerProfile();
+ const row={
+  user_id:uid,
+  nickname:String(p.name||googleUserName()).trim().slice(0,32),
+  daily_goal_minutes:Number(p.dailyGoal)||10,
+  proficiency_path:FILTERS.levels.includes(p.path)?p.path:'Beginner',
+  interests:Array.isArray(p.interests)?p.interests.slice(0,11):[]
+ };
+ try{
+  const {error}=await haneulAuth.from('profiles').upsert(row,{onConflict:'user_id'});
+  if(error){console.warn('Haneul profile sync:',error.message);toast('Saved on this device. Cloud profile sync needs attention.')}
+ }catch(e){console.warn('Haneul profile sync:',e?.message||'unavailable');toast('Saved on this device. Cloud profile sync will need a retry.')}
+}
+async function hydrateCloudProfile(){
+ const uid=authUser?.id;
+ if(!uid||!haneulAuth){setTimeout(initOnboarding,80);return}
+ if(cloudProfileHydratingFor===uid)return;
+ cloudProfileHydratingFor=uid;
+ try{
+  const {data,error}=await haneulAuth.from('profiles').select('nickname,daily_goal_minutes,proficiency_path,interests').eq('user_id',uid).maybeSingle();
+  if(authUser?.id!==uid)return;
+  if(error)console.warn('Haneul profile fetch:',error.message);
+  const local=loadLearnerProfile();
+  if(data?.nickname){
+   saveLearnerProfileData({...local,name:data.nickname,dailyGoal:data.daily_goal_minutes||local.dailyGoal||10,
+    path:FILTERS.levels.includes(data.proficiency_path)?data.proficiency_path:'Beginner',
+    interests:Array.isArray(data.interests)?data.interests:[],onboarded:true});
+  }else if(!error&&local.onboarded){void persistProfileToCloud()}
+ }catch(e){console.warn('Haneul profile fetch:',e?.message||'unavailable')}
+ if(authUser?.id!==uid)return;
+ applyProfileToFeed();renderFilterChips();loadVideoFeed();updateSidebarProfile();
+ if($('profilePage')&&!$('profilePage').hidden)renderProfilePage();
+ setTimeout(initOnboarding,80)
 }
 function profileStorageKey(){return authUser?.id?'haneulProfile:v2:user:'+authUser.id:'haneulProfile:v2'}
 function loadLearnerProfile(){try{return{...(JSON.parse(localStorage.getItem(profileStorageKey())||(!authUser?localStorage.getItem('haneulProfile:v1'):null)||'{}')||{})}}catch{return{}}}
@@ -1371,7 +1410,7 @@ function renderProfilePage(){
  page.querySelectorAll('[data-profile-interest]').forEach(b=>b.onclick=()=>{const x=b.dataset.profileInterest;draftInterests=draftInterests.includes(x)?draftInterests.filter(t=>t!==x):[...draftInterests,x];b.classList.toggle('on',draftInterests.includes(x))});
  wireGoalButtons('profile');const grokBtn=$('profileGrokBtn');if(grokBtn)grokBtn.onclick=authUser?requestGrokRead:signInWithGoogle;
  const connect=$('profileGoogleConnect');if(connect)connect.onclick=signInWithGoogle;const signOut=$('profileSignOut');if(signOut)signOut.onclick=signOutGoogle;
- const save=$('profileSaveBtn');if(save)save.onclick=()=>{const old=loadLearnerProfile();const name=String($('profileNameInput').value||'').trim();const dailyGoal=Number($('profileGoalInput').value);if(!name){toast('Please enter a name or nickname');$('profileNameInput').focus();return}if(!Number.isInteger(dailyGoal)||dailyGoal<5||dailyGoal>180){toast('Choose 5–180 minutes');$('profileGoalInput').focus();return}saveLearnerProfileData({...old,name,dailyGoal,path:draftPath,interests:draftInterests,onboarded:true});videoFilters.level=draftPath;videoFilters.topic='All';renderFilterChips();loadVideoFeed();updateSidebarProfile();renderProfilePage();toast('Profile updated')};
+ const save=$('profileSaveBtn');if(save)save.onclick=()=>{const old=loadLearnerProfile();const name=String($('profileNameInput').value||'').trim();const dailyGoal=Number($('profileGoalInput').value);if(!name){toast('Please enter a name or nickname');$('profileNameInput').focus();return}if(!Number.isInteger(dailyGoal)||dailyGoal<5||dailyGoal>180){toast('Choose 5–180 minutes');$('profileGoalInput').focus();return}saveLearnerProfileData({...old,name,dailyGoal,path:draftPath,interests:draftInterests,onboarded:true});videoFilters.level=draftPath;videoFilters.topic='All';renderFilterChips();loadVideoFeed();updateSidebarProfile();renderProfilePage();void persistProfileToCloud();toast('Profile updated')};
  page.querySelectorAll('[data-analysis-video]').forEach(b=>b.onclick=()=>{showMainPage('discover');open(b.dataset.analysisVideo,b.dataset.analysisLevel,b.dataset.analysisBand)})
 }
 function analysisEvidence(){
@@ -1398,7 +1437,7 @@ function initOnboarding(){
   if(!useDefaults&&(!Number.isInteger(goal)||goal<5||goal>180)){toast('Choose 5–180 minutes');goalInput?.focus();return}
   const dailyGoal=useDefaults?10:goal;
   saveLearnerProfileData({...p,name:name.slice(0,32),path:useDefaults?'Beginner':path,interests:useDefaults?['Daily Life']:(interests.length?interests:['Daily Life']),dailyGoal,onboarded:true});
-  videoFilters.level=useDefaults?'Beginner':path;modal.classList.remove('open');renderFilterChips();loadVideoFeed();updateSidebarProfile();toast('Your Haneul profile is ready')
+  videoFilters.level=useDefaults?'Beginner':path;modal.classList.remove('open');renderFilterChips();loadVideoFeed();updateSidebarProfile();void persistProfileToCloud();toast('Your Haneul profile is ready')
  };
  $('onboardSave').onclick=()=>finish(false);
  $('onboardSkip').onclick=()=>finish(true)
