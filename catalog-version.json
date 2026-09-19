@@ -1,13 +1,12 @@
 {
-  "version": "2026-09-19-lower-preview-15plus-v2",
-  "curated": 280,
+  "version": "2026-09-19-intermediate-preview-podcasts-v1",
+  "curated": 447,
   "ready": 140,
   "beginnerReady": 113,
   "lowerIntermediate": {
     "curated": 143,
     "ready": 15,
     "checking": 128,
-    "stage": "Preview is not Ready; video must pass caption and manual playback verification before promotion.",
     "contextCounts": {
       "Daily Life": {
         "ready": 12,
@@ -60,5 +59,63 @@
         "total": 15
       }
     }
+  },
+  "intermediate": {
+    "curated": 187,
+    "ready": 12,
+    "checking": 175,
+    "contextCounts": {
+      "Daily Life": {
+        "ready": 8,
+        "preview": 68,
+        "total": 76
+      },
+      "Food": {
+        "ready": 1,
+        "preview": 26,
+        "total": 27
+      },
+      "Travel": {
+        "ready": 1,
+        "preview": 14,
+        "total": 15
+      },
+      "Shopping": {
+        "ready": 1,
+        "preview": 5,
+        "total": 6
+      },
+      "School": {
+        "ready": 1,
+        "preview": 24,
+        "total": 25
+      },
+      "Culture": {
+        "ready": 7,
+        "preview": 82,
+        "total": 89
+      },
+      "Weather": {
+        "ready": 1,
+        "preview": 9,
+        "total": 10
+      },
+      "Family": {
+        "ready": 1,
+        "preview": 25,
+        "total": 26
+      },
+      "Work": {
+        "ready": 1,
+        "preview": 16,
+        "total": 17
+      },
+      "Hobbies": {
+        "ready": 1,
+        "preview": 20,
+        "total": 21
+      }
+    },
+    "stage": "Preview candidates from real publisher-linked video IDs, NOT manually playback-certified Ready videos"
   }
 }
