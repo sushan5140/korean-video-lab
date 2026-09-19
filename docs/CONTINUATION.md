@@ -698,3 +698,7 @@ Owner's already-whitelisted Haneul admin Google account now has a genuine privat
 ## Ambassador BYOK + YouTube community drops — 2026-09-19
 
 Creator-only OpenRouter BYOK Content Factory, Quiz Battle Builder, aggregate Learning Doctor, code-scoped saved/published content library and caption-optional YouTube video community drops added under `/creators/`. New API `api/ambassador-ai.js`, guarded Supabase table/RPC migration, shared content cards on member Videos tab. See `docs/AMBASSADOR_TOOLS.md` for details and verification limits.
+
+### Ambassador scored-quiz & share-link refinement
+
+Built structured five-question OpenRouter quiz generation with editable JSON, validated publishing, one server-scored attempt per account (10 points each), answer explanations after submit, code-scoped opt-in nickname quiz ranking, and hidden pre-attempt answer keys for non-owner members. A SQL transaction smoke-tested score, duplicate-attempt prevention and ranking response with rollback. YouTube cards now copy a video-specific community URL; opening that link selects the Videos tab and highlights the video. Owner preview opens the Ambassador Factory tab. Creator static scripts set to no-cache. UI/endpoint source compiled, DOM IDs crosschecked. Real key OpenRouter response and Google signed-in browser end-to-end need live verification. Latest GitHub SHA and Vercel production SHA should be compared before saying deployed; see `docs/AMBASSADOR_TOOLS.md`.
