@@ -881,3 +881,18 @@ Deployment status:
 - GitHub source promotion is complete
 - stable Vercel production project `korean-video-lab` has NOT yet been updated because the connected Vercel deployment write action returned an internal `Tool deploy_to_vercel not found` error
 - do not claim the stable production URL is on UI V2 until a new deployment is created and verified
+
+
+## Beginner Context + Listening Format expansion — 2026-09-19
+
+**Current canonical root production catalog:** 82 curated entries / 63 in `VERIFIED_READY`, of which **36 are Beginner**. These counts supersede historical counts above.
+
+Fifteen Beginner entries added to the Ready lane: four existing checking candidates admitted and eleven new entries. Cards carry Beginner / TOPIK 1, topic arrays matched to `FILTERS.topics`, style arrays matched to `FILTERS.styles`, creator/title, ID-based YouTube thumbnail, and the existing `open()` player path.
+
+The default unfiltered Discover feed now shows the first nine interest-weighted picks *followed by every remaining Ready lesson*, instead of hiding the rest of the expanded library. Context and listening-format filters continue to intersect and update the Ready count.
+
+Verified the existing `/api/captions?videoId=...` endpoint for all fifteen: Korean text and increasing timed cue ranges were returned; counts and IDs are in `docs/BEGINNER_EXPANSION_2026-09-19.md`. `rj2j3Tes8q0` and `wns9Ro1Nkb0` remain checking because there was no Korean caption track; the English-dominant `FciY1CF7uOM` and `MHO9U-DEqoU` remain checking.
+
+**QA limitation:** This was an API-level Korean-caption/timing-structure check, not a human audio playback/word-level acoustic sync audit of all fifteen. Correct YouTube playback, live caption timing vs audio, and per-line translation quality should still be confirmed by listening before treating this as full acoustic certification.
+
+Preserve the existing root UI, login, Supabase account settings, code generator, admin AI controls, 48 previously Ready lessons and old original rollback branch.
