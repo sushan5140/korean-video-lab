@@ -75,6 +75,7 @@ async function checkOne(base,id,level='Beginner'){
     const d=await r.json();
     if(!d.ok||!Array.isArray(d.cues)||!d.cues.length)return{videoId:id,status:'FAIL',score:0,reason:d.reason||d.error||'no_usable_korean_transcript',captionSource:d.source||null};
     const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
+    if(d.wordTimingEstimated&&gate.status!=='FAIL'){gate.status='REVIEW';gate.review.push('word_timing_estimated');gate.score=Math.min(gate.score,88)}
     return{videoId:id,level,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,reviewNormalized:d.reviewNormalized===true,wordTimingEstimated:d.wordTimingEstimated!==false,checkedAt:new Date().toISOString()}
   }catch(e){return{videoId:id,status:'FAIL',score:0,reason:'quality_check_failed'}}
 }
