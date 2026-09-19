@@ -6,7 +6,21 @@ work:'beginner Korean listening work office job interview slow Korean 회사 직
 hobbies:'beginner Korean listening hobbies music drawing sports reading 취미 운동',
 school:'beginner Korean listening school university studying classroom 학교 대학교',
 shopping:'beginner Korean listening shopping clothes store money 구매 쇼핑',
-travel:'beginner Korean listening travel airport bus train holiday 여행 공항'
+travel:'beginner Korean listening travel airport bus train holiday 여행 공항',
+weather2:'Korean Slow Podcast 날씨 비 눈 계절 초급 한국어',
+weather3:'Korean short story beginner rainy day snow season 날씨 비 A1',
+family2:'Korean Short Story 가족 엄마 아빠 A1 몰입한국어',
+family3:'Korean Podcast Beginners 가족 부모님 형제 자매',
+work2:'Korean Short Story 회사 면접 직장 A1 한국어',
+work3:'Korean Podcast for Beginners 직장 일 회사',
+hobbies2:'Korean Short Story 취미 운동 그림 A1',
+hobbies3:'Korean Slow Podcast 취미 운동 게임 독서',
+school2:'Korean Short Story 학교 교실 시험 숙제 A1',
+school3:'Korean Podcast for Beginners 학교 공부',
+shopping2:'Korean Slow Podcast 쇼핑 시장 옷 가게',
+shopping3:'Korean Short Story 쇼핑 마트 물건 A1',
+travel2:'Korean Slow Podcast 여행 공항 기차',
+travel3:'Korean Short Story 여행 공항 버스 A1'
 };
 module.exports=async function(req,res){
  res.setHeader('Content-Type','application/json; charset=utf-8');
