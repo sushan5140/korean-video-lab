@@ -105,6 +105,7 @@ function fmt(ms){const sec=Math.max(0,Math.floor(Number(ms)/1000));return Math.f
 async function watch(videoId){
  const v=(space.videos||[]).find(x=>x.videoId===videoId);if(!v)return;
  activeVideo=v;activeCues=[];el('watchPanel').hidden=false;el('watchTitle').textContent=v.title;
+ el('openFullHaneul').href='/?creatorVideo='+encodeURIComponent(videoId)+'&creatorCode='+encodeURIComponent(space.code);
  el('watchFrame').src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(videoId)+'?enablejsapi=1&origin='+encodeURIComponent(location.origin);
  el('lessonOutput').hidden=true;
  el('watchTranscript').innerHTML='<div class="muted">Loading the Korean transcript…</div>';
