@@ -15,8 +15,8 @@ module.exports=async(req,res)=>{
      const response=await fetch('https://www.googleapis.com/youtube/v3/search?'+params,{signal:AbortSignal.timeout(13500)});
      const d=await response.json();if(!response.ok)return respond(res,502,{ok:false,error:'youtube_search_failed',reason:d.error?.errors?.[0]?.reason||response.status});
      for(const row of d.items||[]){const id=row.id?.videoId;if(!/^[A-Za-z0-9_-]{11}$/.test(id)||seen.has(id))continue;seen.add(id);videos.push({id,title:row.snippet?.title||'',channel:row.snippet?.channelTitle||'',description:row.snippet?.description||'',publishedAt:row.snippet?.publishedAt||'',thumbnail:row.snippet?.thumbnails?.high?.url||'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'})}
-     if(videos.length>=48)break;
+     if(videos.length>=95)break;
    }
-   return respond(res,200,{ok:true,topic,count:videos.length,videos:videos.slice(0,60),note:'Search candidates only; requires Korean caption gate and playback. Never treat as automatically Ready.'});
+   return respond(res,200,{ok:true,topic,count:videos.length,videos:videos.slice(0,100),note:'Search candidates only; requires Korean caption gate and playback. Never treat as automatically Ready.'});
  }catch(e){return respond(res,502,{ok:false,error:'youtube_discovery_unavailable'});}
 };
