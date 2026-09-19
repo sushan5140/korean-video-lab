@@ -548,3 +548,36 @@ Source commits: `9d414711497e90bf7629bcee3ba35075bd7cc59f` (32), `b32de7d7edd67b
 Excluded candidate IDs with unusable captions: `7On_9gkVTyw` (Chinese), `xzIPJplbVrA`, `ez5oPNPP5oc` (Arabic), `Rn1pb4-fiRY`, `QIf7jt4_LDQ`, `tdHOW7GF11A`, `_yr6Nip3gLA`, `tgd5fyySpok`, `095jPLJRYhE`, `WHc04CACnBw` (no track). A response HTTP 200 or `ok:true` alone is not Korean-language verification.
 
 QA limitation: first/middle samples and/or Korean cue counts with timed cues were checked via Haneul caption API. No authenticated real browser playback or human audio-to-word alignment certification of all 42 has been performed. Confirm user-reported troublesome tracks before calling them fully acoustically verified.
+
+
+## Beginner Context 15+ completion — 2026-09-19
+
+Canonical root source now has **159 curated, 140 Ready, 113 Ready Beginner** entries after 35 additional distinct Beginner YouTube IDs. Every Context filter meets the >=15 requested count; counts are based on existing `FILTERS.topics` and unique Ready video IDs, not repeated cards:
+
+| Context | Ready Beginner |
+|---|---:|
+| Daily Life | 48 |
+| Food | 22 |
+| Travel | 15 |
+| Shopping | 15 |
+| School | 15 |
+| Culture | 26 |
+| Weather | 15 |
+| Family | 16 |
+| Work | 15 |
+| Hobbies | 15 |
+
+Batch IDs by primary context (35 total):
+- Weather (7): `jcwnNQWy2JA`, `oNm-kSbIddE`, `L9arLZZU9iQ`, `wb0kvZjcEPk`, `lXpV1m2pDQY`, `UUKecG-oncc`, `lreeNjrEr8I`.
+- Family (6): `tpnmeXH9VZ4`, `DXtkVDwsWpw`, `2xtYq0NKu3c`, `oT8u5HRkSVs`, `ZBqLqaFcBZ4`, `B0MV4MJq3M0`.
+- Work (7): `7ZOH1xSdZVY`, `_496jppDCRg`, `KA4-4MVZ48c`, `VfTKyLb47Bk`, `OW2oK-5xseQ`, `gpXAY8R9d-c`, `Nq7RTeRTzc4`.
+- Hobbies (6): `7Vx_ocBTXL0`, `J3U6YVpVeZs`, `Jo-tp2VgRZ4`, `Ev9Su1KME_4`, `wOAJWZjy_Z8`, `oqgYkvEqTXs`.
+- School (5): `Dq53nzu4EeU`, `ptYkZZnanQg`, `vZBMdTzM7U4`, `bzt0tA7kZiQ`, `vKYGelyBLeI` (last tagged also Family because teacher–parent conversation).
+- Shopping (3): `40Hmzc6yLVQ`, `tmItFF2IVAw`, `xIMZSJJin-g` (last tagged also Food).
+- Travel (1): `dv-1ZdzOxlM` (also Food; hotel/taxi/restaurant dialogues).
+
+Discovery: existing Vercel project has `YOUTUBE_API_KEY` or `GOOGLE_YOUTUBE_API_KEY` configured. The owner-authenticated long-term API route `api/youtube-discover.js` performs server-side YouTube Data API v3 search, returning public metadata without exposing the key. Temporary public whitelisted research endpoints `api/content-research.js` and `api/_curation-research.js` were deleted after use to avoid unapproved third-party YouTube API quota spend.
+
+**IMPORTANT QA limitation:** Individual caption/quality API checks in this session returned Korean timed cues for the batch and creator/title metadata came from YouTube search; certain items returned full quality PASS. Some other items returned quality REVIEW (padding, rolling subtitle overlap), and no authenticated browser playback or full acoustic word-to-audio verification was possible for the full batch. Do not call all 35 manual playback certified. A transient caption-provider issue also returned `no-caption-track` for an older known-good Ready video `8rvv4RXQYb4` in this session: never interpret one transient quality FAIL as permanent deletion evidence. Follow up with real learner playback/translation feedback, repair/demote individual problematic lessons rather than retiming all videos globally.
+
+Production project unchanged, Google login/admin/referral/AI features and all pre-existing Ready lessons kept. Source change `dcf355ab9ddfec5fb4b5c79b04d0af4d8ebf3c0a`.
