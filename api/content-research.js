@@ -20,7 +20,21 @@ school3:'Korean Podcast for Beginners 학교 공부',
 shopping2:'Korean Slow Podcast 쇼핑 시장 옷 가게',
 shopping3:'Korean Short Story 쇼핑 마트 물건 A1',
 travel2:'Korean Slow Podcast 여행 공항 기차',
-travel3:'Korean Short Story 여행 공항 버스 A1'
+travel3:'Korean Short Story 여행 공항 버스 A1',
+weather4:'한국어 듣기 초급 날씨',
+family4:'한국어 듣기 초급 가족',
+work4:'한국어 듣기 초급 회사',
+hobbies4:'한국어 듣기 초급 취미',
+school4:'한국어 듣기 초급 학교',
+shopping4:'한국어 듣기 초급 쇼핑',
+travel4:'한국어 듣기 초급 여행',
+weather5:'Korean listening weather',
+family5:'Korean beginner family conversation',
+work5:'Korean beginner work conversation',
+hobbies5:'Korean beginner hobbies listening',
+school5:'Korean beginner school conversation',
+shopping5:'Korean beginner shopping conversation',
+travel5:'Korean beginner travel conversation'
 };
 module.exports=async function(req,res){
  res.setHeader('Content-Type','application/json; charset=utf-8');
