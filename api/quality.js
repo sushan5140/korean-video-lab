@@ -50,6 +50,7 @@ function verdict(metrics,translation){
   else pass.push('overlap');
   if(metrics.longCuePct>=.45)review.push('many_long_cues');
   else pass.push('cue_length');
+  if(!translation.checked)review.push('english_translation_unchecked');
   if(translation.checked&&translation.successRatio<.5)fail.push('english_translation_unhealthy');
   else if(translation.checked&&translation.successRatio<.8)review.push('english_translation_partial');
   else if(translation.checked)pass.push('english_translation');
@@ -70,11 +71,11 @@ async function translations(base,cues){
 async function checkOne(base,id,level='Beginner'){
   if(!YT_ID.test(id))return{videoId:id,status:'FAIL',score:0,reason:'invalid_video_id'};
   try{
-    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=10',{headers:{accept:'application/json'}});
+    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=11&review=1',{headers:{accept:'application/json'}});
     const d=await r.json();
     if(!d.ok||!Array.isArray(d.cues)||!d.cues.length)return{videoId:id,status:'FAIL',score:0,reason:d.reason||d.error||'no_usable_korean_transcript',captionSource:d.source||null};
     const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
-    return{videoId:id,level,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,checkedAt:new Date().toISOString()}
+    return{videoId:id,level,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,reviewNormalized:d.reviewNormalized===true,wordTimingEstimated:d.wordTimingEstimated!==false,checkedAt:new Date().toISOString()}
   }catch(e){return{videoId:id,status:'FAIL',score:0,reason:'quality_check_failed'}}
 }
 module.exports=async function(req,res){
