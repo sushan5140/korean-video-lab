@@ -1774,7 +1774,7 @@ function renderFilterChips(){
   const reset=$('filterReset');if(reset)reset.onclick=()=>{videoFilters.topic='All';videoFilters.style='All';renderFilterChips();loadVideoFeed()};
   updateSidebarProfile()
 }
-function qualityKey(v){return 'haneulQuality:v1:'+v.id+'|'+v.level}
+function qualityKey(v){return 'haneulQuality:v2:'+v.id+'|'+v.level}
 function readQuality(v){
   try{
     const x=JSON.parse(localStorage.getItem(qualityKey(v))||'null');
