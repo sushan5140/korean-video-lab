@@ -78,7 +78,7 @@ async function load(code){
   el('rankPublic').checked=space.my_public===true;
   renderDays();renderVideos();renderDashboard();renderCreator();await refreshAmbPosts();
   ui('',false);
-  tab(ownerPreview?'ambassador':'challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code));
+  const videoQuery=new URLSearchParams(location.search).get('video');tab(videoQuery&&/^[A-Za-z0-9_-]{11}$/.test(videoQuery)?'videos':ownerPreview?'ambassador':'challenge');history.replaceState(null,'','/creators/?code='+encodeURIComponent(space.code)+(videoQuery&&/^[A-Za-z0-9_-]{11}$/.test(videoQuery)?'&video='+encodeURIComponent(videoQuery):''));
  }catch(e){ui(e?.message||'Could not load community',true)}
 }
 function renderDays(){
