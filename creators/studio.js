@@ -97,11 +97,17 @@ function renderDays(){
  },()=>ui('Challenge day completed and recorded.',false,true)));
 }
 
-async function refreshAmbPosts(){if(!space?.code)return;try{const rows=await rpc('haneul_ambassador_list_posts',{p_code:space.code});ambPosts=Array.isArray(rows)?rows:[];renderSharedVideos();renderAmbLibrary()}catch(e){ui(e.message||'Could not load ambassador content',true)}}
+async function refreshAmbPosts(){if(!space?.code)return;try{const rows=await rpc('haneul_ambassador_list_posts',{p_code:space.code});ambPosts=Array.isArray(rows)?rows:[];renderSharedVideos();renderAmbLibrary();renderPublishedPosts()}catch(e){ui(e.message||'Could not load ambassador content',true)}}
 function renderSharedVideos(){const box=el('ambSharedVideos');if(!box)return;
 const rows=ambPosts.filter(p=>p.kind==='video'&&p.published&&/^[A-Za-z0-9_-]{11}$/.test(p.body?.videoId||''));
 box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+safe(p.body.videoId)+'/hqdefault.jpg"><div><h3>'+safe(p.title)+'</h3><small>'+safe(String(p.body.note||'New from your ambassador').slice(0,240))+'</small></div><a class="btn small alt" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v='+encodeURIComponent(p.body.videoId)+'">Watch ↗</a><button class="btn small alt" data-share-video="'+safe(p.body.videoId)+'">Copy link</button></article>').join(''):'<div class="empty">Your ambassador has not shared a YouTube video yet.</div>';
 box.querySelectorAll('[data-share-video]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/creators/?code='+encodeURIComponent(space.code));ui('Community link copied.',false,true)}catch{ui('Copy the community URL from the address bar.',true)}})}
+function renderPublishedPosts(){
+ const box=el('ambPublishedPosts');if(!box)return;
+ const rows=ambPosts.filter(p=>p.published&&(p.kind==='quiz'||p.kind==='content_kit'));
+ box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><div style="flex:1"><h3>'+safe(p.title)+'</h3><small>'+safe(p.kind==='quiz'?'Community quiz battle':'Korean learning content')+'</small></div><button class="btn small alt" data-read-post="'+Number(p.id)+'">Read ↗</button></article>').join(''):'<div class="empty">Your ambassador has not shared a quiz or content kit yet.</div>';
+ box.querySelectorAll('[data-read-post]').forEach(b=>b.onclick=()=>{const p=rows.find(x=>Number(x.id)===Number(b.dataset.readPost));if(!p)return;el('ambPublishedText').hidden=false;el('ambPublishedText').textContent=String(p.body?.text||'');el('ambPublishedText').scrollIntoView({behavior:'smooth',block:'center'})});
+}
 function renderAmbLibrary(){const box=el('ambLibrary');if(!box)return;
 const rows=ambPosts.filter(p=>p.kind==='content_kit'||p.kind==='quiz');
 box.innerHTML=rows.length?rows.map(p=>'<article class="videoCard"><div style="flex:1"><h3>'+safe(p.title)+'</h3><small>'+safe(p.kind==='quiz'?'Quiz':'Content kit')+' · '+(p.published?'Shared with community':'Private draft')+'</small></div><button class="btn small alt" data-open-post="'+Number(p.id)+'">Open</button>'+(space?.is_owner?'<button class="btn small alt" data-publish-post="'+Number(p.id)+'">'+(p.published?'Make private':'Share to community')+'</button>':'')+'</article>').join(''):'<div class="empty">No saved creator content yet.</div>';
