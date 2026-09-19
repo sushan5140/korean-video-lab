@@ -10,7 +10,20 @@ a{color:inherit}header a{font-size:12px;text-decoration:none;font-weight:800;bac
 input{border:1px solid #e1d8cb;background:#fff;color:#241f1a;border-radius:12px;padding:13px 14px;min-width:0;width:100%;font:inherit;font-size:13px}
 button{border:0;background:#1d1d1f;color:#fff;border-radius:12px;padding:13px 17px;font-weight:850;font:inherit;font-size:12px;cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a}.danger{background:#fff0ed;color:#a74e44;border:1px solid #f0d8d2}
-.create{display:grid;grid-template-columns:1.1fr 1fr auto;gap:10px}
+.create{display:grid;gap:14px}
+.signatureComposer{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:16px;border:1px solid #e3d9ce;background:#fff;transition:border-color .16s ease,box-shadow .16s ease}
+.signatureComposer:focus-within{border-color:#a594d5;box-shadow:0 0 0 3px #ede7fc}
+.signatureComposer input{border:0;outline:0;min-width:0;flex:1;font-weight:750;background:transparent;padding:9px 4px}
+.signatureComposer input:focus{outline:none}
+.signatureFixed{font-size:13px;font-weight:950;color:#6b50a9;letter-spacing:.035em;white-space:nowrap}
+.signatureSuffix{white-space:nowrap;padding:9px;border-radius:9px;font-size:11px;font-weight:900;color:#695a8a;background:#eee8fb}
+.signatureHelper{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8e8175;font-size:11px;line-height:1.5}
+.signatureHelper strong{color:#604888;font-size:12px;letter-spacing:.025em}
+.signatureSubmit{justify-self:start;min-width:180px}
+.issuedSignature{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;border-radius:14px;padding:12px;background:#f0eafa;border:1px solid #ded2f2}
+.issuedSignature b{color:#57407e;font-size:15px;letter-spacing:.035em;overflow-wrap:anywhere}
+.issuedSignature button{margin-left:auto}
+@media(max-width:560px){.signatureComposer{gap:5px;padding:7px}.signatureSuffix{font-size:9px;padding:7px}.signatureFixed{font-size:11px}.signatureComposer input{font-size:12px}.signatureSubmit{width:100%}}
 .message{font-size:11px;color:#7a7166;min-height:17px;margin-top:13px}.message.bad{color:#aa433b}
 .metric{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.metric span{display:grid;gap:3px;padding:13px 18px;background:#f4efe7;border-radius:14px}.metric b{font-size:25px}.metric small{font-size:10px;color:#84786b}
 .row{display:grid;grid-template-columns:minmax(145px,1.3fr) minmax(90px,1fr) 75px 80px auto;gap:12px;align-items:center;padding:17px 0;border-top:1px solid #eee7dd}
@@ -31,11 +44,13 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 <main class="main"><header><div><div class="ey">HANEUL INTERNAL · OWNER ACCESS</div><h1>Collaborator codes.</h1><div id="owner" class="ey">Checking your account…</div></div><a href="/">← Back to Haneul</a></header>
 <section id="gate" class="card"><h2>Checking admin access…</h2><p>Only an account in Haneul's private admin allowlist can create or manage collaborator codes.</p></section>
 <div id="dashboard" class="hidden">
-<section class="card"><div class="ey">CREATE AN INVITATION</div><h2>Make your own referral code.</h2>
-<p>Choose any unique code using 2–48 letters, numbers, _ or -. Add an optional collaborator name so you remember whose code it is.</p>
-<form id="form" class="create"><input id="code" maxlength="48" required placeholder="YOUR-COLLABORATOR-CODE" autocomplete="off" aria-label="New referral code">
-<input id="label" maxlength="80" placeholder="Collaborator / creator name (optional)" aria-label="Collaborator name">
-<button id="create" type="submit">Create code</button></form><div id="message" class="message" role="status"></div></section>
+<section class="card"><div class="ey">OFFICIAL HANEUL SIGNATURE</div><h2>One name. Your signature code.</h2>
+<p>Enter only your collaborator's name. Haneul adds its fixed mark and automatically assigns the next unique SIG number.</p>
+<form id="form" class="create">
+<div class="signatureComposer"><span class="signatureFixed">HNL-X-</span><input id="collabName" maxlength="60" required placeholder="Collaborator name" autocomplete="off" aria-label="Collaborator name" spellcheck="false"><span class="signatureSuffix">SIG · AUTO</span></div>
+<div class="signatureHelper"><span>Your code will look like <strong id="signaturePreview">HNL-X-MINA-SIG##</strong></span><span>Unique serial assigned on creation</span></div>
+<button id="create" class="signatureSubmit" type="submit">✦ Create signature</button></form>
+<div id="message" class="message" role="status"></div><div id="issuedSignature" aria-live="polite"></div></section>
 <section class="card"><div class="ey">REFERRAL DASHBOARD</div><h2>Invitations and signups.</h2>
 <p>Pausing a code prevents new signups through it; learners who already redeemed it keep access and their original attribution.</p>
 <div class="metric"><span><b id="totalCodes">0</b><small>TOTAL CODES</small></span><span><b id="activeCodes">0</b><small>ACTIVE</small></span><span><b id="totalSignups">0</b><small>REFERRED LEARNERS</small></span></div>
@@ -154,14 +169,41 @@ async function init(){
   adminGate('Unable to load the Admin Panel.',e?.message||'Check your connection, then try again.')
  }
 }
+function signatureName(value){
+ return String(value||'').trim().toUpperCase()
+  .replace(/[^A-Z0-9]+/g,'-').replace(/^-+|-+$/g,'')
+}
+function updateSignaturePreview(){
+ const name=signatureName(el('collabName').value);
+ el('signaturePreview').textContent='HNL-X-'+(name||'MINA')+'-SIG##';
+}
+el('collabName').addEventListener('input',updateSignaturePreview);
+updateSignaturePreview();
 el('form').onsubmit=async e=>{
- e.preventDefault();const code=el('code').value.trim().toUpperCase(),label=el('label').value.trim();
- if(!/^[A-Z0-9_-]{2,48}$/.test(code)){notice('Use 2–48 letters, numbers, _ or -.',true);return}
- el('create').disabled=true;
- const {data,error}=await client.rpc('haneul_create_code',{p_code:code,p_label:label});
- if(error)notice(error.message.includes('duplicate')?'That referral code already exists.':error.message,true);
- else{el('code').value='';el('label').value='';notice('Created '+data+'. You can now share the collaborator link.');await refresh()}
- el('create').disabled=false
+ e.preventDefault();
+ const name=el('collabName').value.trim(),normalized=signatureName(name);
+ if(!/^[A-Z0-9][A-Z0-9-]*$/.test(normalized)||normalized.length<2||normalized.length>28){
+  notice('Enter a name with 2–28 letters or numbers. Spaces become hyphens.',true);
+  el('collabName').focus();return
+ }
+ const button=el('create');button.disabled=true;
+ notice('Creating your Haneul signature…');el('issuedSignature').replaceChildren();
+ try{
+  const {data,error}=await client.rpc('haneul_generate_signature_code',{p_name:name});
+  if(error){notice(error.message||'Could not create signature.',true);return}
+  el('collabName').value='';updateSignaturePreview();
+  notice('Signature created. Copy the code or invitation link below.');
+  const mount=el('issuedSignature'),wrap=document.createElement('div'),code=document.createElement('b'),
+       copyCode=document.createElement('button'),copyLink=document.createElement('button');
+  wrap.className='issuedSignature';code.textContent=data;copyCode.className='subtle';
+  copyCode.textContent='Copy code';copyLink.textContent='Copy invite link';
+  const invite='https://korean-video-lab.vercel.app/collaborators/?ref='+encodeURIComponent(data);
+  copyCode.onclick=async()=>{try{await navigator.clipboard.writeText(data);notice('Signature code copied.')}catch{notice('Copy unavailable; select the code above.',true)}};
+  copyLink.onclick=async()=>{try{await navigator.clipboard.writeText(invite);notice('Invitation link copied.')}catch{notice('Copy unavailable; select the code above.',true)}};
+  wrap.append(code,copyCode,copyLink);mount.append(wrap);
+  await refresh()
+ }catch(e){notice('Could not create signature. Please retry.',true)}
+ finally{button.disabled=false}
 };
 init();
 window.addEventListener('unhandledrejection',event=>{
