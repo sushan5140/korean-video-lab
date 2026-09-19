@@ -896,3 +896,31 @@ Verified the existing `/api/captions?videoId=...` endpoint for all fifteen: Kore
 **QA limitation:** This was an API-level Korean-caption/timing-structure check, not a human audio playback/word-level acoustic sync audit of all fifteen. Correct YouTube playback, live caption timing vs audio, and per-line translation quality should still be confirmed by listening before treating this as full acoustic certification.
 
 Preserve the existing root UI, login, Supabase account settings, code generator, admin AI controls, 48 previously Ready lessons and old original rollback branch.
+
+
+## Beginner Context expansion — 2026-09-19 (second wave)
+
+**Current root source state after second wave:** 124 curated videos, 105 Ready, **78 Ready Beginner**. This wave added **42 distinct Beginner videos** with caption samples checked through the stable production `/api/captions` API before admission. The previous 36 Ready Beginner and 27 other Ready lessons were retained. New videos use the existing player, caption and meaning pipeline and topic/format metadata, not a parallel learning experience.
+
+Verified current Beginner Context distribution (tags overlap):
+
+| Context | Ready Beginner | Additional lessons needed to reach 15 |
+|---|---:|---:|
+| Daily Life | 47 | 0 |
+| Food | 20 | 0 |
+| Travel | 14 | 1 |
+| Shopping | 12 | 3 |
+| School | 10 | 5 |
+| Culture | 24 | 0 |
+| Weather | 8 | 7 |
+| Family | 9 | 6 |
+| Work | 8 | 7 |
+| Hobbies | 9 | 6 |
+
+**Goal is NOT fully complete**: user requested 15–20 each context. Do not claim otherwise. Larger categories naturally exceed 20 from overlapping appropriate metadata, not fabricated duplicate videos. No random retagging to pad weak categories.
+
+Source commits: `9d414711497e90bf7629bcee3ba35075bd7cc59f` (32), `b32de7d7edd67bc1ee5328c2c2a4b688b02a4fef` (5), `b3f7c6377baaddcfaa7057fe2d11dfcd425adaba` (2), `145949f2e39b57963829f7267f2fdc801be3eccf` (1), `a36632931233ba239d0e7366cf88dd0db39c10c7` (2).
+
+Excluded candidate IDs with unusable captions: `7On_9gkVTyw` (Chinese), `xzIPJplbVrA`, `ez5oPNPP5oc` (Arabic), `Rn1pb4-fiRY`, `QIf7jt4_LDQ`, `tdHOW7GF11A`, `_yr6Nip3gLA`, `tgd5fyySpok`, `095jPLJRYhE`, `WHc04CACnBw` (no track). A response HTTP 200 or `ok:true` alone is not Korean-language verification.
+
+QA limitation: first/middle samples and/or Korean cue counts with timed cues were checked via Haneul caption API. No authenticated real browser playback or human audio-to-word alignment certification of all 42 has been performed. Confirm user-reported troublesome tracks before calling them fully acoustically verified.
