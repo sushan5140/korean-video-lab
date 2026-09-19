@@ -1811,7 +1811,7 @@ function lessonMatches(v){
 let reviewQueueExpanded=false;
 function renderIntermediateReviewQueue(){
  const mount=$('intermediateReviewQueue');if(!mount)return;
- if(!authUser||!inviteAuthorized||!inviteAdmin||!['Lower Intermediate','Intermediate'].includes(videoFilters.level)){mount.hidden=true;mount.innerHTML='';return}
+ if(!authUser||!inviteAuthorized||!inviteAdmin||!['Lower Intermediate','Intermediate'].includes(videoFilters.level)||videoFilters.topic!=='All'){mount.hidden=true;mount.innerHTML='';return}
  const candidates=curatedCatalog.filter(v=>v.level===videoFilters.level&&v.readiness!=='ready'&&(videoFilters.topic==='All'||(v.topics||[]).includes(videoFilters.topic))&&(videoFilters.style==='All'||(v.styles||[]).includes(videoFilters.style)));
  mount.hidden=!candidates.length;if(!candidates.length)return;
  mount.className='intermediateReviewQueue';
