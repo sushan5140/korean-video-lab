@@ -19,6 +19,14 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 .hidden{display:none!important}
 @media(max-width:850px){.create{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.row .actions{grid-column:1/-1}}
 @media(max-width:410px){.main{padding:25px 15px}.row{grid-template-columns:1fr 1fr;gap:9px}.card{padding:17px}}
+.aiFind{display:flex;gap:10px;margin-top:17px}.aiFind input{flex:1}.aiFind button{flex:none}
+.aiResults{margin-top:13px}.aiRow{display:flex;align-items:center;justify-content:space-between;gap:15px;border-top:1px solid #eee7dd;padding:15px 0}
+.aiWho{min-width:0}.aiWho b,.aiWho small{display:block;overflow-wrap:anywhere}.aiWho b{font-size:13px}.aiWho small{font-size:11px;color:#857a6d;margin-top:4px}
+.aiBadges{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.aiBadges span{border-radius:999px;padding:5px 8px;background:#f0ece6;font-size:10px;color:#716657;font-weight:750}
+.aiBadges .yes{background:#e4f4e9;color:#257249}.aiBadges .direct{background:#ede7ff;color:#59479a}
+.aiActions{flex-shrink:0}.aiActions button{padding:10px 13px}
+@media(max-width:580px){.aiFind,.aiRow{flex-direction:column;align-items:stretch}.aiFind button{width:100%}.aiActions button{width:100%}}
 </style></head><body>
 <main class="main"><header><div><div class="ey">HANEUL INTERNAL · OWNER ACCESS</div><h1>Collaborator codes.</h1><div id="owner" class="ey">Checking your account…</div></div><a href="/">← Back to Haneul</a></header>
 <section id="gate" class="card"><h2>Checking admin access…</h2><p>Only an account in Haneul's private admin allowlist can create or manage collaborator codes.</p></section>
@@ -32,6 +40,11 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 <p>Pausing a code prevents new signups through it; learners who already redeemed it keep access and their original attribution.</p>
 <div class="metric"><span><b id="totalCodes">0</b><small>TOTAL CODES</small></span><span><b id="activeCodes">0</b><small>ACTIVE</small></span><span><b id="totalSignups">0</b><small>REFERRED LEARNERS</small></span></div>
 <div id="entries"><p>No referral codes created yet.</p></div></section>
+<section class="card" id="aiAccessSection"><div class="ey">LEARNER PRIVILEGES</div><h2>AI Access</h2>
+<p>Grant personalized AI learning insights directly to any Google-signed-in Haneul learner. No referral code needed. Revoking a direct grant does not cancel a separate collaborator referral.</p>
+<form id="aiSearchForm" class="aiFind"><input id="aiSearch" maxlength="120" autocomplete="off" placeholder="Search by Google email or learner nickname" aria-label="Search users"><button id="aiSearchButton" type="submit">Find learners</button></form>
+<div id="aiAccessMessage" class="message" role="status"></div>
+<div id="aiUsers" class="aiResults"><p>Loading learners…</p></div></section>
 </div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
 <script>
@@ -58,6 +71,39 @@ async function refresh(){
   b.disabled=false
  });
 }
+function aiNotice(message,bad=false){const m=el('aiAccessMessage');if(m){m.textContent=message;m.className='message'+(bad?' bad':'')}}
+async function refreshAiUsers(){
+ const area=el('aiUsers'),button=el('aiSearchButton');if(!area)return;
+ if(button)button.disabled=true;
+ area.innerHTML='<p>Loading learners…</p>';
+ try{
+  const query=el('aiSearch').value.trim();
+  const {data,error}=await client.rpc('haneul_admin_search_ai_users',{p_query:query});
+  if(error){aiNotice('Could not load learners: '+error.message,true);area.innerHTML='';return}
+  const rows=data||[];
+  area.innerHTML=rows.length?rows.map(u=>{
+   const badges=[];
+   if(u.is_admin)badges.push('<span class="yes">Owner / admin access</span>');
+   if(u.referral_code)badges.push('<span class="yes">Referral: '+safe(u.referral_code)+'</span>');
+   if(u.direct_grant)badges.push('<span class="direct">Direct AI grant</span>');
+   if(!badges.length)badges.push('<span>Standard learner</span>');
+   const action=u.is_admin?'<button class="subtle" disabled>Owner access</button>':u.direct_grant?
+    '<button class="danger" data-ai-user="'+safe(u.user_id)+'" data-ai-enabled="false">Revoke direct grant</button>':
+    '<button data-ai-user="'+safe(u.user_id)+'" data-ai-enabled="true">Grant AI access</button>';
+   return '<div class="aiRow"><div class="aiWho"><b>'+safe(u.nickname||u.email||'Learner')+'</b><small>'+safe(u.email||'')+'</small><div class="aiBadges">'+badges.join('')+'</div></div><div class="aiActions">'+action+'</div></div>'
+  }).join(''):'<p>No learners found. They must first sign in with Google to appear here.</p>';
+  area.querySelectorAll('[data-ai-user]').forEach(b=>b.onclick=async()=>{
+   b.disabled=true;aiNotice('Updating AI access…');
+   const enabled=b.dataset.aiEnabled==='true';
+   const {error}=await client.rpc('haneul_admin_set_ai_access',{p_user_id:b.dataset.aiUser,p_enabled:enabled});
+   if(error){aiNotice(error.message||'Could not change AI access.',true);b.disabled=false;return}
+   aiNotice(enabled?'AI access granted. The learner can open Profile to refresh access.':'Direct AI grant revoked. Other referral privileges are unchanged.');
+   await refreshAiUsers()
+  })
+ }catch(e){aiNotice('Could not load users. Try again.',true);area.innerHTML=''}
+ finally{if(button)button.disabled=false}
+}
+el('aiSearchForm').onsubmit=e=>{e.preventDefault();void refreshAiUsers()};
 async function init(){
  if(!client){el('gate').innerHTML='<h2>Auth unavailable</h2><p>Try again later.</p>';return}
  const {data:{session},error}=await client.auth.getSession();
@@ -66,7 +112,7 @@ async function init(){
  if(accessError||!isAdmin){el('gate').innerHTML='<h2>Private admin area.</h2><p>This Google account does not have code-management access.</p><a href="/collaborators/">Open collaborator sign-in →</a>';return}
  el('owner').textContent=session.user?.email||'Owner';
  el('gate').classList.add('hidden');el('dashboard').classList.remove('hidden');
- await refresh()
+ await refresh();await refreshAiUsers()
 }
 el('form').onsubmit=async e=>{
  e.preventDefault();const code=el('code').value.trim().toUpperCase(),label=el('label').value.trim();
