@@ -1303,7 +1303,7 @@ function renderAuthAccountCard(){
  return '<div class="profileCard authAccountCard"><div class="authIdentity">'+(avatar?'<img src="'+esc(avatar)+'" alt="">':'<span class="authFallback">G</span>')+'<div><b>'+esc(googleUserName())+'</b><small>'+esc(u.email||'Google account')+(inviteCode?' · Invited via '+esc(inviteCode):'')+'</small></div></div><div class="authActions">'+(inviteAdmin?'<a class="adminProfileLink" href="/internal/collaborators/">Manage collaborator codes ↗</a>':'')+'<button class="authSignOut" id="profileSignOut">Sign out</button></div></div>'
 }
 
-let inviteAuthorized=false,inviteAdmin=false,inviteCode='',authRevision=0;
+let inviteAuthorized=false,inviteAdmin=false,inviteCode='',aiAccessEnabled=false,authRevision=0;
 const PENDING_REFERRAL_KEY='haneulPendingReferral:v1';
 function normalizeInvite(x){return String(x||'').trim().toUpperCase()}
 function readPendingInvite(){
@@ -1369,7 +1369,7 @@ async function signOutGoogle(){
  if(!haneulAuth)return;
  const {error}=await haneulAuth.auth.signOut();
  if(error){toast('Could not sign out');return}
- authUser=null;inviteAuthorized=false;inviteAdmin=false;inviteCode='';
+ authUser=null;inviteAuthorized=false;inviteAdmin=false;inviteCode='';aiAccessEnabled=false;
  sessionStorage.removeItem(PENDING_REFERRAL_KEY);
  showAuthGate();updateSidebarProfile();toast('Signed out')
 }
@@ -1377,6 +1377,16 @@ function applyAuthIdentity(){
  const av=$('sideMiniAvatar');
  if(av){const src=googleUserAvatar();av.innerHTML=authUser&&src?'<img src="'+esc(src)+'" alt="">':'한'}
  updateSidebarProfile()
+}
+async function refreshProfileAiAccess(){
+ const uid=authUser?.id;
+ if(!uid||!haneulAuth){aiAccessEnabled=false;return}
+ const {data,error}=await haneulAuth.rpc('haneul_has_ai_access');
+ if(authUser?.id!==uid)return;
+ if(error){console.warn('Haneul AI permission check:',error.message);return}
+ const previous=aiAccessEnabled;
+ aiAccessEnabled=data===true;
+ if(previous!==aiAccessEnabled&&$('profilePage')&&!$('profilePage').hidden)renderProfilePage()
 }
 async function authorizeHaneulSession(){
  const revision=++authRevision,uid=authUser?.id;
@@ -1402,7 +1412,7 @@ async function authorizeHaneulSession(){
    if(referralReadError)throw referralReadError;
    inviteCode=String(own?.code||'');
   }
-  inviteAuthorized=true;applyProfileToFeed();applyAuthIdentity();closeAuthGate(false);
+  inviteAuthorized=true;applyProfileToFeed();applyAuthIdentity();closeAuthGate(false);void refreshProfileAiAccess();
   if($('profilePage')&&!$('profilePage').hidden)renderProfilePage();
   if(referralError)toast(referralError);
   void hydrateCloudProfile()
@@ -1424,7 +1434,7 @@ async function initAuth(){
   if(authUser?.id!==next?.id){
    grokProfileState={loading:false,analysis:'',model:'',error:''};
    cloudProfileHydratingFor='';
-   authRevision++;inviteAuthorized=false;inviteAdmin=false;inviteCode='';
+   authRevision++;inviteAuthorized=false;inviteAdmin=false;inviteCode='';aiAccessEnabled=false;
   }
   authUser=next;
   if(!next){showAuthGate();return}
@@ -1520,13 +1530,13 @@ async function redeemReferralFromProfile(){
   if(error){if(notice)notice.textContent=error.message||'Could not apply this code.';return}
   inviteCode=data==='ADMIN'?'':String(data||'');
   const {data:isAdmin}=await haneulAuth.rpc('is_haneul_admin');inviteAdmin=!!isAdmin;
-  renderProfilePage();toast('Collaborator privileges unlocked')
+  aiAccessEnabled=true;renderProfilePage();toast('Collaborator privileges unlocked')
  }catch(e){if(notice)notice.textContent='Could not apply your code. Please try again.'}
  finally{if(button)button.disabled=false}
 }
 function renderGrokPanel(){
  const s=grokProfileState;
- if(authUser&&!inviteAdmin&&!inviteCode)return '<div class="grokCard"><div class="ey">GROK · COLLABORATOR PRIVILEGE</div><h2>Extra insight when you need it.</h2><p>Grok personal learning analysis unlocks when a collaborator code is connected to your account. Your on-device learning insights remain available below.</p></div>';
+ if(authUser&&!aiAccessEnabled)return '<div class="grokCard"><div class="ey">PERSONALIZED AI INSIGHTS</div><h2>Extra insight when you need it.</h2><p>AI learning analysis can be unlocked by a collaborator code or granted directly by the Haneul admin. Your on-device learning insights remain available below.</p></div>';
  const action=authUser?'Analyze with Grok':'Connect Google to analyze';
  return '<div class="grokCard"><div class="grokHead"><div><div class="ey">GROK · PERSONAL LEARNING READ</div><h2>A plan from your actual learning signals.</h2><p>Ask Grok to interpret your practice, review memory and current path. Only learning totals and mode summaries are sent when you press the button—not your Google email, name or avatar.</p></div><button id="profileGrokBtn" class="grokButton" '+(s.loading?'disabled':'')+'>'+(s.loading?'Analyzing…':action)+'</button></div>'+
  (s.analysis?'<div class="grokOutput" aria-live="polite">'+esc(s.analysis)+'</div><span class="grokSmall">Generated by '+esc(s.model||'Grok')+' · based on available practice evidence, not a proficiency certification.</span>':s.error?'<div class="grokOutput error" role="status">'+esc(s.error)+'</div>':'<span class="grokSmall">Your on-device learning signals stay below even if Grok is not configured yet. No account data is sent until you request analysis.</span>')+'</div>'
@@ -1534,6 +1544,7 @@ function renderGrokPanel(){
 async function requestGrokRead(){
  if(grokProfileState.loading)return;
  if(!haneulAuth||!authUser){toast('Connect your Google account first');return}
+ if(!aiAccessEnabled){toast('AI learning insights are not enabled for this account');return}
  const requestFor=authUser.id;
  const {data,error}=await haneulAuth.auth.getSession();
  const token=data?.session?.access_token;
@@ -1608,7 +1619,7 @@ function showMainPage(name){
   document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('on',n.dataset.nav===name));
   if(name==='library')renderLibrary();
   if(name==='progress')renderGlobalProgress();
-  if(name==='profile')renderProfilePage();
+  if(name==='profile'){renderProfilePage();void refreshProfileAiAccess()}
   if(name==='discover'){renderNextLessonsHome();updateDailyGoal()}
   updateSidebarProfile()
 }
