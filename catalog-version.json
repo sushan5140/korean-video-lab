@@ -1,18 +1,63 @@
 {
-  "version": "2026-09-19-contexts-15plus-refresh-v2",
-  "curated": 159,
+  "version": "2026-09-19-lower-intermediate-curation-v1",
+  "curated": 175,
   "ready": 140,
   "beginnerReady": 113,
-  "beginnerContextCounts": {
-    "Daily Life": 48,
-    "Food": 22,
-    "Travel": 15,
-    "Shopping": 15,
-    "School": 15,
-    "Culture": 26,
-    "Weather": 15,
-    "Family": 16,
-    "Work": 15,
-    "Hobbies": 15
+  "lowerIntermediate": {
+    "curated": 38,
+    "ready": 15,
+    "checking": 23,
+    "contextCounts": [
+      {
+        "topic": "Daily Life",
+        "ready": 12,
+        "checking": 17
+      },
+      {
+        "topic": "Food",
+        "ready": 2,
+        "checking": 1
+      },
+      {
+        "topic": "Travel",
+        "ready": 2,
+        "checking": 2
+      },
+      {
+        "topic": "Shopping",
+        "ready": 1,
+        "checking": 2
+      },
+      {
+        "topic": "School",
+        "ready": 1,
+        "checking": 4
+      },
+      {
+        "topic": "Culture",
+        "ready": 3,
+        "checking": 10
+      },
+      {
+        "topic": "Weather",
+        "ready": 0,
+        "checking": 2
+      },
+      {
+        "topic": "Family",
+        "ready": 0,
+        "checking": 2
+      },
+      {
+        "topic": "Work",
+        "ready": 2,
+        "checking": 2
+      },
+      {
+        "topic": "Hobbies",
+        "ready": 1,
+        "checking": 2
+      }
+    ]
   }
 }
