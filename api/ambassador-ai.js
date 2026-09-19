@@ -18,7 +18,7 @@ module.exports=async(req,res)=>{
   if(!check.ok||await check.json()!==true)return res.status(403).json({ok:false,error:'This tool is exclusive to your ambassador account.'});
   const instructions={
    contentKit:'Make an educational Korean language creator content kit with 6-slide carousel (each slide copy and accurate Korean examples), 30-second reel script, Instagram caption, concise hashtags and call to action linked to the Haneul creator community. Present as editable text. Do not attribute invented examples to a real video.',
-   quizBattle:'Make exactly five Korean learning multiple-choice questions, 3 options A B C, answer key and explanations. If actual Korean caption excerpts are supplied, ground questions ONLY in those excerpts; otherwise identify them as original topic-based educational questions, not taken from the video.',
+   quizBattle:'Return ONLY a JSON object with {"questions":[{"question":"Korean question","options":["A option","B option","C option"],"answer":0,"explanation":"brief English explanation"}]} for exactly five Korean learning multiple-choice questions. answer must be an integer 0,1,or 2. If actual Korean caption excerpts are supplied, ground questions ONLY in the excerpt; otherwise create original topic-based practice without pretending it was quoted from a video.',
    learningDoctor:'Give three practical suggestions for future creator Korean lessons/challenges based ONLY on the aggregate counts and topics provided. If no learner metrics are available, explain that this is a starter plan, not analysis of learner weaknesses. Never infer individual learner activity.'
   };
   const context=trim(p.context,4400),topic=trim(p.topic,250),platform=trim(p.platform,50),level=trim(p.level,50),creator=trim(p.creator,120);
