@@ -41,7 +41,7 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 .aiActions{flex-shrink:0}.aiActions button{padding:10px 13px}
 @media(max-width:580px){.aiFind,.aiRow{flex-direction:column;align-items:stretch}.aiFind button{width:100%}.aiActions button{width:100%}}
 </style></head><body>
-<main class="main"><header><div><div class="ey">HANEUL INTERNAL · OWNER ACCESS</div><h1>Collaborator codes.</h1><div id="owner" class="ey">Checking your account…</div></div><a href="/">← Back to Haneul</a></header>
+<main class="main"><header><div><div class="ey">HANEUL INTERNAL · OWNER ACCESS</div><h1>Collaborator codes.</h1><div id="owner" class="ey">Checking your account…</div></div><div class="actions"><a href="/creators/">✦ Creator Studio ↗</a><a href="/">← Back to Haneul</a></div></header>
 <section id="gate" class="card"><h2>Checking admin access…</h2><p>Only an account in Haneul's private admin allowlist can create or manage collaborator codes.</p></section>
 <div id="dashboard" class="hidden">
 <section class="card"><div class="ey">OFFICIAL HANEUL SIGNATURE</div><h2>One name. Your signature code.</h2>
@@ -76,10 +76,22 @@ async function refresh(){
  el('totalCodes').textContent=rows.length;
  el('activeCodes').textContent=rows.filter(x=>x.active).length;
  el('totalSignups').textContent=rows.reduce((sum,x)=>sum+Number(x.signups||0),0);
- el('entries').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+(x.active?'':'paused')+'">'+(x.active?'Active':'Paused')+'</span></div><div class="actions"><button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button><button class="'+(x.active?'danger':'subtle')+'" data-toggle="'+safe(x.code)+'" data-active="'+(!x.active)+'">'+(x.active?'Pause':'Reactivate')+'</button></div></div>').join(''):'<p>No referral codes created yet.</p>';
+ el('entries').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+(x.active?'':'paused')+'">'+(x.active?'Active':'Paused')+'</span></div><div class="actions"><button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button><button class="'+(x.active?'danger':'subtle')+'" data-toggle="'+safe(x.code)+'" data-active="'+(!x.active)+'">'+(x.active?'Pause':'Reactivate')+'</button><button class="subtle" data-assign="'+safe(x.code)+'">Assign creator</button></div></div>').join(''):'<p>No referral codes created yet.</p>';
  el('entries').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/collaborators/?ref='+encodeURIComponent(b.dataset.copy));notice('Collaborator link copied.')}
   catch{notice('Could not copy automatically. Please copy the code manually.',true)}
+ });
+ el('entries').querySelectorAll('[data-assign]').forEach(b=>b.onclick=async()=>{
+  const email=prompt('Enter the collaborator’s Google sign-in email for '+b.dataset.assign+':');
+  if(email===null)return;
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())){notice('Enter a valid Google account email.',true);return}
+  b.disabled=true;
+  try{
+   const {error}=await client.rpc('haneul_creator_assign_owner',{p_code:b.dataset.assign,p_email:email.trim()});
+   if(error)throw error;
+   notice('Creator assigned to '+b.dataset.assign+'. They can open Creator Studio with their Google account.')
+  }catch(e){notice('Could not assign creator: '+String(e?.message||'unknown error'),true)}
+  finally{b.disabled=false}
  });
  el('entries').querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{
   b.disabled=true;const {error}=await client.rpc('haneul_set_code_active',{p_code:b.dataset.toggle,p_active:b.dataset.active==='true'});
