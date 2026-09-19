@@ -4,7 +4,7 @@ const TOPICS={"Daily Life":["한국어 중급 일상 대화 듣기 한국어 팟
 function respond(res,code,payload){res.statusCode=code;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control',code===200?'public, s-maxage=43200, stale-while-revalidate=86400':'no-store');res.end(JSON.stringify(payload));}
 module.exports=async(req,res)=>{
  if(req.method!=='GET')return respond(res,405,{ok:false,error:'method_not_allowed'});
- const u=new URL(req.url||'/','https://haneul.local');const p=[...u.searchParams.keys()];if(p.length!==1||p[0]!=='topic')return respond(res,400,{ok:false,error:'topic_only',params:p});
+ const u=new URL(req.url||'/','https://haneul.local');const p=[...u.searchParams.keys()];if(p.filter(k=>k!=='_vercel_share').length!==1||!p.includes('topic'))return respond(res,400,{ok:false,error:'topic_only'});
  const topic=u.searchParams.get('topic'),queries=TOPICS[topic];if(!queries)return respond(res,404,{ok:false,error:'unknown_topic'});
  const key=process.env.YOUTUBE_API_KEY||process.env.GOOGLE_YOUTUBE_API_KEY;
  if(!key)return respond(res,503,{ok:false,error:'youtube_api_not_configured'});
