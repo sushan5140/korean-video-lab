@@ -1,6 +1,6 @@
 {
-  "version": "2026-09-19-intermediate-shopping-weather-v2",
-  "curated": 467,
+  "version": "2026-09-19-intermediate-shopping-weather-v3",
+  "curated": 470,
   "ready": 140,
   "beginnerReady": 113,
   "lowerIntermediate": {
@@ -61,9 +61,9 @@
     }
   },
   "intermediate": {
-    "curated": 207,
+    "curated": 210,
     "ready": 12,
-    "checking": 195,
+    "checking": 198,
     "contextCounts": {
       "Daily Life": {
         "ready": 8,
@@ -82,8 +82,8 @@
       },
       "Shopping": {
         "ready": 1,
-        "preview": 17,
-        "total": 18
+        "preview": 19,
+        "total": 20
       },
       "School": {
         "ready": 1,
@@ -97,8 +97,8 @@
       },
       "Weather": {
         "ready": 1,
-        "preview": 17,
-        "total": 18
+        "preview": 18,
+        "total": 19
       },
       "Family": {
         "ready": 1,
@@ -116,6 +116,6 @@
         "total": 21
       }
     },
-    "stage": "18 distinct Shopping and 18 distinct Weather videos include Preview entries; only canonical Ready entries are playback certified; all 20 new candidates passed structural Korean-caption gate PASS or REVIEW, not manual player/audio verification."
+    "stage": "20 distinct shopping and 19 distinct weather videos, including caption-gated previews; Ready counts unchanged pending playback sync approval."
   }
 }
