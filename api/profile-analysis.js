@@ -30,6 +30,20 @@ module.exports = async function handler(req, res) {
   if (!supa || !supa.ok) return send(res, 401, { error: 'Your sign-in expired. Please sign in again.' });
   const user = await supa.json().catch(() => null);
   if (!user?.id) return send(res, 401, { error: 'Please sign in again.' });
+  // A Google identity by itself must never bypass the collaborator invitation gate.
+  const invite = await fetch(SUPABASE_URL + '/rest/v1/rpc/haneul_has_invite', {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: auth,
+      'Content-Type': 'application/json'
+    },
+    body: '{}',
+    signal: AbortSignal.timeout(9000)
+  }).catch(() => null);
+  if (!invite || !invite.ok) return send(res, 403, { error: 'Could not confirm your collaborator access.' });
+  if ((await invite.json().catch(() => false)) !== true)
+    return send(res, 403, { error: 'A collaborator code is required to use Haneul.' });
 
   let body;
   try {
