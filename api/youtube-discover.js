@@ -6,7 +6,7 @@ function send(res,code,body){res.statusCode=code;res.setHeader('Content-Type','a
 module.exports=async function handler(req,res){
  if(req.method!=='GET'){res.setHeader('Allow','GET');return send(res,405,{ok:false,error:'Method not allowed'})}
  const key=process.env.YOUTUBE_API_KEY||process.env.GOOGLE_YOUTUBE_API_KEY;
- if(req.query?.status==='1')return send(res,200,{ok:true,configured:!!key});
+
  if(!key)return send(res,503,{ok:false,error:'YOUTUBE_API_KEY is not configured on the existing Haneul Vercel project.'});
  const token=String(req.headers.authorization||'');
  if(!/^Bearer [A-Za-z0-9._~-]+$/.test(token))return send(res,401,{ok:false,error:'Sign in as a Haneul administrator.'});
@@ -15,6 +15,7 @@ module.exports=async function handler(req,res){
   if(!user.ok)return send(res,401,{ok:false,error:'Google session expired.'});
   const access=await fetch(SUPABASE_URL+'/rest/v1/rpc/is_haneul_admin',{method:'POST',headers:{apikey:PUBLISHABLE_KEY,Authorization:token,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(9000)});
   if(!access.ok||(await access.json())!==true)return send(res,403,{ok:false,error:'Owner access required.'});
+  if(req.query?.status==='1')return send(res,200,{ok:true,configured:!!key});
   const query=String(req.query?.q||'').trim().slice(0,90);
   if(query.length<3)return send(res,400,{ok:false,error:'Provide a search of at least 3 characters.'});
   const params=new URLSearchParams({part:'snippet',type:'video',maxResults:'25',q:query,relevanceLanguage:'ko',regionCode:'KR',safeSearch:'strict',videoEmbeddable:'true',key});
