@@ -1,3 +1,4 @@
+const {consumeAiBudget}=require('../lib/haneul-security');
 // Haneul Profile Grok analysis. Never expose the xAI key to browser code.
 const SUPABASE_URL = 'https://uyltjaftajwkujjhuric.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
@@ -44,6 +45,10 @@ module.exports = async function handler(req, res) {
   if (!invite || !invite.ok) return send(res, 403, { error: 'Could not confirm your collaborator access.' });
   if ((await invite.json().catch(() => false)) !== true)
     return send(res, 403, { error: 'AI learning insights are not enabled for this account.' });
+
+  // Per-user budget is atomic in Haneul Supabase, not process memory;
+  // it therefore also applies across Vercel serverless instances.
+  if(!await consumeAiBudget(auth,'profile'))return send(res,429,{error:'AI insight limit reached. Please try again in a few minutes.'});
 
   let body;
   try {
