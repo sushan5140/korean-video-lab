@@ -933,7 +933,11 @@ function finishLearningSession(show=true){
 async function aiJson(payload,timeout=14000){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
  try{
-  const r=await fetch('/api/semantic',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
+  const session=await haneulAuth?.auth.getSession().catch(()=>null);
+  const token=session?.data?.session?.access_token||'';
+  const headers={'content-type':'application/json'};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch('/api/semantic',{method:'POST',headers,body:JSON.stringify(payload),signal:controller.signal});
   const d=await r.json().catch(()=>null);
   if(!r.ok||!d||d.ok===false)throw Error(d&&d.error||('semantic-'+r.status));
   return d
