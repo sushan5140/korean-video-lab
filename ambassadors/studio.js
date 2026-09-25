@@ -148,7 +148,7 @@ el('publishVideo').onclick=()=>busy(el('publishVideo'),async()=>{
  if(!id)throw Error('Enter a valid YouTube video URL or 11-character ID.');
  if(title.length<3)throw Error('Enter a video title.');
  el('publishStatus').textContent='Checking the Korean transcript and English meaning service…';
- const r=await fetch('/api/quality?videoId='+encodeURIComponent(id)+'&level=Intermediate',{cache:'no-store'});
+ const r=await fetch('/api/quality?videoId='+encodeURIComponent(id)+'&level=Intermediate',{cache:'no-store',headers:{Authorization:'Bearer '+(await client.auth.getSession()).data?.session?.access_token||''}});
  const qa=await r.json();
  if(qa.status==='FAIL'||Number(qa.metrics?.cueCount||0)<12||qa.translation?.checked!==true||Number(qa.translation?.successRatio||0)<.8)throw Error('Cannot publish this video: Korean captions or English meaning service are not reliable enough. Try another captioned video.');
  await rpc('haneul_creator_submit_video',{p_code:ensureCode(),p_video_id:id,p_title:title});
