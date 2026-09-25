@@ -169,7 +169,7 @@ async function watch(videoId){
  el('watchTranscript').innerHTML='<div class="muted">Loading the Korean transcript…</div>';
  el('watchPanel').scrollIntoView({behavior:'smooth',block:'start'});
  try{
-  const r=await fetch('/api/captions?videoId='+encodeURIComponent(videoId)+'&cv=11&review=1');
+  const r=await fetch('/api/captions?videoId='+encodeURIComponent(videoId)+'&cv=11&review=1',{headers:{Authorization:'Bearer '+(await client.auth.getSession()).data?.session?.access_token||''}});
   const d=await r.json();if(!d.ok||!d.cues?.length)throw Error('A usable Korean caption track is not available for this video.');
   if(activeVideo?.videoId!==videoId)return;
   activeCues=d.cues;
