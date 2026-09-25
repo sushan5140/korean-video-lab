@@ -33,8 +33,8 @@ module.exports=async function(req,res){
  try{
   await auth(req,code);
   const token='Bearer '+String(req.headers.authorization||'').replace(/^Bearer\s+/i,'').trim();
-  if(!await consumeAiBudget(token,'creator'))return res.status(429).json({ok:false,error:'AI request limit reached. Try again in a few minutes.'});
   if(!process.env.GROQ_API_KEY)return res.status(503).json({ok:false,error:'AI provider is not configured'});
+  if(!await consumeAiBudget(token,'creator'))return res.status(429).json({ok:false,error:'AI request limit reached. Try again in a few minutes.'});
   const instructions={
    challenge:'Create a seven-day Korean-learning challenge using the provided video lesson titles; each day has one short listening task and one practice task. Do not invent or cite specific transcript contents unless provided. Include a short Korean sample for each day.',
    tutor:'Teach Korean for a learner in this creator community. Explain the supplied Korean phrase in clear English, identify vocabulary and grammar accurately, then ask ONE brief practice question. Do not invent video dialogue.',
