@@ -1,4 +1,5 @@
-function cues(b){return Array.isArray(b?.cues)?b.cues.filter(x=>x&&typeof x.ko==='string'):[]}
+const {requestBytes,verifyProviderAccess}=require('../lib/haneul-security');
+function cues(b){return Array.isArray(b?.cues)?b.cues.filter(x=>x&&typeof x.ko==='string').slice(0,160).map(x=>({...x,ko:x.ko.slice(0,360),en:String(x.en||'').slice(0,360)})):[]}
 function toks(s=''){return String(s).replace(/[.,!?~…()[\]{}"']/g,' ').split(/\s+/).filter(Boolean)}
 function answerPool(){return['있어요','없어요','가요','와요','먹어요','마셔요','해요','좋아해요','봐요','사요','자요']}
 function lessonData(list){const valid=list.filter(x=>/[가-힣]/.test(x.ko||''));const reconstruct=[],dictation=[],shadowing=[],sentencePatterns=[],grammar=[],vocabulary=[],checkpoints=[];const freq=new Map();for(const x of valid){const ts=toks(x.ko);for(const w of ts){const k=w.replace(/[^가-힣]/g,'');if(k.length>1)freq.set(k,(freq.get(k)||0)+1)}if(ts.length>=3&&ts.length<=9){const a=ts[ts.length-1];reconstruct.push({cueIndex:Number(x.index),answer:a,distractors:answerPool().filter(y=>y!==a).slice(0,2)})}if(ts.length>=3&&ts.length<=12)dictation.push({cueIndex:Number(x.index)});if(ts.length>=3&&ts.length<=10)shadowing.push({cueIndex:Number(x.index)});if((x.ko||'').includes('안 ')){grammar.push({cueIndex:Number(x.index),form:'안 + verb',meaning:'everyday negation'});sentencePatterns.push({cueIndex:Number(x.index),pattern:'안 + verb',meaning:'do not / not',whenToUse:'Use it to negate an everyday action.'})}else if((x.ko||'').includes('에서'))grammar.push({cueIndex:Number(x.index),form:'에서',meaning:'place where an action happens'});else if((x.ko||'').includes('에'))grammar.push({cueIndex:Number(x.index),form:'에',meaning:'location / destination marker'})}
@@ -87,8 +88,11 @@ function enrichFallbackLessons(list,total){
   return{...x,anchorCue:Number(anchor.index??x.startCue),pattern,meaning,whenToUse,exampleKo:'',exampleEn:''}
  })
 }
-module.exports=async function(req,res){res.setHeader('Access-Control-Allow-Origin','*');res.setHeader('Cache-Control','public, s-maxage=86400, stale-while-revalidate=604800');if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});const b=req.body||{},list=cues(b),mode=String(b.mode||'');if(mode==='micro'){
- const ai=await groqMicro(list,String(b.level||''),String(b.title||''));
+module.exports=async function(req,res){res.setHeader('Cache-Control','no-store');if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});if(requestBytes(req)>150000)return res.status(413).json({ok:false,error:'request_too_large'});let b;try{b=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return res.status(400).json({ok:false,error:'invalid_json'})}if(!b||typeof b!=='object'||Array.isArray(b))return res.status(400).json({ok:false,error:'invalid_request'});const list=cues(b),mode=String(b.mode||'').slice(0,35);if(mode==='micro'){
+ // The public lesson still works without an AI entitlement; only the paid
+ // Groq enhancement is restricted to a verified referred/granted user.
+ const access=await verifyProviderAccess(req,'micro');
+ const ai=access.ok?await groqMicro(list,String(b.level||'').slice(0,45),String(b.title||'').slice(0,170)).catch(()=>null):null;
  if(ai&&Array.isArray(ai.lessons)&&ai.lessons.length){
    const normalized=normalizeGroqLessons(ai.lessons,list);
    if(normalized.length)return res.status(200).json({ok:true,source:'groq-transcript-grounded',data:{lessons:normalized}})
