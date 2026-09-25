@@ -1,0 +1,41 @@
+name: Verify Haneul security
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - 'lib/**'
+      - 'index.html'
+      - 'creators/**'
+      - 'ambassadors/**'
+      - 'vercel.json'
+      - 'tests/**'
+      - '.github/workflows/security.yml'
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'lib/**'
+      - 'index.html'
+      - 'creators/**'
+      - 'ambassadors/**'
+      - 'vercel.json'
+      - 'tests/**'
+      - '.github/workflows/security.yml'
+permissions:
+  contents: read
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Parse every live endpoint and supporting module
+        run: |
+          set -euo pipefail
+          for p in api/*.js lib/*.js creators/*.js ambassadors/*.js; do node --check "$p"; done
+          node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))"
+      - name: Exercise security behavior without upstream API keys
+        run: node --test tests/security.test.cjs
