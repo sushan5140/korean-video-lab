@@ -690,7 +690,7 @@ let videos=[{id:'in58DVfmxug',title:'Presence and Location · Learn Korean Like 
  const key=c.ko.trim();
  if(meaningCache.has(key))return meaningCache.get(key)||'';
  if(meaningPending.has(key))return meaningPending.get(key);
- const p=fetch('/api/meaning?text='+encodeURIComponent(key),{cache:'force-cache'})
+ const p=(async()=>fetch('/api/meaning?text='+encodeURIComponent(key),{cache:'force-cache',headers:await haneulApiHeaders()}))()
    .then(r=>r.json()).then(d=>{
      const m=String(d.meaning||'').trim();
      meaningCache.set(key,m||null);meaningPending.delete(key);
@@ -717,7 +717,7 @@ async function preloadMeaningHead(id,list){
   const texts=[...new Set(list.slice(0,12).filter(c=>c&&hasKo(c.ko)&&!cleanEnglish(c.en)&&!meaningCache.has(c.ko)).map(c=>c.ko.trim()))];
   if(!texts.length)return;
   try{
-    const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts})});
+    const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json',...await haneulApiHeaders()},body:JSON.stringify({texts})});
     const d=await r.json(),map=d&&d.meanings||{};
     Object.entries(map).forEach(([k,v])=>meaningCache.set(k,String(v||'').trim()||null));
     persistMeaningCache(id,map)
@@ -737,7 +737,7 @@ async function preloadMeaningWindow(id,list,index){
   const texts=[...new Set(list.slice(from,to).filter(c=>c&&hasKo(c.ko)&&!cleanEnglish(c.en)&&!meaningCache.has(c.ko)).map(c=>c.ko.trim()))];
   if(!texts.length)return;
   try{
-    const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts})});
+    const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json',...await haneulApiHeaders()},body:JSON.stringify({texts})});
     const d=await r.json(),map=d&&d.meanings||{};
     Object.entries(map).forEach(([k,v])=>meaningCache.set(k,String(v||'').trim()||null));
     persistMeaningCache(id,map);
@@ -763,10 +763,10 @@ async function preloadMeanings(id,list){
   if(!texts.length){bulkMeaningLoaded.add(id);return}
   const p=(async()=>{
     let complete=true;
-    for(let start=0;start<texts.length;start+=80){
-      const chunk=texts.slice(start,start+80);
+    for(let start=0;start<texts.length;start+=24){
+      const chunk=texts.slice(start,start+24);
       try{
-        const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts:chunk})});
+        const r=await fetch('/api/meanings',{method:'POST',headers:{'content-type':'application/json',...await haneulApiHeaders()},body:JSON.stringify({texts:chunk})});
         if(!r.ok)throw Error('translation_request_failed');
         const d=await r.json(),map=d&&d.meanings||{};
         for(const t of chunk){const meaning=String(map[t]||'').trim();if(meaning)meaningCache.set(t,meaning);else complete=false}
@@ -930,6 +930,14 @@ function finishLearningSession(show=true){
  if(!meaningful)return null;sessionSummaries.unshift(sum);sessionSummaries=sessionSummaries.slice(0,12);saveSessionSummaries();if(show)showSessionSummary(sum);return sum
 }
 
+// Session tokens are sent only to our own API; external translation providers
+// never see the user's Google session. Public deterministic fallbacks remain.
+async function haneulApiHeaders(){
+ try{
+  const session=await haneulAuth?.auth.getSession();
+  return session?.data?.session?.access_token?{Authorization:'Bearer '+session.data.session.access_token}:{};
+ }catch{return{}}
+}
 async function aiJson(payload,timeout=14000){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
  try{
