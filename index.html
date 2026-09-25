@@ -1804,7 +1804,7 @@ async function checkCandidateQuality(v){
   const cached=readQuality(v);if(cached)return cached;
   qualityChecking.add(v.id);
   try{
-    const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store'});
+    const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store',headers:await haneulApiHeaders()});
     const d=await r.json();
     if(d&&d.videoId){writeQuality(v,d);return d}
   }catch{}
@@ -1856,7 +1856,7 @@ function renderCandidateDiscover(){
    btn.disabled=true;const label=btn.querySelector('.candidateState');if(label)label.textContent='Checking Korean captions…';
    let result=null;
    try{
-     const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store'});
+     const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store',headers:await haneulApiHeaders()});
      result=await r.json();if(result&&result.videoId)writeQuality(v,result)
    }catch{}
    btn.disabled=false;
@@ -1893,14 +1893,14 @@ function home(q=''){
      if(c.dataset.checking==='1')return;
      c.dataset.checking='1';c.setAttribute('aria-busy','true');
      try{
-       const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store'});
+       const r=await fetch('/api/quality?videoId='+encodeURIComponent(v.id)+'&level='+encodeURIComponent(v.level),{cache:'no-store',headers:await haneulApiHeaders()});
        const result=await r.json();if(result?.videoId)writeQuality(v,result);
        if(!result||result.status==='FAIL'||!result.metrics?.cueCount){toast('This video needs a usable Korean transcript before it can play here');return}
        open(id,lv,band);toast('Caption timing is still under review for this video')
      }catch{toast('Could not check Korean captions. Please try again.')}
      finally{delete c.dataset.checking;c.removeAttribute('aria-busy')}
    };
-   const warm=()=>{if(v?.readiness!=='ready')return;if(captionCache.has(id)){const d=captionCache.get(id);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues);return}fetch('/api/captions?videoId='+id+'&cv=10').then(r=>r.json()).then(d=>{if(d&&d.ok&&d.cues&&d.cues.length){captionCache.set(id,d);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues)}}).catch(()=>{})};
+   const warm=()=>{if(v?.readiness!=='ready')return;if(captionCache.has(id)){const d=captionCache.get(id);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues);return}(async()=>fetch('/api/captions?videoId='+id+'&cv=10',{headers:await haneulApiHeaders()}))().then(r=>r.json()).then(d=>{if(d&&d.ok&&d.cues&&d.cues.length){captionCache.set(id,d);preloadMeaningHead(id,d.cues);preloadMeanings(id,d.cues)}}).catch(()=>{})};
    c.onmouseenter=warm;c.onpointerdown=warm
  });
  renderNextLessonsHome();updateDailyGoal();renderCandidateDiscover()
@@ -2587,7 +2587,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
   }
   for(let i=0;i<2;i++){
     try{
-      const res=await fetch('/api/captions?videoId='+id+'&cv=11'+(sel.readiness==='ready'?'':'&review=1')+(i?'&retry='+Date.now():''));
+      const res=await fetch('/api/captions?videoId='+id+'&cv=11'+(sel.readiness==='ready'?'':'&review=1')+(i?'&retry='+Date.now():''),{headers:await haneulApiHeaders()});
       const d=await res.json();
       if(!d.ok||!d.cues||!d.cues.length)throw Error(d.reason||'no transcript');
       captionCache.set(id,d);
@@ -2714,7 +2714,7 @@ if(/^[A-Za-z0-9_-]{11}$/.test(creatorWatchId)&&/^[A-Z0-9_-]{2,48}$/.test(creator
   try{
    const {data:space,error}=await haneulAuth.rpc('haneul_creator_space',{p_code:creatorWatchCode});
    if(error||!space?.videos?.some(v=>v.videoId===creatorWatchId))throw Error('This video has not been shared with your referral community.');
-   const r=await fetch('/api/quality?videoId='+encodeURIComponent(creatorWatchId)+'&level=Intermediate',{cache:'no-store'});
+   const r=await fetch('/api/quality?videoId='+encodeURIComponent(creatorWatchId)+'&level=Intermediate',{cache:'no-store',headers:await haneulApiHeaders()});
    const quality=await r.json();
    if(quality.status==='FAIL'||Number(quality.metrics?.cueCount||0)<12)throw Error('The creator video needs a usable Korean transcript before it can open.');
    const posted=space.videos.find(v=>v.videoId===creatorWatchId);
