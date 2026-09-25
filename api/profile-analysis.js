@@ -46,10 +46,6 @@ module.exports = async function handler(req, res) {
   if ((await invite.json().catch(() => false)) !== true)
     return send(res, 403, { error: 'AI learning insights are not enabled for this account.' });
 
-  // Per-user budget is atomic in Haneul Supabase, not process memory;
-  // it therefore also applies across Vercel serverless instances.
-  if(!await consumeAiBudget(auth,'profile'))return send(res,429,{error:'AI insight limit reached. Please try again in a few minutes.'});
-
   let body;
   try {
     const raw = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
@@ -75,6 +71,10 @@ module.exports = async function handler(req, res) {
       mode: cleanStr(s.mode, 40), score: n(s.score, 100), attempts: n(s.attempts, 500)
     })) : []
   };
+  // Per-user budget is atomic in Haneul Supabase, not process memory;
+  // it therefore also applies across Vercel serverless instances.
+  if(!await consumeAiBudget(auth,'profile'))return send(res,429,{error:'AI insight limit reached. Please try again in a few minutes.'});
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 22000);
   try {
