@@ -1,7 +1,8 @@
+const {requestBytes,verifyProviderAccess}=require('../lib/haneul-security');
 let groqModel=null;
 async function googleTranslate(text){
   const u='https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q='+encodeURIComponent(text);
-  const r=await fetch(u,{headers:{'user-agent':'Mozilla/5.0'}});
+  const r=await fetch(u,{headers:{'user-agent':'Mozilla/5.0'},signal:AbortSignal.timeout(9000)});
   if(!r.ok)throw new Error('google_'+r.status);
   const d=await r.json();
   const out=(d?.[0]||[]).map(x=>x?.[0]||'').join('').trim();
@@ -12,7 +13,7 @@ async function getGroqModel(){
   if(groqModel)return groqModel;
   const key=process.env.GROQ_API_KEY;if(!key)return null;
   try{
-    const r=await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+key}});
+    const r=await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+key},signal:AbortSignal.timeout(9000)});
     if(!r.ok)return null;
     const d=await r.json(),ids=(d.data||[]).map(x=>String(x.id||'')).filter(Boolean);
     groqModel=ids.find(x=>/gpt-oss-20b/i.test(x))||ids.find(x=>/llama.*instant/i.test(x))||ids.find(x=>/llama/i.test(x))||ids[0]||null;
@@ -25,7 +26,7 @@ async function groqBatch(texts){
   const indexed={};texts.forEach((t,i)=>indexed[String(i)]=t);
   const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
     method:'POST',headers:{Authorization:'Bearer '+key,'content-type':'application/json'},
-    body:JSON.stringify({model,temperature:0,max_tokens:1600,messages:[
+    signal:AbortSignal.timeout(22000),body:JSON.stringify({model,temperature:0,max_tokens:1600,messages:[
       {role:'system',content:'Translate each Korean value into concise natural English. Return ONLY one JSON object with the same numeric keys and English string values. No markdown and no explanation.'},
       {role:'user',content:JSON.stringify(indexed)}
     ]})
@@ -40,10 +41,12 @@ async function groqBatch(texts){
   }catch{return{}}
 }
 module.exports=async function(req,res){
-  res.setHeader('Access-Control-Allow-Origin','*');
-  res.setHeader('Cache-Control','public, s-maxage=604800, stale-while-revalidate=2592000');
+  res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return res.status(405).json({ok:false,error:'method_not_allowed'});
-  const texts=[...new Set((req.body?.texts||[]).map(x=>String(x||'').trim()).filter(Boolean))].slice(0,120),out={},failed=[];
+  if(requestBytes(req)>18000)return res.status(413).json({ok:false,error:'request_too_large'});
+  let body;try{body=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return res.status(400).json({ok:false,error:'invalid_json'})}
+  if(!Array.isArray(body.texts)||body.texts.length>40||body.texts.some(x=>typeof x!=='string'||x.length>700))return res.status(400).json({ok:false,error:'invalid_texts'});
+  const texts=[...new Set(body.texts.map(x=>x.trim()).filter(x=>x&&/[가-힣]/.test(x)))],out={},failed=[];
   let next=0;
   async function worker(){
     while(next<texts.length){
@@ -52,12 +55,16 @@ module.exports=async function(req,res){
     }
   }
   await Promise.all(Array.from({length:Math.min(8,texts.length)},worker));
+  let usedFallback=false;
   if(failed.length&&process.env.GROQ_API_KEY){
-    for(let i=0;i<failed.length;i+=24){
-      const chunk=failed.slice(i,i+24),map=await groqBatch(chunk);
-      for(const t of chunk)out[t]=map[t]||''
-    }
+    const access=await verifyProviderAccess(req,'micro');
+    if(access.ok){
+      for(let i=0;i<failed.length;i+=24){
+        const chunk=failed.slice(i,i+24),map=await groqBatch(chunk).catch(()=>({}));
+        for(const t of chunk)out[t]=map[t]||'';
+      }
+      usedFallback=failed.some(t=>out[t]);
+    }else for(const t of failed)out[t]='';
   }else for(const t of failed)out[t]='';
-  const usedFallback=failed.some(t=>out[t]);
   return res.status(200).json({ok:true,source:usedFallback?'google-translate+groq-fallback':'google-translate',meanings:out})
 };
