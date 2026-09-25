@@ -1,3 +1,4 @@
+const {bearer,requestBytes}=require('../lib/haneul-security');
 const YT_ID=/^[A-Za-z0-9_-]{6,20}$/;
 function hasKo(s){return /[가-힣]/.test(String(s||''))}
 function toks(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
@@ -58,23 +59,23 @@ function verdict(metrics,translation){
   const score=Math.max(0,Math.min(100,100-fail.length*35-review.length*12));
   return{status,score,fail,review,pass}
 }
-async function translations(base,cues){
+async function translations(base,cues,token=''){
   const sample=[...new Set(cues.filter(c=>hasKo(c.ko)).map(c=>String(c.ko).trim()))].slice(0,5);
   if(!sample.length)return{checked:false,successRatio:0,count:0};
   try{
-    const r=await fetch(base+'/api/meanings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texts:sample})});
+    const r=await fetch(base+'/api/meanings',{method:'POST',headers:{'content-type':'application/json',...(token?{Authorization:token}:{})},body:JSON.stringify({texts:sample}),signal:AbortSignal.timeout(23000)});
     const d=await r.json(),map=d&&d.meanings||{};
     const ok=sample.filter(t=>String(map[t]||'').trim()).length;
     return{checked:true,successRatio:ok/sample.length,count:sample.length,source:d.source||null}
   }catch{return{checked:false,successRatio:0,count:sample.length}}
 }
-async function checkOne(base,id,level='Beginner'){
+async function checkOne(base,id,level='Beginner',token=''){
   if(!YT_ID.test(id))return{videoId:id,status:'FAIL',score:0,reason:'invalid_video_id'};
   try{
-    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=11&review=1',{headers:{accept:'application/json'}});
+    const r=await fetch(base+'/api/captions?videoId='+encodeURIComponent(id)+'&cv=11&review=1',{headers:{accept:'application/json',...(token?{Authorization:token}:{})},signal:AbortSignal.timeout(27000)});
     const d=await r.json();
     if(!d.ok||!Array.isArray(d.cues)||!d.cues.length)return{videoId:id,status:'FAIL',score:0,reason:d.reason||d.error||'no_usable_korean_transcript',captionSource:d.source||null};
-    const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues),gate=verdict(metrics,translation);
+    const metrics=transcriptMetrics(d.cues,level),translation=await translations(base,d.cues,token),gate=verdict(metrics,translation);
     if(d.wordTimingEstimated&&gate.status!=='FAIL'){gate.status='REVIEW';gate.review.push('word_timing_estimated');gate.score=Math.min(gate.score,88)}
     return{videoId:id,level,...gate,metrics:{...metrics,hangulRatio:+metrics.hangulRatio.toFixed(3),overlapPct:+metrics.overlapPct.toFixed(3),longCuePct:+metrics.longCuePct.toFixed(3),heavyPaddingPct:+metrics.heavyPaddingPct.toFixed(3),medianMsPerUnit:Math.round(metrics.medianMsPerUnit)},translation,captionSource:d.source||null,reviewNormalized:d.reviewNormalized===true,wordTimingEstimated:d.wordTimingEstimated!==false,checkedAt:new Date().toISOString()}
   }catch(e){return{videoId:id,status:'FAIL',score:0,reason:'quality_check_failed'}}
@@ -82,18 +83,20 @@ async function checkOne(base,id,level='Beginner'){
 module.exports=async function(req,res){
   res.setHeader('Access-Control-Allow-Origin','*');
   res.setHeader('Cache-Control','no-store');
-  const host='https://korean-video-lab.vercel.app';
+  const host='https://korean-video-lab.vercel.app',token=bearer(req);
   if(req.method==='GET'){
     const u=new URL(req.url||'/','https://haneul.local'),id=String(u.searchParams.get('videoId')||''),level=String(u.searchParams.get('level')||'Beginner');
-    return res.status(200).json(await checkOne(host,id,level))
+    return res.status(200).json(await checkOne(host,id,level,token))
   }
   if(req.method==='POST'){
-    const rows=Array.isArray(req.body?.videos)?req.body.videos.slice(0,8):[];
-    const ids=[...new Set((req.body?.videoIds||[]).map(x=>String(x||'').trim()).filter(Boolean))].slice(0,8);
+    if(requestBytes(req)>10000)return res.status(413).json({ok:false,error:'request_too_large'});
+    let body;try{body=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return res.status(400).json({ok:false,error:'invalid_json'})}
+    const rows=Array.isArray(body.videos)?body.videos.slice(0,8):[];
+    const ids=[...new Set((Array.isArray(body.videoIds)?body.videoIds:[]).map(x=>String(x||'').trim()).filter(Boolean))].slice(0,8);
     if(!rows.length&&!ids.length)return res.status(400).json({ok:false,error:'missing_video_ids'});
     const results=[];
-    if(rows.length){for(const x of rows){const id=String(x?.id||'').trim(),level=String(x?.level||'Beginner');results.push(await checkOne(host,id,level))}}
-    else{for(const id of ids)results.push(await checkOne(host,id,'Beginner'))}
+    if(rows.length){for(const x of rows){const id=String(x?.id||'').trim(),level=String(x?.level||'Beginner');results.push(await checkOne(host,id,level,token))}}
+    else{for(const id of ids)results.push(await checkOne(host,id,'Beginner',token))}
     return res.status(200).json({ok:true,count:results.length,results})
   }
   return res.status(405).json({ok:false,error:'method_not_allowed'})
