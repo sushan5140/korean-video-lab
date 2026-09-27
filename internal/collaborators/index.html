@@ -27,7 +27,7 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 .message{font-size:11px;color:#7a7166;min-height:17px;margin-top:13px}.message.bad{color:#aa433b}
 .metric{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.metric span{display:grid;gap:3px;padding:13px 18px;background:#f4efe7;border-radius:14px}.metric b{font-size:25px}.metric small{font-size:10px;color:#84786b}
 .row{display:grid;grid-template-columns:minmax(145px,1.3fr) minmax(90px,1fr) 75px 80px auto;gap:12px;align-items:center;padding:17px 0;border-top:1px solid #eee7dd}
-.row strong{display:block;overflow-wrap:anywhere;letter-spacing:.02em}.row small{color:#877b6e;display:block;font-size:10px}.pill{display:inline-block;padding:7px 9px;border-radius:99px;font-size:10px;font-weight:850;color:#357a5d;background:#e5f5ec}.pill.paused{color:#a16e32;background:#fff0d8}
+.row strong{display:block;overflow-wrap:anywhere;letter-spacing:.02em}.row small{color:#877b6e;display:block;font-size:10px}.pill{display:inline-block;padding:7px 9px;border-radius:99px;font-size:10px;font-weight:850;color:#357a5d;background:#e5f5ec}.pill.paused{color:#a16e32;background:#fff0d8}.pill.killed{color:#8d2d27;background:#fde4df}
 .actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:9px 11px;font-size:10px}
 .hidden{display:none!important}
 @media(max-width:850px){.create{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.row .actions{grid-column:1/-1}}
@@ -52,7 +52,7 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 <button id="create" class="signatureSubmit" type="submit">✦ Create signature</button></form>
 <div id="message" class="message" role="status"></div><div id="issuedSignature" aria-live="polite"></div></section>
 <section class="card"><div class="ey">REFERRAL DASHBOARD</div><h2>Invitations and signups.</h2>
-<p>Pausing a code prevents new signups through it; learners who already redeemed it keep access and their original attribution.</p>
+<p>Pause is reversible. Kill is permanent: it stops new signups immediately while keeping existing learner attribution and history intact.</p>
 <div class="metric"><span><b id="totalCodes">0</b><small>TOTAL CODES</small></span><span><b id="activeCodes">0</b><small>ACTIVE</small></span><span><b id="totalSignups">0</b><small>REFERRED LEARNERS</small></span></div>
 <div id="entries"><p>No referral codes created yet.</p></div></section>
 <section class="card" id="aiAccessSection"><div class="ey">LEARNER PRIVILEGES</div><h2>AI Access</h2>
@@ -70,16 +70,44 @@ const el=id=>document.getElementById(id);
 const safe=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function notice(message,bad=false){el('message').textContent=message;el('message').className='message'+(bad?' bad':'')}
 async function refresh(){
- const {data,error}=await client.rpc('haneul_admin_referral_dashboard');
+ const {data,error}=await client.rpc('haneul_admin_referral_dashboard_v2');
  if(error){notice(error.message,true);return}
  const rows=data||[];
  el('totalCodes').textContent=rows.length;
  el('activeCodes').textContent=rows.filter(x=>x.active).length;
  el('totalSignups').textContent=rows.reduce((sum,x)=>sum+Number(x.signups||0),0);
- el('entries').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+(x.active?'':'paused')+'">'+(x.active?'Active':'Paused')+'</span></div><div class="actions"><button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button><button class="'+(x.active?'danger':'subtle')+'" data-toggle="'+safe(x.code)+'" data-active="'+(!x.active)+'">'+(x.active?'Pause':'Reactivate')+'</button><button class="subtle" data-assign="'+safe(x.code)+'">Assign creator</button></div></div>').join(''):'<p>No referral codes created yet.</p>';
+ el('entries').innerHTML=rows.length?rows.map(x=>{
+  const killed=Boolean(x.killed_at),ownerPreview=x.code==='HNL-X-OWNER-PREVIEW-SIG00';
+  const status=killed?'Killed':ownerPreview?'Private':(x.active?'Active':'Paused');
+  const statusClass=killed?'killed':(!x.active?'paused':'');
+  let actions='';
+  if(killed){
+   actions='<button class="subtle" disabled>Code killed</button>';
+  }else if(ownerPreview){
+   actions='<button class="subtle" disabled>Private preview</button>';
+  }else{
+   actions='<button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button>'+
+    '<button class="'+(x.active?'danger':'subtle')+'" data-toggle="'+safe(x.code)+'" data-active="'+(!x.active)+'">'+(x.active?'Pause':'Reactivate')+'</button>'+
+    '<button class="subtle" data-assign="'+safe(x.code)+'">Assign creator</button>'+
+    '<button class="danger" data-kill="'+safe(x.code)+'">Kill code</button>';
+  }
+  return '<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+statusClass+'">'+status+'</span></div><div class="actions">'+actions+'</div></div>'
+ }).join(''):'<p>No referral codes created yet.</p>';
  el('entries').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/collaborators/?ref='+encodeURIComponent(b.dataset.copy));notice('Collaborator link copied.')}
   catch{notice('Could not copy automatically. Please copy the code manually.',true)}
+ });
+ el('entries').querySelectorAll('[data-kill]').forEach(b=>b.onclick=async()=>{
+  const code=b.dataset.kill;
+  if(!confirm('Permanently kill '+code+'? New signups will stop immediately. Existing referred learners keep their original attribution.'))return;
+  b.disabled=true;
+  try{
+   const {error}=await client.rpc('haneul_kill_code',{p_code:code});
+   if(error)throw error;
+   notice(code+' has been killed. It cannot be reactivated.');
+   await refresh()
+  }catch(e){notice('Could not kill code: '+String(e?.message||'unknown error'),true)}
+  finally{b.disabled=false}
  });
  el('entries').querySelectorAll('[data-assign]').forEach(b=>b.onclick=async()=>{
   const email=prompt('Enter the collaborator’s Google sign-in email for '+b.dataset.assign+':');
