@@ -35,13 +35,13 @@ module.exports=async(req,res)=>{
   if(!await consumeAiBudget('Bearer '+token,'creator'))return res.status(429).json({ok:false,error:'AI request limit reached. Try again in a few minutes.'});
 
   const instructions={
-   contentKit:'Make an educational Korean language creator content kit with 6-slide carousel (each slide copy and accurate Korean examples), 30-second reel script, Instagram caption, concise hashtags and call to action linked to the Haneul creator community. Present as editable text. Do not attribute invented examples to a real video.',
+   contentKit:'Write this like a real creator drafting content in their Notes app, not like an AI report. Create a 6-slide Korean-learning carousel, a natural 30-second Reel script, an Instagram caption, a short call to action, and a few relevant hashtags. For each carousel slide use simple plain-text lines such as “Slide 1: …”, then “Korean: …” and “English: …” only when useful. Keep the copy punchy, conversational, and easy to paste directly into Instagram. Do not use Markdown tables, pipe characters, asterisks, hashes, backticks, HTML tags, <br> tags, or stiff labels like “Korean Copy / English Translation”. Do not start with phrases like “Here is your content kit”. Do not attribute invented examples to a real video.',
    quizBattle:'Return ONLY a JSON object with {"questions":[{"question":"Korean question","options":["A option","B option","C option"],"answer":0,"explanation":"brief English explanation"}]} for exactly five Korean learning multiple-choice questions. answer must be an integer 0,1,or 2. If actual Korean caption excerpts are supplied, ground questions ONLY in the excerpt; otherwise create original topic-based practice without pretending it was quoted from a video.',
    learningDoctor:'Give three practical suggestions for future creator Korean lessons/challenges based ONLY on the aggregate counts and topics provided. If no learner metrics are available, explain that this is a starter plan, not analysis of learner weaknesses. Never infer individual learner activity.'
   };
   const context=trim(p.context,4400),topic=trim(p.topic,250),platform=trim(p.platform,50),level=trim(p.level,50),creator=trim(p.creator,120);
   const messages=[
-   {role:'system',content:instructions[mode]+' Use natural Korean and transparent English. No HTML. Never fabricate statistics or quotes.'},
+   {role:'system',content:instructions[mode]+' Use natural Korean and clear everyday English. Sound like a human creator, not a template. Keep formatting clean and plain-text. No HTML or Markdown formatting unless the requested mode is the quiz JSON schema. Never fabricate statistics or quotes.'},
    {role:'user',content:JSON.stringify({topic,platform,level,creator,context})}
   ];
 
