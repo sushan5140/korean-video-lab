@@ -1098,3 +1098,23 @@ Project: `sushan5140/korean-video-lab`, existing Vercel `korean-video-lab`, Supa
 - `tests/security.test.cjs` and `.github/workflows/security.yml` verify rejection/fallback for anonymous paid provider requests, quota refusal, bounded payloads, admin status, headers, and JavaScript syntax without hitting actual third-party APIs.
 
 Operational follow-up: check latest GitHub SHA against the real existing Vercel production deploy; owner Google sign-in/caption playback and true paid-provider responses require an authenticated live browser and valid provider account to verify end-to-end. Serverless usage, generic public YouTube/Google translation endpoints, and public referral-code validation can still attract anonymous traffic; use Vercel firewall/rate controls for stronger network-layer protection when available. This release does not claim a full security certification.
+
+
+## Mobile lesson UI repair — 2026-09-27
+
+Real-device screenshots at a narrow Android viewport exposed phone-specific lesson issues in the production root experience. The desktop design remains unchanged.
+
+Fixed in `index.html` with `haneul-mobile-lesson-v26` plus small navigation logic corrections:
+
+- lesson video now uses intrinsic `16:9` sizing on phones instead of inherited viewport-height grid rows
+- caption panel no longer keeps the old large mobile minimum height; the no-cue state has a compact layout
+- Korean/English mode chips scroll horizontally inside their own row instead of clipping the rightmost option
+- caption action buttons fit the phone width without forcing horizontal page overflow
+- Study-the-scene journey and lesson tabs are touch-scrollable; a tapped tab centers itself in the rail
+- right-side study panel becomes natural document flow on phone, with safe bottom clearance above the fixed mobile dock
+- fixed dock becomes slightly more compact while a lesson is open; toast and pin modal stacking no longer collide with it
+- tapping Home / Library / Progress / Profile / Practice while a lesson is open now closes the lesson overlay first instead of only changing the dock's active state underneath the still-open lesson
+- mobile copy now says the study area follows the exact spoken cue rather than referencing a desktop-only “left” column
+- no changes to desktop lesson geometry, Supabase data, security model, caption data or learner progress
+
+Regression coverage: `tests/mobile-ui.test.cjs` statically validates inline script syntax, mobile player/caption geometry, horizontal control rails, fixed-dock content clearance and the overlay-exit navigation path. The existing production verification workflow now runs both security and mobile UI regression tests.
