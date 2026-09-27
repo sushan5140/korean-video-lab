@@ -7,7 +7,7 @@ module.exports=async(req,res)=>{
  res.setHeader('Cache-Control','no-store');
  if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
  let p;try{p=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return res.status(400).json({ok:false,error:'Invalid JSON'})}
- const code=trim(p.code,48).toUpperCase(),mode=trim(p.mode,30),model=trim(p.model,110);
+ const code=trim(p.code,48).toUpperCase(),mode=trim(p.mode,30),model=trim(p.model,110)||'x-ai/grok-4.7';
  const key=trim(req.headers['x-openrouter-key'],260),token=trim(req.headers.authorization,3000).replace(/^Bearer\s+/i,'');
  if(!/^[A-Z0-9_-]{2,48}$/.test(code)||!['contentKit','quizBattle','learningDoctor'].includes(mode)||!key.startsWith('sk-or-')||!model||model.includes(' ')||model.length<3)
   return res.status(400).json({ok:false,error:'Select a model and connect a valid OpenRouter API key.'});
