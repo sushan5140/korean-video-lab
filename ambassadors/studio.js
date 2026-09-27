@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const el=id=>document.getElementById(id),safe=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const client=window.supabase?.createClient('https://uyltjaftajwkujjhuric.supabase.co','sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let user=null,communities=[],space=null,dashboard=null,readyCatalog=[],selected=[],activeVideo=null,activeCues=[],speechRecognition=null,speechFeedbackReady=false,ambKey='',ambPosts=[],ambLastKind='content_kit';
+let user=null,communities=[],space=null,dashboard=null,readyCatalog=[],selected=[],activeVideo=null,activeCues=[],speechRecognition=null,speechFeedbackReady=false,ambPosts=[],ambLastKind='content_kit';
 const ui=(s,bad=false,good=false)=>{const e=el('status');e.textContent=s;e.className='notice'+(bad?' error':good?' good':'');e.hidden=!s};
 async function rpc(name,args){const {data,error}=await client.rpc(name,args||{});if(error)throw Error(error.message||'Request failed');return data}
 function ensureCode(){if(!space?.code)throw Error('Select a creator community first');return space.code}
@@ -156,17 +156,12 @@ el('publishVideo').onclick=()=>busy(el('publishVideo'),async()=>{
  el('publishStatus').textContent='Published as an interactive creator lesson. Its word-level audio timing is still estimated until reviewed.';
  return id;
 },()=>ui('Creator video lesson published.',false,true));
-const ambassadorModel=()=>el('ambModel').value==='custom'?el('ambCustomModel').value.trim():el('ambModel').value;
-el('ambModel').onchange=()=>{el('ambCustomModel').hidden=el('ambModel').value!=='custom'};
-el('ambDisconnect').onclick=()=>{ambKey='';el('ambKey').value='';ui('OpenRouter key disconnected.',false,true)};
 async function ambassadorGenerate(mode){
 if(!space?.is_owner)throw Error('Ambassador-only feature.');
-ambKey=el('ambKey').value.trim()||ambKey;if(!ambKey.startsWith('sk-or-'))throw Error('Connect your own OpenRouter API key.');
-const model=ambassadorModel();if(!model||model==='custom')throw Error('Select a model ID.');
 const {data}=await client.auth.getSession();if(!data?.session?.access_token)throw Error('Google session expired.');
 const aggregate={members:Number(dashboard?.members||0),challengeDays:Number(dashboard?.challenge_completions||0),speakingWeeks:Number(dashboard?.speaking_completions||0),weeklyPrompt:space.weekly_prompt||''};
 const context=mode==='learningDoctor'?JSON.stringify(aggregate):el('ambContext').value;
-const r=await fetch('/api/ambassador-ai',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token,'x-openrouter-key':ambKey},body:JSON.stringify({code:ensureCode(),mode,model,topic:el('ambTopic').value,platform:el('ambPlatform').value,level:el('ambLevel').value,context,creator:space.title})});
+const r=await fetch('/api/ambassador-ai',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({code:ensureCode(),mode,topic:el('ambTopic').value,platform:el('ambPlatform').value,level:el('ambLevel').value,context,creator:space.title})});
 const response=await r.json().catch(()=>null);if(!r.ok||!response?.ok)throw Error(response?.error||'AI generation failed');
 ambLastKind=mode==='quizBattle'?'quiz':'content_kit';el('ambOutputWrap').hidden=false;el('ambOutput').value=mode==='quizBattle'?JSON.stringify({questions:parseAmbQuiz(response.text)},null,2):response.text;
 el('ambPostTitle').value=el('ambTopic').value.trim().slice(0,140)||(mode==='learningDoctor'?'Community content plan':mode==='quizBattle'?'Korean quiz battle':'Korean content kit')
