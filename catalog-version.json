@@ -1,12 +1,68 @@
 {
-  "version": "2026-09-19-separated-ambassador-studio-v9",
-  "curated": 470,
+  "version": "2026-09-27-culture-street-news-v10",
+  "curated": 473,
   "ready": 140,
-  "beginnerReady": 113,
+  "beginner": {
+    "curated": 118,
+    "ready": 113,
+    "checking": 5,
+    "contextCounts": {
+      "Daily Life": {
+        "ready": 48,
+        "preview": 3,
+        "total": 51
+      },
+      "Food": {
+        "ready": 22,
+        "preview": 2,
+        "total": 24
+      },
+      "Travel": {
+        "ready": 15,
+        "preview": 1,
+        "total": 16
+      },
+      "Shopping": {
+        "ready": 15,
+        "preview": 0,
+        "total": 15
+      },
+      "School": {
+        "ready": 15,
+        "preview": 0,
+        "total": 15
+      },
+      "Culture": {
+        "ready": 26,
+        "preview": 1,
+        "total": 27
+      },
+      "Weather": {
+        "ready": 15,
+        "preview": 0,
+        "total": 15
+      },
+      "Family": {
+        "ready": 16,
+        "preview": 0,
+        "total": 16
+      },
+      "Work": {
+        "ready": 15,
+        "preview": 1,
+        "total": 16
+      },
+      "Hobbies": {
+        "ready": 15,
+        "preview": 0,
+        "total": 15
+      }
+    }
+  },
   "lowerIntermediate": {
-    "curated": 143,
+    "curated": 144,
     "ready": 15,
-    "checking": 128,
+    "checking": 129,
     "contextCounts": {
       "Daily Life": {
         "ready": 12,
@@ -35,8 +91,8 @@
       },
       "Culture": {
         "ready": 3,
-        "preview": 46,
-        "total": 49
+        "preview": 47,
+        "total": 50
       },
       "Weather": {
         "ready": 0,
@@ -50,8 +106,8 @@
       },
       "Work": {
         "ready": 2,
-        "preview": 14,
-        "total": 16
+        "preview": 15,
+        "total": 17
       },
       "Hobbies": {
         "ready": 1,
@@ -61,14 +117,14 @@
     }
   },
   "intermediate": {
-    "curated": 210,
+    "curated": 211,
     "ready": 12,
-    "checking": 198,
+    "checking": 199,
     "contextCounts": {
       "Daily Life": {
         "ready": 8,
-        "preview": 68,
-        "total": 76
+        "preview": 69,
+        "total": 77
       },
       "Food": {
         "ready": 1,
@@ -92,8 +148,8 @@
       },
       "Culture": {
         "ready": 7,
-        "preview": 82,
-        "total": 89
+        "preview": 83,
+        "total": 90
       },
       "Weather": {
         "ready": 1,
@@ -115,7 +171,60 @@
         "preview": 20,
         "total": 21
       }
+    }
+  },
+  "styleCounts": {
+    "Culture": {
+      "Beginner": {
+        "ready": 5,
+        "preview": 0,
+        "total": 5
+      },
+      "Lower Intermediate": {
+        "ready": 3,
+        "preview": 0,
+        "total": 3
+      },
+      "Intermediate": {
+        "ready": 3,
+        "preview": 1,
+        "total": 4
+      }
     },
-    "stage": "20 distinct shopping and 19 distinct weather videos, including caption-gated previews; Ready counts unchanged pending playback sync approval."
-  }
+    "Street Talk": {
+      "Beginner": {
+        "ready": 4,
+        "preview": 0,
+        "total": 4
+      },
+      "Lower Intermediate": {
+        "ready": 2,
+        "preview": 4,
+        "total": 6
+      },
+      "Intermediate": {
+        "ready": 5,
+        "preview": 1,
+        "total": 6
+      }
+    },
+    "News": {
+      "Beginner": {
+        "ready": 0,
+        "preview": 1,
+        "total": 1
+      },
+      "Lower Intermediate": {
+        "ready": 0,
+        "preview": 1,
+        "total": 1
+      },
+      "Intermediate": {
+        "ready": 0,
+        "preview": 1,
+        "total": 1
+      }
+    }
+  },
+  "stage": "Culture and Street Talk now have visible Ready lessons across all three levels. News has one real video Preview per level; transcript certification remains pending where Haneul cannot extract a usable Korean track."
 }
