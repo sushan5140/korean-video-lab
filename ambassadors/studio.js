@@ -87,9 +87,30 @@ async function init(){
   el('community').value=chosen;await load(chosen)
  }catch(e){ui(e?.message||'Ambassador Studio is temporarily unavailable.',true)}
 }
+function cleanCreatorText(raw){
+ return String(raw||'')
+  .replace(/<br\s*\/?\s*>/gi,'\n')
+  .replace(/\`\`\`(?:[a-z0-9_-]+)?\s*/gi,'')
+  .replace(/\*\*([^*]+)\*\*/g,'$1')
+  .replace(/__([^_]+)__/g,'$1')
+  .replace(/^\s*#{1,6}\s*/gm,'')
+  .replace(/^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/gm,'')
+  .split('\n')
+  .map(line=>{
+   const pipes=(line.match(/\|/g)||[]).length;
+   if(pipes>=2){
+    const parts=line.replace(/^\s*\||\|\s*$/g,'').split('|').map(x=>x.trim()).filter(Boolean);
+    return parts.join(' — ');
+   }
+   return line.replace(/^\s*[-*]\s+/,'• ');
+  })
+  .join('\n')
+  .replace(/\n{3,}/g,'\n\n')
+  .trim();
+}
 function parseAmbQuiz(raw){
  const cleaned=String(raw||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
- let parsed;try{parsed=JSON.parse(cleaned)}catch{throw Error('This AI model did not return a playable JSON quiz. Try generating again, or select another OpenRouter model.')}
+ let parsed;try{parsed=JSON.parse(cleaned)}catch{throw Error('The AI did not return a playable quiz this time. Generate it again.')}
  const list=parsed?.questions||parsed?.quiz;
  if(!Array.isArray(list)||list.length!==5)throw Error('The quiz needs exactly five questions. Please regenerate it.');
  return list.map((q,i)=>{
@@ -163,7 +184,7 @@ const aggregate={members:Number(dashboard?.members||0),challengeDays:Number(dash
 const context=mode==='learningDoctor'?JSON.stringify(aggregate):el('ambContext').value;
 const r=await fetch('/api/ambassador-ai',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({code:ensureCode(),mode,topic:el('ambTopic').value,platform:el('ambPlatform').value,level:el('ambLevel').value,context,creator:space.title})});
 const response=await r.json().catch(()=>null);if(!r.ok||!response?.ok)throw Error(response?.error||'AI generation failed');
-ambLastKind=mode==='quizBattle'?'quiz':'content_kit';el('ambOutputWrap').hidden=false;el('ambOutput').value=mode==='quizBattle'?JSON.stringify({questions:parseAmbQuiz(response.text)},null,2):response.text;
+ambLastKind=mode==='quizBattle'?'quiz':'content_kit';el('ambOutputWrap').hidden=false;el('ambOutput').value=mode==='quizBattle'?JSON.stringify({questions:parseAmbQuiz(response.text)},null,2):cleanCreatorText(response.text);
 el('ambPostTitle').value=el('ambTopic').value.trim().slice(0,140)||(mode==='learningDoctor'?'Community content plan':mode==='quizBattle'?'Korean quiz battle':'Korean content kit')
 }
 for(const [id,mode] of [['ambGenerateKit','contentKit'],['ambGenerateQuiz','quizBattle'],['ambGenerateDoctor','learningDoctor']])el(id).onclick=()=>busy(el(id),()=>ambassadorGenerate(mode),()=>ui('Generated. Review the Korean before sharing.',false,true));
