@@ -29,6 +29,7 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 .row{display:grid;grid-template-columns:minmax(145px,1.3fr) minmax(90px,1fr) 75px 80px auto;gap:12px;align-items:center;padding:17px 0;border-top:1px solid #eee7dd}
 .row strong{display:block;overflow-wrap:anywhere;letter-spacing:.02em}.row small{color:#877b6e;display:block;font-size:10px}.pill{display:inline-block;padding:7px 9px;border-radius:99px;font-size:10px;font-weight:850;color:#357a5d;background:#e5f5ec}.pill.paused{color:#a16e32;background:#fff0d8}.pill.killed{color:#8d2d27;background:#fde4df}
 .actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:9px 11px;font-size:10px}
+.archiveHead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.archiveHead h2{margin:5px 0}.archiveToggle{background:#eee9e2;color:#5b534a}.archiveToggle[aria-expanded="true"]{background:#1d1d1f;color:#fff}.archiveList{margin-top:14px}.archiveEmpty{color:#8b8074;font-size:12px;margin:10px 0 0}.archiveMeta{color:#8b8074;font-size:10px}
 .hidden{display:none!important}
 @media(max-width:850px){.create{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.row .actions{grid-column:1/-1}}
 @media(max-width:410px){.main{padding:25px 15px}.row{grid-template-columns:1fr 1fr;gap:9px}.card{padding:17px}}
@@ -55,6 +56,8 @@ button:disabled{opacity:.55;cursor:wait}.subtle{background:#eee9e2;color:#5b534a
 <p>Pause is reversible. Kill is permanent: it stops new signups immediately while keeping existing learner attribution and history intact.</p>
 <div class="metric"><span><b id="totalCodes">0</b><small>TOTAL CODES</small></span><span><b id="activeCodes">0</b><small>ACTIVE</small></span><span><b id="totalSignups">0</b><small>REFERRED LEARNERS</small></span></div>
 <div id="entries"><p>No referral codes created yet.</p></div></section>
+<section class="card" id="killedArchiveCard"><div class="archiveHead"><div><div class="ey">CODE ARCHIVE</div><h2>Killed codes.</h2><p>Killed codes stay out of the main dashboard. Open this archive only when you need to review them.</p></div><button id="killedToggle" class="archiveToggle" type="button" aria-expanded="false" aria-controls="killedEntries">View killed codes (0)</button></div>
+<div id="killedEntries" class="archiveList hidden"></div></section>
 <section class="card" id="aiAccessSection"><div class="ey">LEARNER PRIVILEGES</div><h2>AI Access</h2>
 <p>Grant personalized AI learning insights directly to any Google-signed-in Haneul learner. No referral code needed. Revoking a direct grant does not cancel a separate collaborator referral.</p>
 <form id="aiSearchForm" class="aiFind"><input id="aiSearch" maxlength="120" autocomplete="off" placeholder="Search by Google email or learner nickname" aria-label="Search users"><button id="aiSearchButton" type="submit">Find learners</button></form>
@@ -73,17 +76,18 @@ async function refresh(){
  const {data,error}=await client.rpc('haneul_admin_referral_dashboard_v2');
  if(error){notice(error.message,true);return}
  const rows=data||[];
+ const visibleRows=rows.filter(x=>!x.killed_at);
+ const killedRows=rows.filter(x=>Boolean(x.killed_at));
  el('totalCodes').textContent=rows.length;
- el('activeCodes').textContent=rows.filter(x=>x.active).length;
+ el('activeCodes').textContent=rows.filter(x=>x.active&&!x.killed_at).length;
  el('totalSignups').textContent=rows.reduce((sum,x)=>sum+Number(x.signups||0),0);
- el('entries').innerHTML=rows.length?rows.map(x=>{
-  const killed=Boolean(x.killed_at),ownerPreview=x.code==='HNL-X-OWNER-PREVIEW-SIG00';
-  const status=killed?'Killed':ownerPreview?'Private':(x.active?'Active':'Paused');
-  const statusClass=killed?'killed':(!x.active?'paused':'');
+
+ el('entries').innerHTML=visibleRows.length?visibleRows.map(x=>{
+  const ownerPreview=x.code==='HNL-X-OWNER-PREVIEW-SIG00';
+  const status=ownerPreview?'Private':(x.active?'Active':'Paused');
+  const statusClass=!x.active?'paused':'';
   let actions='';
-  if(killed){
-   actions='<button class="subtle" disabled>Code killed</button>';
-  }else if(ownerPreview){
+  if(ownerPreview){
    actions='<button class="subtle" disabled>Private preview</button>';
   }else{
    actions='<button class="subtle" data-copy="'+safe(x.code)+'">Copy link</button>'+
@@ -92,7 +96,25 @@ async function refresh(){
     '<button class="danger" data-kill="'+safe(x.code)+'">Kill code</button>';
   }
   return '<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div><div><small>Created '+new Date(x.created_at).toLocaleDateString()+'</small></div><div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div><div><span class="pill '+statusClass+'">'+status+'</span></div><div class="actions">'+actions+'</div></div>'
- }).join(''):'<p>No referral codes created yet.</p>';
+ }).join(''):'<p>No active or paused referral codes.</p>';
+
+ const killedToggle=el('killedToggle'),killedEntries=el('killedEntries');
+ killedToggle.textContent='View killed codes ('+killedRows.length+')';
+ killedEntries.innerHTML=killedRows.length?killedRows.map(x=>
+  '<div class="row"><div><strong>'+safe(x.code)+'</strong><small>'+safe(x.label||'Unlabeled collaborator')+'</small></div>'+
+  '<div><small>Killed '+new Date(x.killed_at).toLocaleDateString()+'</small><span class="archiveMeta">Created '+new Date(x.created_at).toLocaleDateString()+'</span></div>'+
+  '<div><strong>'+Number(x.signups||0)+'</strong><small>signups</small></div>'+
+  '<div><span class="pill killed">Killed</span></div>'+
+  '<div class="actions"><button class="subtle" disabled>Archived</button></div></div>'
+ ).join(''):'<p class="archiveEmpty">No killed codes yet.</p>';
+
+ killedToggle.onclick=()=>{
+  const opening=killedToggle.getAttribute('aria-expanded')!=='true';
+  killedToggle.setAttribute('aria-expanded',String(opening));
+  killedEntries.classList.toggle('hidden',!opening);
+  killedToggle.textContent=(opening?'Hide killed codes':'View killed codes')+' ('+killedRows.length+')';
+ };
+
  el('entries').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText('https://korean-video-lab.vercel.app/collaborators/?ref='+encodeURIComponent(b.dataset.copy));notice('Collaborator link copied.')}
   catch{notice('Could not copy automatically. Please copy the code manually.',true)}
@@ -104,7 +126,7 @@ async function refresh(){
   try{
    const {error}=await client.rpc('haneul_kill_code',{p_code:code});
    if(error)throw error;
-   notice(code+' has been killed. It cannot be reactivated.');
+   notice(code+' has been killed and moved to the killed-code archive.');
    await refresh()
   }catch(e){notice('Could not kill code: '+String(e?.message||'unknown error'),true)}
   finally{b.disabled=false}
