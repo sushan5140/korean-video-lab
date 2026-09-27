@@ -33,6 +33,11 @@
 .portalLabel{margin:28px 0 5px;font-weight:900;font-size:11px;letter-spacing:.11em;color:#7c6aa4}
 .ambTabs{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
 .ambTabs a{font-size:12px;font-weight:850;border-radius:12px;background:#f5f0fc;color:#65508d;text-decoration:none;padding:12px 15px;border:1px solid #e8dff7}
+.trendBox{margin:18px 0;padding:18px;border:1px solid #e5dcf5;background:linear-gradient(135deg,#fbf9ff,#fffdf9);border-radius:16px}
+.trendBox h3{font-size:18px;letter-spacing:-.035em;margin:5px 0}
+.trendBox p{margin:4px 0 12px}
+.trendActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.trendSource{font-size:10px;color:#81798f;line-height:1.5;margin-top:9px}
 @media(max-width:740px){.portalMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.portalHero{padding:19px}.portalNav{justify-content:flex-start}.portalNav a{padding:9px;font-size:11px}}
 </style></head><body>
 <div class="shell"><header class="top"><a class="brand" href="/"><i>한</i>Haneul X · Ambassadors</a><nav class="portalNav" aria-label="Workspaces"><a id="viewCommunityTop" href="/creators/">View community ↗</a><a class="selected" href="/ambassadors/" aria-current="page">✦ Ambassador Studio</a><a href="/">Haneul Home</a></nav></header>
@@ -47,6 +52,13 @@
 <section id="ambassador"><div class="panel">
 <div class="ey">HANEUL X · EXCLUSIVE AMBASSADOR WORKSPACE</div><h2>AI Content Factory</h2><p>Create Korean educational carousels, Reel scripts, captions, quizzes and community plans with Haneul's built-in Grok connection.</p>
 <div class="notice good"><b>AI is server-managed.</b> Haneul prefers Grok when an xAI key is configured and otherwise uses the existing server AI provider. Ambassadors never need to enter or see an API key.</div>
+<div class="trendBox">
+<div class="panelHead"><div><span class="ey">LIVE TREND SCOUT · AGENT</span><h3>Find what people care about right now.</h3><p>Scan recent social and web signals, then turn them into Korean-learning content ideas instead of guessing what might perform.</p></div><span class="chip" id="ambTrendState">Not scanned</span></div>
+<div class="row2"><label class="control">OPTIONAL FOCUS<input id="ambTrendFocus" maxlength="180" placeholder="Beginner Korean, café phrases, K-drama slang, TOPIK…"></label><label class="control">AUDIENCE REGION<select id="ambTrendRegion"><option value="global">Global</option><option value="KR">South Korea</option><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></label></div>
+<div class="trendActions"><button class="btn" id="ambTrendScan" type="button">✦ Scan recent trends</button><label class="toggle"><input id="ambUseTrends" type="checkbox" disabled> Use this trend brief for content generation</label></div>
+<p class="trendSource">When xAI/Grok is connected, Trend Scout can use live X + web search. Otherwise it falls back to fresh public Google Trends, Reddit and web-news signals.</p>
+<div id="ambTrendOutput" class="output" hidden style="margin-top:12px"></div>
+</div>
 <hr class="divider"><div class="row2"><label class="control">CONTENT TOPIC<input id="ambTopic" maxlength="250" placeholder="Korean café vocabulary, ordering a drink…"></label><label class="control">AUDIENCE<select id="ambLevel"><option>TOPIK 1 · Beginner</option><option>TOPIK 2 · Lower Intermediate</option><option>TOPIK II · Intermediate</option></select></label></div>
 <label class="control">PLATFORM<select id="ambPlatform"><option>Instagram carousel + Reel</option><option>YouTube Shorts</option><option>Instagram caption</option><option>Community group post</option></select></label>
 <label class="control">OPTIONAL KOREAN SOURCE EXCERPT<textarea id="ambContext" maxlength="4400" placeholder="Paste your actual Korean captions to ground your content; leave blank to create original examples."></textarea></label>
