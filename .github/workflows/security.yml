@@ -37,5 +37,5 @@ jobs:
           set -euo pipefail
           for p in api/*.js lib/*.js creators/*.js ambassadors/*.js; do node --check "$p"; done
           node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))"
-      - name: Exercise security behavior without upstream API keys
-        run: node --test tests/security.test.cjs
+      - name: Exercise security and mobile UI regressions without upstream API keys
+        run: node --test tests/*.test.cjs
