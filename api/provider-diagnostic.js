@@ -1,15 +1,14 @@
 module.exports=async function(req,res){
   res.setHeader('Cache-Control','no-store');
-  const names=['XAI_API_KEY','GROK_API_KEY','XAI_KEY','GROQ_API_KEY','AI_API_KEY','OPENROUTER_API_KEY'];
-  const candidates=names.filter(name=>typeof process.env[name]==='string'&&process.env[name].trim());
+  const matchingNames=Object.keys(process.env).filter(name=>/xai|grok|groq/i.test(name)).sort();
   const tests=[];
-  for(const name of candidates){
+  for(const name of matchingNames){
     const key=process.env[name];
-    let xai=null,groq=null,openrouter=null;
+    if(typeof key!=='string'||!key.trim())continue;
+    let xai=null,groq=null;
     try{xai=(await fetch('https://api.x.ai/v1/models',{headers:{Authorization:'Bearer '+key},signal:AbortSignal.timeout(8000)})).status}catch{}
     try{groq=(await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+key},signal:AbortSignal.timeout(8000)})).status}catch{}
-    try{openrouter=(await fetch('https://openrouter.ai/api/v1/models',{headers:{Authorization:'Bearer '+key},signal:AbortSignal.timeout(8000)})).status}catch{}
-    tests.push({name,xai,groq,openrouter});
+    tests.push({name,xai,groq});
   }
-  res.status(200).json({configured:candidates.length>0,tests});
+  res.status(200).json({matchingNames,tests});
 };
