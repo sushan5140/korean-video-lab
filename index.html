@@ -645,14 +645,158 @@ body.haneulAuthPending .app,body.haneulAuthPending .mobileNav{visibility:hidden!
 .authRestorePanel p{font-size:13px;color:#8c8177;line-height:1.6;max-width:440px}
 .authRestorePanel button{padding:12px 18px;border:0;border-radius:13px;background:#242226;color:#fff;font-weight:850;cursor:pointer}
 .authRestorePanel button[hidden]{display:none}
-</style></head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
+</style>
+<style id="haneul-mobile-lesson-v26">
+/* 2026-09-27 phone pass based on real-device screenshots.
+   Desktop geometry is intentionally untouched. */
+@media(max-width:850px){
+  html,body{overscroll-behavior-x:none}
+  .ov.open{
+    display:block!important;overflow-y:auto!important;overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;background:#171719
+  }
+  .lessonbar{
+    position:sticky!important;top:0!important;z-index:180!important;height:64px!important;
+    grid-template-columns:auto minmax(0,1fr) 38px!important;gap:9px!important;
+    padding:0 12px!important;background:rgba(255,253,248,.97)!important;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+  }
+  .lessonbar>*{min-width:0}
+  .lessonbar .brand{font-size:16px!important;white-space:nowrap}
+  .lessonbar .brand b{width:38px!important;height:38px!important;border-radius:13px!important;margin-right:8px!important}
+  .lessonbar .lt strong{font-size:14px;line-height:1.25}
+  .lessonbar .lt span{font-size:9.5px;display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lessonbar .close{width:36px!important;height:36px!important;display:grid;place-items:center;font-size:20px!important}
+
+  .lessonGrid{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important;padding:0!important;background:#171719!important}
+  .left{
+    display:block!important;height:auto!important;min-height:0!important;overflow:visible!important;
+    border-radius:0!important;background:#171719!important;box-shadow:none!important
+  }
+  .video{height:auto!important;min-height:0!important;padding:8px 8px 0!important;background:#171719!important}
+  .player{
+    width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:16/9;
+    border-radius:14px 14px 0 0!important;overflow:hidden!important
+  }
+  .player iframe,.player>div{width:100%!important;height:100%!important;max-width:100%!important}
+
+  .caps{
+    display:grid!important;grid-template-rows:auto auto auto!important;
+    min-height:0!important;margin:0 8px 8px!important;border-radius:0 0 14px 14px!important;
+    overflow:hidden!important;background:#fffdf9!important
+  }
+  .ctop{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
+    align-items:stretch!important;padding:8px 12px 7px!important
+  }
+  .ctop>*{min-width:0}
+  .ctop b{font-size:9px!important;line-height:1.4;white-space:normal}
+  .syncPreview{font-size:7.8px!important;margin-left:3px!important;padding:3px 5px!important}
+  .modes{
+    display:flex!important;max-width:100%!important;min-width:0!important;gap:5px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;padding:1px 1px 2px!important;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity
+  }
+  .modes::-webkit-scrollbar{display:none}
+  .modes button{
+    flex:0 0 auto!important;min-width:max-content!important;min-height:32px!important;
+    padding:5px 10px!important;font-size:9px!important;line-height:1.15;scroll-snap-align:start
+  }
+
+  .cap{
+    align-content:center!important;min-height:146px!important;height:auto!important;
+    padding:16px 12px 17px!important;overflow:visible!important
+  }
+  .cap.noCue{min-height:112px!important;padding-top:14px!important;padding-bottom:14px!important}
+  .label{font-size:8px!important;letter-spacing:.11em!important}
+  .ko{
+    max-width:100%!important;font-size:clamp(25px,7.3vw,31px)!important;
+    line-height:1.18!important;letter-spacing:-.04em!important;overflow-wrap:anywhere
+  }
+  .cap.noCue .ko{font-size:clamp(22px,6.4vw,27px)!important;line-height:1.16!important}
+  .en{font-size:14px!important;line-height:1.35!important;margin-top:7px!important}
+
+  .actions{
+    display:grid!important;grid-template-columns:.88fr .88fr 1.22fr .88fr .88fr!important;
+    gap:4px!important;padding:7px 10px 9px!important;overflow:visible!important;white-space:normal!important
+  }
+  .actions button{
+    min-width:0!important;width:100%!important;height:35px!important;padding:0 3px!important;
+    font-size:8.7px!important;line-height:1.15!important
+  }
+  .actions .replay{min-width:0!important}
+
+  .right{
+    display:block!important;height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;border-radius:0!important;box-shadow:none!important;background:#fffdf9!important
+  }
+  .rhead{padding:16px 14px 0!important}
+  .rtitle{gap:10px!important;align-items:flex-start!important}
+  .rtitle>div{min-width:0}
+  .rtitle h2{font-size:23px!important;line-height:1.08!important}
+  .rtitle p{font-size:10.5px!important;line-height:1.45!important;margin-top:4px!important}
+  .level{flex:0 0 auto;font-size:8px!important;padding:5px 7px!important}
+  .lessonJourney{
+    width:100%!important;margin-top:10px!important;padding:6px!important;gap:3px!important;
+    overflow-x:auto!important;scrollbar-width:none!important
+  }
+  .lessonJourney::-webkit-scrollbar{display:none}
+  .lessonJourney button{padding:5px 7px!important;font-size:8.5px!important}
+  .lessonJourney button span{width:19px!important;height:19px!important}
+  .tabs{
+    width:100%!important;max-width:100%!important;gap:18px!important;margin-top:11px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;padding-right:18px!important;
+    scrollbar-width:none!important;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:0 0 auto!important;font-size:10px!important;padding-bottom:9px!important;scroll-snap-align:start}
+  .panel{
+    min-height:0!important;overflow:visible!important;
+    padding:12px 14px calc(106px + env(safe-area-inset-bottom,0px))!important
+  }
+  .rainbow{height:3px!important;margin-bottom:11px!important}
+  .practiceHero{padding:13px 14px!important}
+  .practiceHero h3{font-size:22px!important;line-height:1.18!important}
+  .quick{padding:10px!important}
+  .quick b{font-size:13px!important}
+  .quick small{font-size:9.5px!important}
+
+  /* Keep the fixed dock useful without covering lesson content. */
+  .ov.open ~ .mobileNav{
+    left:9px!important;right:9px!important;bottom:max(7px,env(safe-area-inset-bottom))!important;
+    min-height:62px!important;padding:5px 7px 6px!important;border-radius:20px!important
+  }
+  .ov.open ~ .mobileNav button{height:47px!important;padding-top:6px!important;padding-bottom:4px!important}
+  .ov.open ~ .mobileNav .practiceAction{height:55px!important;margin-top:-14px!important}
+  .ov.open ~ .mobileNav .practiceAction .navIcon{width:40px!important;height:40px!important;border-radius:14px!important}
+  .ov.open ~ .mobileNav .practiceAction .navLabel{transform:translateY(-3px)!important}
+  .ov.open ~ .toast{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+  .pinModal{z-index:240!important}
+}
+@media(max-width:430px){
+  .lessonbar{height:60px!important;padding-left:10px!important;padding-right:10px!important}
+  .lessonbar .brand{font-size:15px!important}
+  .lessonbar .brand b{width:35px!important;height:35px!important}
+  .lessonbar .lt strong{font-size:13px}
+  .video{padding:6px 6px 0!important}
+  .caps{margin:0 6px 6px!important}
+  .cap{min-height:138px!important;padding-left:11px!important;padding-right:11px!important}
+  .ko{font-size:clamp(24px,7.1vw,29px)!important}
+  .en{font-size:13px!important}
+  .actions{padding-left:7px!important;padding-right:7px!important;gap:3px!important}
+  .actions button{font-size:8.1px!important}
+  .rhead{padding-left:12px!important;padding-right:12px!important}
+  .panel{padding-left:12px!important;padding-right:12px!important}
+}
+</style>
+</head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
   <div class="compassHead"><div><div class="ey">TODAY'S LISTENING</div><h3>Shape the session, not your level.</h3><p>Your proficiency path comes from Profile. Pick the context and listening format you want right now.</p></div></div>
   <div class="personalHeader"><div><div class="ey">ACTIVE PATH</div><h3 id="activePathTitle">Beginner</h3></div><span class="pathBadge" id="activePathBadge">TOPIK 1 · profile setting</span></div>
   <div class="filterStudio">
     <div class="filterSection"><div class="filterSectionHead"><div><b>Context</b><small style="display:block">Your interests are highlighted first.</small></div><button class="filterReset" id="filterReset">Reset session</button></div><div class="topicRail" id="topicRail"></div><div class="interestNote" id="interestNote"></div></div>
     <div class="filterSection"><div class="filterSectionHead"><div><b>Listening format</b><small style="display:block">Choose how you want the Korean delivered.</small></div></div><div class="styleRail" id="styleRail"></div></div>
   </div>
-</div><div class="tools"><input id="q" placeholder="Search these lessons..."></div><div class="feedStatus" id="feedStatus"></div><div class="grid" id="grid"></div><section class="candidateDiscover" id="candidateDiscover" hidden></section><section id="intermediateReviewQueue" hidden></section></section><section id="libraryPage" class="libraryPage" hidden></section><section id="progressPage" class="libraryPage" hidden></section><section id="profilePage" class="profilePage" hidden></section></main></div><div class="ov" id="ov"><header class="lessonbar"><div class="brand"><b>한</b>Haneul</div><div class="lt"><strong id="lt">Korean video lesson</strong><span id="lm">Active listening · real Korean</span></div><button class="close" id="x">×</button></header><div class="lessonGrid"><section class="left"><div class="video"><div class="player" id="player"></div></div><div class="caps"><div class="ctop"><b id="sync">Connecting transcript · <span id="time">0:00</span></b><div class="modes" id="modes"><button data-m="ko">한국어</button><button data-m="easy">쉬운 한국어</button><button data-m="tap">Tap meaning</button><button class="on" data-m="dual">한국어 + English</button></div></div><div class="cap" id="cap"><div class="label">NOW SPEAKING</div><strong class="ko" id="ko">Play the video to follow the real transcript.</strong><span class="en" id="en"></span></div><div class="actions"><button id="guess">◐ Guess</button><button id="prev">← Prev</button><button class="replay" id="replay">↻ Replay line</button><button id="next">Next →</button><button id="loop">∞ Loop</button></div><div id="syncTools" class="syncTools" hidden><div class="syncToolsBar"><b>↔ Fine-tune spoken timing</b><button id="syncLineBtn" type="button">Sync line now</button><button id="syncWordsBtn" type="button" aria-pressed="false">Tap words: off</button><button id="syncResetBtn" type="button">Reset</button></div><small id="syncHelp">Tap Sync line as you hear the sentence begin, or enable Tap words to mark the actual spoken words. Your corrections are saved on this device.</small></div></div></section><aside class="right"><div class="rhead"><div class="rtitle"><div><h2>Study the scene</h2><p>Everything here follows the exact cue on the left.</p></div><span class="level" id="level">TOPIK 1</span></div><div class="lessonJourney" id="lessonJourney"><button data-jump-tab="overview"><span>1</span><b>Watch</b></button><i>→</i><button data-jump-tab="explain"><span>2</span><b>Understand</b></button><i>→</i><button data-jump-tab="practice"><span>3</span><b>Practice</b></button><i>→</i><button data-jump-tab="progress"><span>4</span><b>Review</b></button></div><div class="tabs" id="tabs"><button class="on" data-t="overview">Overview</button><button data-t="micro">Micro Lessons</button><button data-t="practice">Practice</button><button data-t="phrases">Phrases</button><button data-t="vocab">Words</button><button data-t="explain">Explain</button><button data-t="quiz">Check</button><button data-t="progress">Progress</button></div></div><div class="panel" id="panel"></div></aside></div></div><div class="pinModal" id="pinModal"><div class="pinModalCard"><button class="pinModalClose" id="pinModalClose">×</button><div class="ey">PIN PHRASE</div><h2>Save this phrase</h2><div id="pinPreview"></div><div class="tagEditor"><label>Tags</label><div class="tagChips" id="tagChips"></div><div class="tagAdd"><input id="tagInput" placeholder="Add a tag"><button id="tagAddBtn">Add</button></div></div><div class="pinModalActions"><button id="pinCancel">Cancel</button><button class="primary" id="pinSave">Save to Library</button></div></div></div><div class="authRestorePanel" id="authRestorePanel" role="status" aria-live="polite"><div class="authMark">한</div><strong id="authRestoreTitle">Opening your Haneul space…</strong><p id="authRestoreDetail">Restoring your saved Google session.</p><button id="authRestoreRetry" type="button" hidden>Try again</button></div><div class="authGate open" id="authGate" aria-modal="true" role="dialog" aria-label="Collaborator sign in">
+</div><div class="tools"><input id="q" placeholder="Search these lessons..."></div><div class="feedStatus" id="feedStatus"></div><div class="grid" id="grid"></div><section class="candidateDiscover" id="candidateDiscover" hidden></section><section id="intermediateReviewQueue" hidden></section></section><section id="libraryPage" class="libraryPage" hidden></section><section id="progressPage" class="libraryPage" hidden></section><section id="profilePage" class="profilePage" hidden></section></main></div><div class="ov" id="ov"><header class="lessonbar"><div class="brand"><b>한</b>Haneul</div><div class="lt"><strong id="lt">Korean video lesson</strong><span id="lm">Active listening · real Korean</span></div><button class="close" id="x">×</button></header><div class="lessonGrid"><section class="left"><div class="video"><div class="player" id="player"></div></div><div class="caps"><div class="ctop"><b id="sync">Connecting transcript · <span id="time">0:00</span></b><div class="modes" id="modes"><button data-m="ko">한국어</button><button data-m="easy">쉬운 한국어</button><button data-m="tap">Tap meaning</button><button class="on" data-m="dual">한국어 + English</button></div></div><div class="cap" id="cap"><div class="label">NOW SPEAKING</div><strong class="ko" id="ko">Play the video to follow the real transcript.</strong><span class="en" id="en"></span></div><div class="actions"><button id="guess">◐ Guess</button><button id="prev">← Prev</button><button class="replay" id="replay">↻ Replay line</button><button id="next">Next →</button><button id="loop">∞ Loop</button></div><div id="syncTools" class="syncTools" hidden><div class="syncToolsBar"><b>↔ Fine-tune spoken timing</b><button id="syncLineBtn" type="button">Sync line now</button><button id="syncWordsBtn" type="button" aria-pressed="false">Tap words: off</button><button id="syncResetBtn" type="button">Reset</button></div><small id="syncHelp">Tap Sync line as you hear the sentence begin, or enable Tap words to mark the actual spoken words. Your corrections are saved on this device.</small></div></div></section><aside class="right"><div class="rhead"><div class="rtitle"><div><h2>Study the scene</h2><p>Everything here follows the exact spoken cue.</p></div><span class="level" id="level">TOPIK 1</span></div><div class="lessonJourney" id="lessonJourney"><button data-jump-tab="overview"><span>1</span><b>Watch</b></button><i>→</i><button data-jump-tab="explain"><span>2</span><b>Understand</b></button><i>→</i><button data-jump-tab="practice"><span>3</span><b>Practice</b></button><i>→</i><button data-jump-tab="progress"><span>4</span><b>Review</b></button></div><div class="tabs" id="tabs"><button class="on" data-t="overview">Overview</button><button data-t="micro">Micro Lessons</button><button data-t="practice">Practice</button><button data-t="phrases">Phrases</button><button data-t="vocab">Words</button><button data-t="explain">Explain</button><button data-t="quiz">Check</button><button data-t="progress">Progress</button></div></div><div class="panel" id="panel"></div></aside></div></div><div class="pinModal" id="pinModal"><div class="pinModalCard"><button class="pinModalClose" id="pinModalClose">×</button><div class="ey">PIN PHRASE</div><h2>Save this phrase</h2><div id="pinPreview"></div><div class="tagEditor"><label>Tags</label><div class="tagChips" id="tagChips"></div><div class="tagAdd"><input id="tagInput" placeholder="Add a tag"><button id="tagAddBtn">Add</button></div></div><div class="pinModalActions"><button id="pinCancel">Cancel</button><button class="primary" id="pinSave">Save to Library</button></div></div></div><div class="authRestorePanel" id="authRestorePanel" role="status" aria-live="polite"><div class="authMark">한</div><strong id="authRestoreTitle">Opening your Haneul space…</strong><p id="authRestoreDetail">Restoring your saved Google session.</p><button id="authRestoreRetry" type="button" hidden>Try again</button></div><div class="authGate open" id="authGate" aria-modal="true" role="dialog" aria-label="Collaborator sign in">
  <div class="authCard">
   <div class="authMark">한</div>
   <div class="ey">HANEUL · COLLABORATOR ACCESS</div>
@@ -1904,7 +2048,7 @@ function home(q=''){
    c.onmouseenter=warm;c.onpointerdown=warm
  });
  renderNextLessonsHome();updateDailyGoal();renderCandidateDiscover()
-}$('q').oninput=e=>home(e.target.value);renderFilterChips();document.querySelectorAll('[data-nav]').forEach(n=>n.onclick=()=>{const x=n.dataset.nav;if(x==='practice')launchPractice();else showMainPage(x)});updateSidebarProfile();function cur(){return cue>=0?cues[cue]:null}
+}$('q').oninput=e=>home(e.target.value);renderFilterChips();document.querySelectorAll('[data-nav]').forEach(n=>n.onclick=()=>{const x=n.dataset.nav;if($('ov')?.classList.contains('open'))closeLesson(false);if(x==='practice')launchPractice();else{showMainPage(x);if(innerWidth<=850)scrollTo({top:0,left:0,behavior:'auto'})}});updateSidebarProfile();function cur(){return cue>=0?cues[cue]:null}
 function cueClockAdvanceMs(c){
   if(!c)return 0;
   const a=spokenTokens(c.ko),exact=Array.isArray(c.words)&&c.words.length===a.length;
@@ -1980,7 +2124,7 @@ async function wireEasyEnglish(c){
  }
 }
 function renderCap(){
- let c=cur();syncShowTools();
+ let c=cur();syncShowTools();$('cap').classList.toggle('noCue',!c);
  if(!c){$('ko').textContent=state==='loading'?'Connecting to this video transcript…':state==='bad'?'Transcript unavailable for this video.':'No spoken cue at this moment.';$('en').textContent='';$('en').style.display='none';return}
  if(guess&&revealed!==cue){$('ko').innerHTML='<span style="font-size:15px;background:#f1eeff;color:#5f50df;padding:8px 10px;border-radius:999px">Reveal Korean line</span>';$('en').style.display='none';$('ko').onclick=()=>{revealed=cue;renderCap()};return}
  $('ko').onclick=null;$('ko').innerHTML=spokenHTML(c,ready&&player?player.getCurrentTime()*1000:c.startMs);
@@ -2682,12 +2826,13 @@ function seek(i){if(!ready||!cues.length)return;resetSmartReplay();cue=Math.max(
   cues=[];cue=-1;lastStudyWall=0;semanticIntel=null;semanticLoading=false;microLessons=null;microPending=false;microFailed=false;simplifyFailed=new Set();predictFailed=new Set();sectionQuizAnswers={};sectionCheckpointFailed=new Set();rewatchQueue=[];rewatchPos=-1;resetSmartReplay();activeSpoken=-1;explainSelected=null;guess=false;loop=false;saved=new Set();replays=0;tab='overview';practiceMode='reconstruct';practiceFeedback='';predictFeedback='';sayItFeedback=null;sayItDraft='';shadowStep=0;
   syncShowTools();startLearningSession();makePlayer(id);caps(id);panel()
 }
-$('x').onclick=()=>{cancelAnimationFrame(raf);saveStudyStats();lastStudyWall=0;finishLearningSession(true);try{if(player&&ready)player.pauseVideo()}catch(e){}$('ov').classList.remove('open');document.body.style.overflow='';renderNextLessonsHome();updateDailyGoal()};$('modes').onclick=e=>{if(e.target.matches('button')){mode=e.target.dataset.m;$('cap').onclick=null;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b===e.target));renderCap()}};$('syncLineBtn').onclick=syncLineNow;
+function closeLesson(showSummary=true){cancelAnimationFrame(raf);saveStudyStats();lastStudyWall=0;finishLearningSession(showSummary);try{if(player&&ready)player.pauseVideo()}catch(e){}$('ov').classList.remove('open');document.body.style.overflow='';renderNextLessonsHome();updateDailyGoal()}
+$('x').onclick=()=>closeLesson(true);$('modes').onclick=e=>{if(e.target.matches('button')){mode=e.target.dataset.m;$('cap').onclick=null;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b===e.target));renderCap()}};$('syncLineBtn').onclick=syncLineNow;
 $('syncWordsBtn').onclick=()=>{syncWordMode=!syncWordMode;syncShowTools();renderCap()};
 $('syncResetBtn').onclick=syncReset;
 $('ko').addEventListener('click',e=>{const word=e.target.closest('[data-sync-word]');if(word)syncWordNow(Number(word.dataset.syncWord))});
 $('ko').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const word=e.target.closest('[data-sync-word]');if(word){e.preventDefault();syncWordNow(Number(word.dataset.syncWord))}});
-$('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('active',guess);renderCap();panel()};$('prev').onclick=()=>seek(cue-1);$('next').onclick=()=>seek(cue+1);$('replay').onclick=smartReplay;$('loop').onclick=()=>{loop=!loop;$('loop').classList.toggle('active',loop);toast(loop?'Loop on':'Loop off')};$('tabs').onclick=e=>{if(e.target.matches('button')){const t=e.target.dataset.t;if(t==='explain')recordReviewSignal('explain');panel(t)}};
+$('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('active',guess);renderCap();panel()};$('prev').onclick=()=>seek(cue-1);$('next').onclick=()=>seek(cue+1);$('replay').onclick=smartReplay;$('loop').onclick=()=>{loop=!loop;$('loop').classList.toggle('active',loop);toast(loop?'Loop on':'Loop off')};$('tabs').onclick=e=>{if(e.target.matches('button')){const t=e.target.dataset.t;if(t==='explain')recordReviewSignal('explain');panel(t);if(innerWidth<=850)e.target.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}};
 $('pinModalClose').onclick=closePinModal;$('pinCancel').onclick=closePinModal;$('tagAddBtn').onclick=addPendingTag;
 $('tagInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPendingTag()}};
 $('pinSave').onclick=()=>{if(!pendingPin)return;pendingPin.tags=pendingTags.slice();recordReviewSignal('pin',Number.isInteger(pendingPin.cueIndex)?pendingPin.cueIndex:cue);pinnedPhrases.unshift(pendingPin);savePins();closePinModal();pendingPin=null;pendingTags=[];toast('Saved to Library');if(tab==='phrases')panel('phrases')};
