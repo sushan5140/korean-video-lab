@@ -845,11 +845,13 @@ function makeHaneulGuestName(){
  const pick=a=>a[Math.floor(Math.random()*a.length)];
  return pick(first)+pick(second)+Math.floor(100+Math.random()*900)
 }
-function getHaneulGuestIdentity(){
- try{
-  const saved=JSON.parse(sessionStorage.getItem(HANEUL_GUEST_IDENTITY)||'null');
-  if(saved?.name)return saved
- }catch{}
+function getHaneulGuestIdentity(fresh=false){
+ if(!fresh){
+  try{
+   const saved=JSON.parse(sessionStorage.getItem(HANEUL_GUEST_IDENTITY)||'null');
+   if(saved?.name)return saved
+  }catch{}
+ }
  const identity={name:makeHaneulGuestName(),createdAt:new Date().toISOString()};
  try{sessionStorage.setItem(HANEUL_GUEST_IDENTITY,JSON.stringify(identity))}catch{}
  return identity
@@ -887,8 +889,8 @@ function seedHaneulGuestProfile(identity){
   createdAt:existing.createdAt||identity?.createdAt||new Date().toISOString()
  })
 }
-function startHaneulGuest(){
- const identity=getHaneulGuestIdentity();
+function startHaneulGuest(fresh=false){
+ const identity=getHaneulGuestIdentity(fresh);
  guestMode=true;
  authUser=null;
  inviteAuthorized=true;inviteAdmin=false;inviteCode='';aiAccessEnabled=false;
@@ -1766,8 +1768,9 @@ async function restoreHaneulSession(){
     authUser=null;resetAuthRestore();
     let resumeGuest=false;try{resumeGuest=sessionStorage.getItem(HANEUL_GUEST_ACTIVE)==='1'||new URLSearchParams(location.search).get('guest')==='1'}catch{}
     if(resumeGuest){
-     startHaneulGuest();
-     if(new URLSearchParams(location.search).get('guest')==='1')history.replaceState({},'',location.pathname)
+     const directGuest=new URLSearchParams(location.search).get('guest')==='1';
+     startHaneulGuest(directGuest);
+     if(directGuest)history.replaceState({},'',location.pathname)
     }else showAuthGate()
    }
    if(restored?.user)await ensureHaneulAuthorized()
@@ -1789,7 +1792,7 @@ async function initAuth(){
   input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void signInWithGoogle()}});
  }
  if(button)button.onclick=signInWithGoogle;
- if(guestButton)guestButton.onclick=startHaneulGuest;
+ if(guestButton)guestButton.onclick=()=>startHaneulGuest(true);
  referralControls();
  if(!haneulAuth){showAuthRestoreProblem('Google sign-in could not load. Check your connection and retry.');return}
  haneulAuth.auth.onAuthStateChange((event,session)=>{
