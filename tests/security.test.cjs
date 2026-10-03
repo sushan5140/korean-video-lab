@@ -140,3 +140,11 @@ test('Guest Mode stays browser-local and never creates anonymous Supabase auth u
  assert.doesNotMatch(html,/signInAnonymously\s*\(/);
  assert.match(html,/if\(guestMode\)return;\s*const uid=authUser\?\.id;/);
 });
+
+
+test('Guest transcript messaging is an upgrade prompt, not an unavailable error',()=>{
+ const html=fs.readFileSync('index.html','utf8');
+ assert.match(html,/Sign in with Google to view the Korean transcript/);
+ assert.doesNotMatch(html,/Transcript unavailable for this video/);
+ assert.doesNotMatch(html,/Korean transcript unavailable for this video/);
+});

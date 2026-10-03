@@ -2230,7 +2230,7 @@ async function wireEasyEnglish(c){
 }
 function renderCap(){
  let c=cur();syncShowTools();$('cap').classList.toggle('noCue',!c);
- if(!c){$('ko').textContent=state==='loading'?'Connecting to this video transcript…':state==='bad'?'Transcript unavailable for this video.':'No spoken cue at this moment.';$('en').textContent='';$('en').style.display='none';return}
+ if(!c){$('ko').textContent=state==='loading'?'Connecting to this video transcript…':state==='bad'?(guestMode?'Sign in with Google to view the Korean transcript.':'We could not load the Korean transcript for this video.'):'No spoken cue at this moment.';$('en').textContent='';$('en').style.display='none';return}
  if(guess&&revealed!==cue){$('ko').innerHTML='<span style="font-size:15px;background:#f1eeff;color:#5f50df;padding:8px 10px;border-radius:999px">Reveal Korean line</span>';$('en').style.display='none';$('ko').onclick=()=>{revealed=cue;renderCap()};return}
  $('ko').onclick=null;$('ko').innerHTML=spokenHTML(c,ready&&player?player.getCurrentTime()*1000:c.startMs);
  $('en').style.display=mode==='ko'?'none':'block';
@@ -2847,7 +2847,7 @@ function panel(t=tab){tab=t;updateLessonJourney(t);document.querySelectorAll('#t
       renderCap();panel();return
     }catch(e){if(!i)await new Promise(r=>setTimeout(r,350))}
   }
-  state='bad';if($('sync'))$('sync').textContent='Korean transcript unavailable for this video';renderCap();panel()
+  state='bad';if($('sync'))$('sync').textContent=guestMode?'Sign in with Google to view the Korean transcript':'We could not load the Korean transcript for this video';renderCap();panel()
 }
 function tick(){cancelAnimationFrame(raf);const f=()=>{const wall=performance.now();if(lastStudyWall){const delta=Math.max(0,Math.min(1250,wall-lastStudyWall));try{if(ready&&$('ov').classList.contains('open')&&player&&player.getPlayerState&&player.getPlayerState()===1)noteWatchTime(delta)}catch{}}lastStudyWall=wall;if(ready&&$('ov').classList.contains('open')){let s=player.getCurrentTime()||0,ms=s*1000,duration=player.getDuration()||0;noteVideoProgress(s,duration);if($('time'))$('time').textContent=fmt(s);let n=findCue(ms);if(n!==cue){resetSmartReplay();cue=n;explainSelected=null;activeSpoken=n>=0?spokenIndex(cues[n],ms):-1;revealed=-1;if(n>=0&&sel)preloadMeaningWindow(sel.id,cues,n);renderCap();panel()}else if(n>=0){paintSpoken(ms)}if(loop&&cue>=0&&ms>=cues[cue].endMs-70)player.seekTo(cues[cue].startMs/1000,true)}raf=requestAnimationFrame(f)};lastStudyWall=performance.now();raf=requestAnimationFrame(f)}
 function resetSmartReplay(){
