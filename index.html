@@ -1764,8 +1764,11 @@ async function restoreHaneulSession(){
    // A truly absent saved session shows login unless this tab already chose Guest Mode.
    else{
     authUser=null;resetAuthRestore();
-    let resumeGuest=false;try{resumeGuest=sessionStorage.getItem(HANEUL_GUEST_ACTIVE)==='1'}catch{}
-    if(resumeGuest)startHaneulGuest();else showAuthGate()
+    let resumeGuest=false;try{resumeGuest=sessionStorage.getItem(HANEUL_GUEST_ACTIVE)==='1'||new URLSearchParams(location.search).get('guest')==='1'}catch{}
+    if(resumeGuest){
+     startHaneulGuest();
+     if(new URLSearchParams(location.search).get('guest')==='1')history.replaceState({},'',location.pathname)
+    }else showAuthGate()
    }
    if(restored?.user)await ensureHaneulAuthorized()
   }catch(e){
