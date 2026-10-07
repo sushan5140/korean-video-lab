@@ -33,3 +33,27 @@ test('Mode copy includes core navigation and lesson controls',()=>{
  const source=html();
  for(const phrase of ['main feed','training arc','saved lore','character development','run it back','keep cooking','find the lore'])assert.ok(source.includes(phrase),phrase);
 });
+
+
+test('Full-site Gen-Z mode scans dynamic learner UI while preserving literal learning text',()=>{
+ const source=html();
+ assert.match(source,/function transformVibeSubtree\(/);
+ assert.match(source,/createTreeWalker\(root,NodeFilter\.SHOW_TEXT\)/);
+ assert.match(source,/function genzifyLooseText\(/);
+ assert.match(source,/vibeProtectedSelector/);
+ for(const protectedClass of ['.ko','.en','.wordContext','.realExample'])assert.ok(source.includes(protectedClass),protectedClass);
+ assert.match(source,/addedNodes\.forEach/);
+});
+
+test('Full-site Gen-Z dictionary covers onboarding, profile, progress and dynamic states',()=>{
+ const source=html();
+ for(const phrase of [
+  'ur Korean main-character arc starts rn.',
+  'what are we calling u bestie?',
+  'pick ur starter arc',
+  'MAIN CHARACTER SETTINGS',
+  'what Haneul has receipts for',
+  'fresh Korean lore just dropped.',
+  'hunting down the actual transcript…'
+ ])assert.ok(source.includes(phrase),phrase);
+});
