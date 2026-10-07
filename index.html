@@ -857,18 +857,140 @@ let haneulUiMode='normal';
 const HANEUL_VIBE_COPY={
  '⌂ Discover':'⌂ main feed','◎ Practice':'◎ training arc','▱ Library':'▱ saved lore','◌ Progress':'◌ character development','◉ Profile':'◉ main character',
  'Home':'main feed','Library':'saved lore','Practice':'training arc','Progress':'character development','Profile':'main character',
- "TODAY'S LISTENING":"TODAY'S KOREAN DROP",'ACTIVE PATH':'CURRENT ARC','Context':'the vibe','Listening format':'how we’re consuming','Reset session':'reset the vibe',
- '◐ Guess':'◐ lock in a guess','← Prev':'← back','↻ Replay line':'↻ run it back','Next →':'keep cooking →','∞ Loop':'∞ replay forever',
+ "LEARN WITH REAL KOREAN":"KOREAN ARC STARTS HERE","TODAY'S LISTENING":"TODAY'S KOREAN DROP",'ACTIVE PATH':'CURRENT ARC',
+ 'Context':'pick the vibe','Listening format':'how we consuming this','Reset session':'reset the vibe','Anything':'literally anything',
+ '◐ Guess':'◐ lock in a guess','← Prev':'← rewind bestie','↻ Replay line':'↻ run it back','Next →':'keep cooking →','∞ Loop':'∞ loop the lore',
  'Overview':'the tea','Phrases':'steal these lines','Words':'word loot','Explain':'why tho','Check':'prove it',
  'Replay line':'run it back','Guess first':'guess before the reveal','Pin phrase':'save the lore','Pinned':'locked in',
  'Save profile':'lock it in','Try as guest':'enter anonymously','Continue with Google':'sign in & lock in',
- 'Daily goal':'daily grind','Search these lessons...':'find the lore...'
+ 'Daily goal':'daily grind','Search these lessons...':'find the lore...','Loading…':'cooking…','Loading...':'cooking...',
+ 'Cancel':'nah go back','Save':'lock it in','Add':'yoink this','Close':'dip','Retry':'run it back','Try again':'run it back',
+ 'Beginner':'baby arc','Lower Intermediate':'not-a-rookie arc','Intermediate':'we actually know ball',
+ 'Daily Life':'main-character errands','Food':'food lore','Travel':'passport arc','Shopping':'retail therapy','School':'academic weapon arc',
+ 'Culture':'culture drop','Weather':'sky lore','Family':'family lore','Work':'9-to-5 arc','Hobbies':'side quests',
+ 'Slow Korean':'slow-mo Korean','Teaching':'teacher mode','Vlog':'main-character vlog','Street Talk':'street lore','Animation':'animated lore','News':'news tea',
+ 'Ready':'cooked & ready','Preview':'sneak peek','Explore':'touch grass mode','Correct':'u ate','Incorrect':'not quite bestie',
+ 'Words saved':'word loot secured','Patterns':'patterns unlocked','Lessons seen':'episodes cleared','Familiar words':'words we know fr',
+ 'Topics touched':'lore explored','Mastery signal':'skill aura'
 };
-const HANEUL_VIBE_REVERSE=Object.fromEntries(Object.entries(HANEUL_VIBE_COPY).map(([a,b])=>[b,a]));
-const vibeEligibleSelector='[data-nav],.mobileNav .navLabel,.compassHead .ey,.personalHeader .ey,.filterSectionHead b,.filterReset,#guess,#prev,#replay,#next,#loop,#tabs button,.quick b,.quick small,.practiceModes button,.practiceActions button,#authGate .googleAuthBtn,#authGate .guestAuthBtn,#profilePage .profileSave,#profilePage .prefSection h3';
-function vibeText(value){
- const v=String(value??'').trim();
- return haneulUiMode==='genz'?(HANEUL_VIBE_COPY[v]||v):(HANEUL_VIBE_REVERSE[v]||v)
+const vibeTextState=new WeakMap();
+const vibeProtectedSelector=[
+ '.ko','.en','.cap','.wordContext','.realExample','.roman',
+ '[data-literal-meaning]','[data-korean]','.cueItem b','.wordSaveMain b','.wordSaveMain p',
+ '.creatorWatchTitle','.videoTitle','.lessonTitle','code','pre','script','style','noscript'
+].join(',');
+const vibeNeverTransformSelector=[
+ 'input[type="email"]','input[type="password"]','input[type="number"]','textarea',
+ '#profileNameInput','#onboardNameInput','#referralCodeInput','#profileReferralInput'
+].join(',');
+function isMostlyKorean(value){const t=String(value||'');const ko=(t.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g)||[]).length,letters=(t.match(/[A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ]/g)||[]).length;return letters>0&&ko/letters>.28}
+function genzifyLooseText(value){
+ const raw=String(value??''),lead=(raw.match(/^\s*/)||[''])[0],tail=(raw.match(/\s*$/)||[''])[0],v=raw.trim();
+ if(!v||isMostlyKorean(v)||/^https?:\/\//i.test(v)||/^[\d\s:./%+×—–-]+$/.test(v))return raw;
+ if(HANEUL_VIBE_COPY[v])return lead+HANEUL_VIBE_COPY[v]+tail;
+ let x=v;
+ const sentenceRules=[
+  [/\bYour Korean journey starts here\.?/gi,'ur Korean main-character arc starts rn.'],
+  [/\bMake Haneul yours\.?/gi,'make Haneul yours fr.'],
+  [/\bWhat should we call you\??/gi,'what are we calling u bestie?'],
+  [/\bHow much Korean fits your day\??/gi,'how much Korean are we locking in today?'],
+  [/\bChoose your starting path\b/gi,'pick ur starter arc'],
+  [/\bWhat do you want Korean for\??/gi,'what are we learning Korean for tho?'],
+  [/\bChange any of these from Profile later\.?/gi,'switch the lore up in Profile whenever.'],
+  [/\bYour path controls the feed\.?/gi,'ur arc literally controls the feed.'],
+  [/\bWhat Haneul remembers\b/gi,'what Haneul has receipts for'],
+  [/\bStrength signals\b/gi,'where u ate'],
+  [/\bMain friction\b/gi,'main opp'],
+  [/\bSupporting signal\b/gi,'side evidence'],
+  [/\bEvidence\b/gi,'receipts'],
+  [/\bNEXT INPUT\b/g,'NEXT MOVE'],
+  [/\bCURRENT READ\b/g,'CURRENT VIBE CHECK'],
+  [/\bWHAT IS WORKING\b/g,'WHERE U ATE'],
+  [/\bLEARNER PROFILE\b/g,'MAIN CHARACTER SETTINGS'],
+  [/\bLEARNING SIGNALS\b/g,'THE RECEIPTS'],
+  [/\bDISPLAY NAME\b/g,'WHAT WE CALL U'],
+  [/\bDAILY LISTENING GOAL · MINUTES\b/g,'DAILY GRIND · MINUTES'],
+  [/\bProficiency path\b/gi,'skill arc'],
+  [/\bInterests\b/gi,'ur current obsessions'],
+  [/\bCollaborator privileges\b/gi,'VIP lore'],
+  [/\bPersonalized AI insights\b/gi,'AI vibe check'],
+  [/\bNo active cue\b/gi,'no line rn bestie'],
+  [/\bWaiting for Korean speech\b/gi,'waiting for the Korean to drop'],
+  [/\bWaiting for the next spoken word\b/gi,'waiting for the next word to spawn'],
+  [/\bGetting English meaning…/gi,'cooking the English meaning…'],
+  [/\bFinding the real transcript…/gi,'hunting down the actual transcript…'],
+  [/\bConnecting transcript\b/gi,'connecting the receipts'],
+  [/\bKorean captions loaded\b/gi,'Korean captions secured'],
+  [/\btranscript connected\b/gi,'transcript locked in'],
+  [/\bconnecting transcript\b/gi,'transcript is cooking'],
+  [/\bPlay the video\b/gi,'hit play bestie'],
+  [/\bStart learning\b/gi,'start the arc'],
+  [/\bUse defaults\b/gi,'just vibe w/ defaults'],
+  [/\bMark reviewed\b/gi,'mark as cooked'],
+  [/\bStudy scene\b/gi,'study this lore'],
+  [/\bSave to Library\b/gi,'lock into saved lore'],
+  [/\bSaved to Library\b/gi,'lore secured'],
+  [/\bProfile updated\b/gi,'main-character settings locked in'],
+  [/\bNew Korean lessons are available in Haneul\.?/gi,'fresh Korean lore just dropped.'],
+  [/\bRefresh lessons\b/gi,'gimme the new lore'],
+  [/\bNo Ready lesson is available for this path yet\b/gi,'this arc has no cooked lesson yet'],
+  [/\bChoose 5–180 minutes\b/gi,'pick 5–180 mins bestie'],
+  [/\bPlease enter a name or nickname\b/gi,'drop a name or nickname first bestie'],
+  [/\bTell us what to call you\b/gi,'tell us what we calling u']
+ ];
+ for(const [re,to] of sentenceRules)x=x.replace(re,to);
+ const wordRules=[
+  [/\brecommendations\b/gi,'algorithm picks'],[/\brecommended\b/gi,'algorithm-approved'],[/\brecommendation\b/gi,'algorithm pick'],
+  [/\bcontinue\b/gi,'keep cooking'],[/\bcomplete\b/gi,'finish the quest'],[/\bcompleted\b/gi,'quest cleared'],
+  [/\bprogress\b/gi,'character development'],[/\blearning\b/gi,'grind'],[/\blesson\b/gi,'episode'],[/\blessons\b/gi,'episodes'],
+  [/\bpractice\b/gi,'training arc'],[/\breview\b/gi,'lore recap'],[/\bsaved\b/gi,'locked in'],[/\bsave\b/gi,'lock in'],
+  [/\bprofile\b/gi,'main-character settings'],[/\bsettings\b/gi,'control room'],[/\bsearch\b/gi,'hunt'],
+  [/\bcurrent\b/gi,'rn'],[/\btoday\b/gi,'today’s arc'],[/\bnext\b/gi,'next move'],[/\bprevious\b/gi,'last one'],
+  [/\bloading\b/gi,'cooking'],[/\bavailable\b/gi,'in the building'],[/\bempty\b/gi,'giving nothing'],[/\bfailed\b/gi,'flopped'],
+  [/\berror\b/gi,'tech beef'],[/\bcorrect\b/gi,'you ate'],[/\bwrong\b/gi,'not it yet'],[/\bstrong\b/gi,'kinda cracked'],
+  [/\bweak\b/gi,'needs a comeback'],[/\bnew\b/gi,'fresh'],[/\bgoal\b/gi,'grind target'],[/\bminutes\b/gi,'mins'],
+  [/\byour\b/gi,'ur'],[/\byou are\b/gi,'ur'],[/\byou\b/gi,'u'],[/\bwith\b/gi,'w/'],[/\bwithout\b/gi,'w/o'],
+  [/\bbecause\b/gi,'bc'],[/\bbefore\b/gi,'b4'],[/\breally\b/gi,'fr'],[/\bvery\b/gi,'lowkey'],
+  [/\bselected\b/gi,'locked'],[/\bchoose\b/gi,'pick'],[/\bchange\b/gi,'switch up'],[/\btry\b/gi,'run'],
+  [/\bstart\b/gi,'kick off'],[/\bfinish\b/gi,'wrap the arc'],[/\bopen\b/gi,'pull up'],[/\bclose\b/gi,'dip'],
+  [/\bdetails\b/gi,'tea'],[/\bactivity\b/gi,'lore'],[/\binsights\b/gi,'vibe checks'],[/\binsight\b/gi,'vibe check']
+ ];
+ for(const [re,to] of wordRules)x=x.replace(re,to);
+ if(x===v && /[A-Za-z]{3}/.test(v) && v.length<90 && !/[.:!?]$/.test(v))x=v+' fr';
+ return lead+x+tail
+}
+function vibeText(value){return haneulUiMode==='genz'?genzifyLooseText(value):String(value??'')}
+function shouldProtectVibeNode(node){
+ const p=node&&node.parentElement;if(!p)return true;
+ if(p.closest(vibeProtectedSelector))return true;
+ if(p.closest(vibeNeverTransformSelector))return true;
+ if(p.isContentEditable||p.closest('[contenteditable="true"]'))return true;
+ return false
+}
+function transformVibeTextNode(node){
+ if(!node||node.nodeType!==Node.TEXT_NODE||shouldProtectVibeNode(node))return;
+ const current=node.nodeValue||'',trim=current.trim();if(!trim||(!/[A-Za-z]/.test(trim)&&!HANEUL_VIBE_COPY[trim]))return;
+ let state=vibeTextState.get(node);
+ if(haneulUiMode==='genz'){
+  if(state&&current===state.genz)return;
+  state={normal:current,genz:genzifyLooseText(current)};vibeTextState.set(node,state);
+  if(state.genz!==current)node.nodeValue=state.genz
+ }else if(state){
+  if(current===state.genz&&current!==state.normal)node.nodeValue=state.normal;
+  vibeTextState.delete(node)
+ }
+}
+function transformVibeSubtree(root=document.body){
+ if(!root)return;
+ if(root.nodeType===Node.TEXT_NODE){transformVibeTextNode(root);return}
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let n;while((n=walker.nextNode()))transformVibeTextNode(n);
+ const inputs=(root.querySelectorAll?root.querySelectorAll('input[placeholder],textarea[placeholder]'):[]);
+ inputs.forEach(el=>{
+  if(el.matches(vibeNeverTransformSelector))return;
+  if(!el.dataset.vibeNormalPlaceholder)el.dataset.vibeNormalPlaceholder=el.placeholder||'';
+  el.placeholder=haneulUiMode==='genz'?genzifyLooseText(el.dataset.vibeNormalPlaceholder):el.dataset.vibeNormalPlaceholder
+ })
 }
 function applyVibeCopy(root=document){
  const setText=(el,value)=>{if(el&&el.textContent!==value)el.textContent=value};
@@ -876,25 +998,18 @@ function applyVibeCopy(root=document){
  if(document.body.dataset.vibe!==haneulUiMode)document.body.dataset.vibe=haneulUiMode;
  const title=$('vibeModeTitle'),hint=$('vibeModeHint'),toggle=$('vibeToggle');
  setText(title,haneulUiMode==='genz'?'Gen-Z mode':'Normal mode');
- setText(hint,haneulUiMode==='genz'?'chronically online Haneul':'Clear Haneul copy');
+ setText(hint,haneulUiMode==='genz'?'full chronically-online skin':'Clear Haneul copy');
  setAttr(toggle,'aria-checked',String(haneulUiMode==='genz'));
- const quick=$('vibeQuickLabel');setText(quick,haneulUiMode==='genz'?'Gen-Z mode · tap for Normal':'Normal mode · tap for Gen-Z');
+ const quick=$('vibeQuickLabel');setText(quick,haneulUiMode==='genz'?'Gen-Z mode · whole site cooked':'Normal mode · tap for Gen-Z');
  const pt=$('profileVibeTitle'),ph=$('profileVibeHint'),pv=$('profileVibeToggle');
  setText(pt,haneulUiMode==='genz'?'Gen-Z mode':'Normal mode');
- setText(ph,haneulUiMode==='genz'?'Haneul is officially online too much. Learning content stays accurate.':'Clear product copy. Korean learning content never changes.');
+ setText(ph,haneulUiMode==='genz'?'Full-site slang is on. Korean + literal translations stay academically untouched.':'Clear product copy. Korean learning content never changes.');
  setAttr(pv,'aria-checked',String(haneulUiMode==='genz'));
- const base=root===document?document:root;
- const nodes=base.querySelectorAll?.(vibeEligibleSelector)||[];
- nodes.forEach(el=>{
-  if(el.closest('.cap,.ko,.en,.wordContext,.realExample'))return;
-  if(el.children.length===0){const current=el.textContent.trim(),next=vibeText(current);if(next!==current)el.textContent=next}
- });
- const q=$('q'),placeholder=haneulUiMode==='genz'?'find the lore...':'Search these lessons...';if(q&&q.placeholder!==placeholder)q.placeholder=placeholder;
  const hero=document.querySelector('.top h1'),heroEy=document.querySelector('.top .ey'),heroP=document.querySelector('.top p');
- const heroHtml=haneulUiMode==='genz'?'Stop doomscrolling.<br><em>Start understanding.</em>':'Watch less randomly.<br><em>Understand more.</em>';if(hero&&hero.innerHTML!==heroHtml)hero.innerHTML=heroHtml;
+ const heroHtml=haneulUiMode==='genz'?'Stop doomscrolling.<br><em>Start understanding fr.</em>':'Watch less randomly.<br><em>Understand more.</em>';if(hero&&hero.innerHTML!==heroHtml)hero.innerHTML=heroHtml;
  setText(heroEy,haneulUiMode==='genz'?'KOREAN ARC IN PROGRESS':'LEARN WITH REAL KOREAN');
- setText(heroP,haneulUiMode==='genz'?'Real Korean videos, but the scrolling finally has character development. Captions and learning tools still stay locked to the exact scene.':'Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.');
- const dg=document.querySelector('.goal');if(dg&&dg.firstChild&&dg.firstChild.nodeType===3){const value=haneulUiMode==='genz'?'daily grind ':'Daily goal ';if(dg.firstChild.nodeValue!==value)dg.firstChild.nodeValue=value}
+ setText(heroP,haneulUiMode==='genz'?'Real Korean vids, except the scrolling finally has character development. Captions + the actual learning bits stay accurate, no cap.':'Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.');
+ transformVibeSubtree(root===document?document.body:root)
 }
 function setVibeMode(mode,{announce=true}={}){
  haneulUiMode=mode==='genz'?'genz':'normal';
@@ -918,7 +1033,7 @@ function initVibeMode(){
  const qb=$('vibeQuickBtn');if(qb)qb.onclick=toggleVibeMode;
  applyVibeCopy();
  let queued=false;
- new MutationObserver(muts=>{if(queued)return;if(!muts.some(m=>m.type==='childList'||m.type==='characterData'))return;queued=true;requestAnimationFrame(()=>{queued=false;applyVibeCopy()})}).observe(document.body,{subtree:true,childList:true,characterData:true})
+ new MutationObserver(muts=>{if(queued)return;const changed=muts.filter(m=>m.type==='childList'||m.type==='characterData');if(!changed.length)return;queued=true;requestAnimationFrame(()=>{queued=false;const roots=new Set();changed.forEach(m=>{if(m.type==='characterData')roots.add(m.target.parentElement||document.body);else m.addedNodes.forEach(n=>roots.add(n.nodeType===Node.TEXT_NODE?n.parentElement:n));});if(!roots.size)roots.add(document.body);roots.forEach(r=>applyVibeCopy(r||document.body))})}).observe(document.body,{subtree:true,childList:true,characterData:true})
 }
 const HANEUL_SUPABASE_URL='https://uyltjaftajwkujjhuric.supabase.co';
 const HANEUL_SUPABASE_KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
