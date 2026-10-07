@@ -792,8 +792,23 @@ body.haneulAuthPending .app,body.haneulAuthPending .mobileNav{visibility:hidden!
   .rhead{padding-left:12px!important;padding-right:12px!important}
   .panel{padding-left:12px!important;padding-right:12px!important}
 }
+
+/* Normal ↔ Gen-Z UI personality switch. Learning content is intentionally excluded. */
+.vibeModeBox{margin-top:18px;padding:11px 12px;border:1px solid #ffffff18;border-radius:14px;background:#ffffff08;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.vibeModeBox b{display:block;font-size:11px;color:#fff}.vibeModeBox small{display:block;margin-top:2px;font-size:9px;line-height:1.3;color:#9299ad}
+.vibeSwitch{position:relative;width:48px;height:28px;border:0;border-radius:999px;background:#3a4059;padding:3px;cursor:pointer;flex:none;transition:.22s}
+.vibeSwitch span{display:block;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 3px 10px #0003;transition:transform .22s}
+.vibeSwitch[aria-checked="true"]{background:linear-gradient(135deg,#6d5dfc,#ff76bc)}
+.vibeSwitch[aria-checked="true"] span{transform:translateX(20px)}
+.vibeSwitch:focus-visible{outline:3px solid #8fdfff;outline-offset:2px}
+.vibeProfileSetting{margin:0 0 16px;padding:16px 17px;border:1px solid #e4e2f1;border-radius:17px;background:linear-gradient(135deg,#faf9ff,#f3fcff,#fff7fb);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.vibeProfileSetting h3{margin:0 0 4px;font-size:16px}.vibeProfileSetting p{margin:0;color:#747b8c;font-size:12px;line-height:1.45}
+.vibeProfileSetting .vibeSwitch{background:#d8d9e5}.vibeProfileSetting .vibeSwitch[aria-checked="true"]{background:linear-gradient(135deg,#6d5dfc,#ff76bc)}
+body[data-vibe="genz"] .brand{letter-spacing:-.02em}
+body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #6d5dfc12}
+@media(max-width:850px){.vibeModeBox{display:none}.vibeProfileSetting{align-items:flex-start}.vibeProfileSetting .vibeSwitch{margin-top:3px}}
 </style>
-</head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
+</head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="vibeModeBox" id="vibeModeBox"><div><b id="vibeModeTitle">Normal mode</b><small id="vibeModeHint">Clear Haneul copy</small></div><button class="vibeSwitch" id="vibeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch between Normal and Gen-Z mode"><span aria-hidden="true"></span></button></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><div class="contentFilters">
   <div class="compassHead"><div><div class="ey">TODAY'S LISTENING</div><h3>Shape the session, not your level.</h3><p>Your proficiency path comes from Profile. Pick the context and listening format you want right now.</p></div></div>
   <div class="personalHeader"><div><div class="ey">ACTIVE PATH</div><h3 id="activePathTitle">Beginner</h3></div><span class="pathBadge" id="activePathBadge">TOPIK 1 · profile setting</span></div>
   <div class="filterStudio">
@@ -829,6 +844,70 @@ body.haneulAuthPending .app,body.haneulAuthPending .mobileNav{visibility:hidden!
 <button data-nav="progress" aria-label="Progress"><span class="navIcon">◔</span><span class="navLabel">Progress</span></button>
 <button data-nav="profile" aria-label="Profile"><span class="navIcon">●</span><span class="navLabel">Profile</span></button>
 </nav><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script><script src="/data/lower-intermediate-candidates.js"></script><script src="/data/intermediate-candidates.js"></script><script src="/data/category-videos.js"></script><script>const $=x=>document.getElementById(x);
+
+const HANEUL_UI_MODE='haneulUiMode:v1';
+let haneulUiMode='normal';
+const HANEUL_VIBE_COPY={
+ '⌂ Discover':'⌂ main feed','◎ Practice':'◎ training arc','▱ Library':'▱ saved lore','◌ Progress':'◌ character development','◉ Profile':'◉ main character',
+ 'Home':'main feed','Library':'saved lore','Practice':'training arc','Progress':'character development','Profile':'main character',
+ "TODAY'S LISTENING":"TODAY'S KOREAN DROP",'ACTIVE PATH':'CURRENT ARC','Context':'the vibe','Listening format':'how we’re consuming','Reset session':'reset the vibe',
+ '◐ Guess':'◐ lock in a guess','← Prev':'← back','↻ Replay line':'↻ run it back','Next →':'keep cooking →','∞ Loop':'∞ replay forever',
+ 'Overview':'the tea','Phrases':'steal these lines','Words':'word loot','Explain':'why tho','Check':'prove it',
+ 'Replay line':'run it back','Guess first':'guess before the reveal','Pin phrase':'save the lore','Pinned':'locked in',
+ 'Save profile':'lock it in','Try as guest':'enter anonymously','Continue with Google':'sign in & lock in',
+ 'Daily goal':'daily grind','Search these lessons...':'find the lore...'
+};
+const HANEUL_VIBE_REVERSE=Object.fromEntries(Object.entries(HANEUL_VIBE_COPY).map(([a,b])=>[b,a]));
+const vibeEligibleSelector='[data-nav],.mobileNav .navLabel,.compassHead .ey,.personalHeader .ey,.filterSectionHead b,.filterReset,#guess,#prev,#replay,#next,#loop,#tabs button,.quick b,.quick small,.practiceModes button,.practiceActions button,#authGate .googleAuthBtn,#authGate .guestAuthBtn,#profilePage .profileSave,#profilePage .prefSection h3';
+function vibeText(value){
+ const v=String(value??'').trim();
+ return haneulUiMode==='genz'?(HANEUL_VIBE_COPY[v]||v):(HANEUL_VIBE_REVERSE[v]||v)
+}
+function applyVibeCopy(root=document){
+ document.body.dataset.vibe=haneulUiMode;
+ const title=$('vibeModeTitle'),hint=$('vibeModeHint'),toggle=$('vibeToggle');
+ if(title)title.textContent=haneulUiMode==='genz'?'Gen-Z mode':'Normal mode';
+ if(hint)hint.textContent=haneulUiMode==='genz'?'chronically online Haneul':'Clear Haneul copy';
+ if(toggle)toggle.setAttribute('aria-checked',String(haneulUiMode==='genz'));
+ const pt=$('profileVibeTitle'),ph=$('profileVibeHint'),pv=$('profileVibeToggle');
+ if(pt)pt.textContent=haneulUiMode==='genz'?'Gen-Z mode':'Normal mode';
+ if(ph)ph.textContent=haneulUiMode==='genz'?'Haneul is officially online too much. Learning content stays accurate.':'Clear product copy. Korean learning content never changes.';
+ if(pv)pv.setAttribute('aria-checked',String(haneulUiMode==='genz'));
+ const nodes=(root===document?document:root).querySelectorAll?.(vibeEligibleSelector)||[];
+ nodes.forEach(el=>{
+  if(el.closest('.cap,.ko,.en,.wordContext,.realExample'))return;
+  if(el.children.length===0){const next=vibeText(el.textContent);if(next!==el.textContent.trim())el.textContent=next}
+ });
+ const q=$('q');if(q)q.placeholder=haneulUiMode==='genz'?'find the lore...':'Search these lessons...';
+ const hero=document.querySelector('.top h1'),heroEy=document.querySelector('.top .ey'),heroP=document.querySelector('.top p');
+ if(hero)hero.innerHTML=haneulUiMode==='genz'?'Stop doomscrolling.<br><em>Start understanding.</em>':'Watch less randomly.<br><em>Understand more.</em>';
+ if(heroEy)heroEy.textContent=haneulUiMode==='genz'?'KOREAN ARC IN PROGRESS':'LEARN WITH REAL KOREAN';
+ if(heroP)heroP.textContent=haneulUiMode==='genz'?'Real Korean videos, but the scrolling finally has character development. Captions and learning tools still stay locked to the exact scene.':'Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.';
+ const dg=document.querySelector('.goal');if(dg&&dg.firstChild&&dg.firstChild.nodeType===3)dg.firstChild.nodeValue=(haneulUiMode==='genz'?'daily grind ':'Daily goal ');
+}
+function setVibeMode(mode,{announce=true}={}){
+ haneulUiMode=mode==='genz'?'genz':'normal';
+ try{localStorage.setItem(HANEUL_UI_MODE,haneulUiMode)}catch{}
+ applyVibeCopy();
+ if(announce&&typeof toast==='function')toast(haneulUiMode==='genz'?'brainrot enabled · learning accuracy untouched':'sanity restored · Normal mode')
+}
+function toggleVibeMode(){
+ const next=haneulUiMode==='genz'?'normal':'genz';
+ const btn=$('vibeToggle')||$('profileVibeToggle');
+ if(next==='genz'&&btn){btn.disabled=true;const old=btn.getAttribute('aria-label');btn.setAttribute('aria-label','oh no…');setTimeout(()=>{btn.disabled=false;btn.setAttribute('aria-label',old||'Switch between Normal and Gen-Z mode');setVibeMode(next)},260);return}
+ setVibeMode(next)
+}
+function renderVibeProfileControl(){
+ return '<div class="vibeProfileSetting"><div><div class="ey">LANGUAGE VIBE</div><h3 id="profileVibeTitle">'+(haneulUiMode==='genz'?'Gen-Z mode':'Normal mode')+'</h3><p id="profileVibeHint">'+(haneulUiMode==='genz'?'Haneul is officially online too much. Learning content stays accurate.':'Clear product copy. Korean learning content never changes.')+'</p></div><button class="vibeSwitch" id="profileVibeToggle" type="button" role="switch" aria-checked="'+String(haneulUiMode==='genz')+'" aria-label="Switch between Normal and Gen-Z mode"><span aria-hidden="true"></span></button></div>'
+}
+function wireVibeProfileControl(){const b=$('profileVibeToggle');if(b)b.onclick=toggleVibeMode;applyVibeCopy($('profilePage')||document)}
+function initVibeMode(){
+ try{haneulUiMode=localStorage.getItem(HANEUL_UI_MODE)==='genz'?'genz':'normal'}catch{haneulUiMode='normal'}
+ const b=$('vibeToggle');if(b)b.onclick=toggleVibeMode;
+ applyVibeCopy();
+ let queued=false;
+ new MutationObserver(muts=>{if(queued)return;if(!muts.some(m=>m.type==='childList'||m.type==='characterData'))return;queued=true;requestAnimationFrame(()=>{queued=false;applyVibeCopy()})}).observe(document.body,{subtree:true,childList:true,characterData:true})
+}
 const HANEUL_SUPABASE_URL='https://uyltjaftajwkujjhuric.supabase.co';
 const HANEUL_SUPABASE_KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
 const HANEUL_REDIRECT='https://korean-video-lab.vercel.app/';
@@ -1927,13 +2006,13 @@ function renderProfileAi(){
 }
 function renderProfilePage(){
  const page=$('profilePage');if(!page)return;const p=loadLearnerProfile(),m=masterySnapshot(),skills=m.skills.slice(0,6),interests=profileInterests(),path=profilePath();
- page.innerHTML='<div class="pageHero"><div><div class="ey">LEARNER PROFILE</div><h1>Your path controls the feed.</h1><p>Change proficiency, interests and goals here. Discover inherits these choices automatically, while session filters only shape context and format.</p></div></div>'+renderAuthAccountCard()+renderReferralUpgradeCard()+
+ page.innerHTML='<div class="pageHero"><div><div class="ey">LEARNER PROFILE</div><h1>Your path controls the feed.</h1><p>Change proficiency, interests and goals here. Discover inherits these choices automatically, while session filters only shape context and format.</p></div></div>'+renderAuthAccountCard()+renderReferralUpgradeCard()+renderVibeProfileControl()+
  '<div class="profileGrid"><div class="profileCard"><div class="profileIdentity"><div class="profileAvatar">한</div><div><h2>'+esc(learnerDisplayName())+'</h2><p>'+esc(path)+' · '+esc(mappedLevel(path))+'</p></div></div><div class="profileEdit"><label>DISPLAY NAME</label><input id="profileNameInput" maxlength="32" value="'+esc(p.name||(authUser?googleUserName():''))+'" placeholder="What should Haneul call you?"><label>DAILY LISTENING GOAL · MINUTES</label><div class="goalChoices" id="profileGoalChoices">'+[5,10,15,20].map(x=>'<button type="button" class="goalChoice" data-profile-minutes="'+x+'">'+x+' min</button>').join('')+'<button type="button" class="goalChoice" data-profile-minutes="custom">Custom</button></div><input id="profileGoalInput" class="customGoalInput" type="number" min="5" max="180" inputmode="numeric" value="'+esc(p.dailyGoal||10)+'"><small class="goalHint">Your choice is flexible and can change any day.</small></div><div class="profilePrefs"><div class="prefSection"><h3>Proficiency path</h3><p>This changes the difficulty lane used across Discover and recommendations.</p><div class="profilePathGrid">'+FILTERS.levels.map(x=>'<button class="profilePathBtn '+(path===x?'on':'')+'" data-profile-path="'+esc(x)+'"><b>'+esc(x)+'</b><small>'+esc(mappedLevel(x))+'</small></button>').join('')+'</div></div><div class="prefSection"><h3>Interests</h3><p>Haneul leans toward these, but keeps a small exploration share.</p><div class="interestCloud">'+FILTERS.topics.filter(x=>x!=='All').map(x=>'<button class="interestChip '+(interests.includes(x)?'on':'')+'" data-profile-interest="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div></div><button class="profileSave" id="profileSaveBtn">Save profile</button></div></div>'+
  '<div class="profileCard"><div class="ey">LEARNING SIGNALS</div><h2 style="margin:5px 0 14px">What Haneul remembers</h2><div class="signalGrid"><div class="signal"><strong>'+m.words+'</strong><small>WORDS SAVED</small></div><div class="signal"><strong>'+m.patterns+'</strong><small>PATTERNS</small></div><div class="signal"><strong>'+m.lessons+'</strong><small>LESSONS SEEN</small></div><div class="signal"><strong>'+m.familiar+'</strong><small>FAMILIAR WORDS</small></div><div class="signal"><strong>'+m.topics+'</strong><small>TOPICS TOUCHED</small></div><div class="signal"><strong>'+m.score+'%</strong><small>MASTERY SIGNAL</small></div></div>'+(skills.length?'<div class="skillList">'+skills.map(x=>'<div class="skillRow"><b>'+esc(x.name)+'</b><div class="skillTrack"><i style="width:'+x.score+'%"></i></div><span>'+x.score+'%</span></div>').join('')+'</div>':'<p style="margin-top:16px">Complete practice activities and Haneul will build a clearer skill profile here.</p>')+'</div></div>'+renderGrokPanel()+renderProfileAi();
  let draftInterests=interests.slice(),draftPath=path;
  page.querySelectorAll('[data-profile-path]').forEach(b=>b.onclick=()=>{draftPath=b.dataset.profilePath;page.querySelectorAll('[data-profile-path]').forEach(x=>x.classList.toggle('on',x.dataset.profilePath===draftPath))});
  page.querySelectorAll('[data-profile-interest]').forEach(b=>b.onclick=()=>{const x=b.dataset.profileInterest;draftInterests=draftInterests.includes(x)?draftInterests.filter(t=>t!==x):[...draftInterests,x];b.classList.toggle('on',draftInterests.includes(x))});
- wireGoalButtons('profile');const referralBtn=$('profileReferralRedeem');if(referralBtn)referralBtn.onclick=redeemReferralFromProfile;const grokBtn=$('profileGrokBtn');if(grokBtn)grokBtn.onclick=authUser?requestGrokRead:signInWithGoogle;
+ wireGoalButtons('profile');wireVibeProfileControl();const referralBtn=$('profileReferralRedeem');if(referralBtn)referralBtn.onclick=redeemReferralFromProfile;const grokBtn=$('profileGrokBtn');if(grokBtn)grokBtn.onclick=authUser?requestGrokRead:signInWithGoogle;
  const connect=$('profileGoogleConnect');if(connect)connect.onclick=signInWithGoogle;const signOut=$('profileSignOut');if(signOut)signOut.onclick=signOutGoogle;
  const save=$('profileSaveBtn');if(save)save.onclick=()=>{const old=loadLearnerProfile();const name=String($('profileNameInput').value||'').trim();const dailyGoal=Number($('profileGoalInput').value);if(!name){toast('Please enter a name or nickname');$('profileNameInput').focus();return}if(!Number.isInteger(dailyGoal)||dailyGoal<5||dailyGoal>180){toast('Choose 5–180 minutes');$('profileGoalInput').focus();return}saveLearnerProfileData({...old,name,dailyGoal,path:draftPath,interests:draftInterests,onboarded:true});videoFilters.level=draftPath;videoFilters.topic='All';renderFilterChips();loadVideoFeed();updateSidebarProfile();renderProfilePage();void persistProfileToCloud();toast('Profile updated')};
  page.querySelectorAll('[data-analysis-video]').forEach(b=>b.onclick=()=>{showMainPage('discover');open(b.dataset.analysisVideo,b.dataset.analysisLevel,b.dataset.analysisBand)})
@@ -2944,7 +3023,7 @@ $('guess').onclick=()=>{guess=!guess;revealed=-1;$('guess').classList.toggle('ac
 $('pinModalClose').onclick=closePinModal;$('pinCancel').onclick=closePinModal;$('tagAddBtn').onclick=addPendingTag;
 $('tagInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPendingTag()}};
 $('pinSave').onclick=()=>{if(!pendingPin)return;pendingPin.tags=pendingTags.slice();recordReviewSignal('pin',Number.isInteger(pendingPin.cueIndex)?pendingPin.cueIndex:cue);pinnedPhrases.unshift(pendingPin);savePins();closePinModal();pendingPin=null;pendingTags=[];toast('Saved to Library');if(tab==='phrases')panel('phrases')};
-syncMasteryMemory();wireLessonJourney();applyProfileToFeed();home();loadVideoFeed();updateSidebarProfile();initAuth();setTimeout(()=>void checkForCatalogUpdate(),3000);
+initVibeMode();syncMasteryMemory();wireLessonJourney();applyProfileToFeed();home();loadVideoFeed();updateSidebarProfile();initAuth();setTimeout(()=>void checkForCatalogUpdate(),3000);
 const verificationCandidate=new URLSearchParams(location.search).get('verify');
 if(verificationCandidate){
   const candidate=curatedCatalog.find(v=>v.id===verificationCandidate);
