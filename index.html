@@ -864,26 +864,29 @@ function vibeText(value){
  return haneulUiMode==='genz'?(HANEUL_VIBE_COPY[v]||v):(HANEUL_VIBE_REVERSE[v]||v)
 }
 function applyVibeCopy(root=document){
- document.body.dataset.vibe=haneulUiMode;
+ const setText=(el,value)=>{if(el&&el.textContent!==value)el.textContent=value};
+ const setAttr=(el,name,value)=>{if(el&&el.getAttribute(name)!==value)el.setAttribute(name,value)};
+ if(document.body.dataset.vibe!==haneulUiMode)document.body.dataset.vibe=haneulUiMode;
  const title=$('vibeModeTitle'),hint=$('vibeModeHint'),toggle=$('vibeToggle');
- if(title)title.textContent=haneulUiMode==='genz'?'Gen-Z mode':'Normal mode';
- if(hint)hint.textContent=haneulUiMode==='genz'?'chronically online Haneul':'Clear Haneul copy';
- if(toggle)toggle.setAttribute('aria-checked',String(haneulUiMode==='genz'));
+ setText(title,haneulUiMode==='genz'?'Gen-Z mode':'Normal mode');
+ setText(hint,haneulUiMode==='genz'?'chronically online Haneul':'Clear Haneul copy');
+ setAttr(toggle,'aria-checked',String(haneulUiMode==='genz'));
  const pt=$('profileVibeTitle'),ph=$('profileVibeHint'),pv=$('profileVibeToggle');
- if(pt)pt.textContent=haneulUiMode==='genz'?'Gen-Z mode':'Normal mode';
- if(ph)ph.textContent=haneulUiMode==='genz'?'Haneul is officially online too much. Learning content stays accurate.':'Clear product copy. Korean learning content never changes.';
- if(pv)pv.setAttribute('aria-checked',String(haneulUiMode==='genz'));
- const nodes=(root===document?document:root).querySelectorAll?.(vibeEligibleSelector)||[];
+ setText(pt,haneulUiMode==='genz'?'Gen-Z mode':'Normal mode');
+ setText(ph,haneulUiMode==='genz'?'Haneul is officially online too much. Learning content stays accurate.':'Clear product copy. Korean learning content never changes.');
+ setAttr(pv,'aria-checked',String(haneulUiMode==='genz'));
+ const base=root===document?document:root;
+ const nodes=base.querySelectorAll?.(vibeEligibleSelector)||[];
  nodes.forEach(el=>{
   if(el.closest('.cap,.ko,.en,.wordContext,.realExample'))return;
-  if(el.children.length===0){const next=vibeText(el.textContent);if(next!==el.textContent.trim())el.textContent=next}
+  if(el.children.length===0){const current=el.textContent.trim(),next=vibeText(current);if(next!==current)el.textContent=next}
  });
- const q=$('q');if(q)q.placeholder=haneulUiMode==='genz'?'find the lore...':'Search these lessons...';
+ const q=$('q'),placeholder=haneulUiMode==='genz'?'find the lore...':'Search these lessons...';if(q&&q.placeholder!==placeholder)q.placeholder=placeholder;
  const hero=document.querySelector('.top h1'),heroEy=document.querySelector('.top .ey'),heroP=document.querySelector('.top p');
- if(hero)hero.innerHTML=haneulUiMode==='genz'?'Stop doomscrolling.<br><em>Start understanding.</em>':'Watch less randomly.<br><em>Understand more.</em>';
- if(heroEy)heroEy.textContent=haneulUiMode==='genz'?'KOREAN ARC IN PROGRESS':'LEARN WITH REAL KOREAN';
- if(heroP)heroP.textContent=haneulUiMode==='genz'?'Real Korean videos, but the scrolling finally has character development. Captions and learning tools still stay locked to the exact scene.':'Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.';
- const dg=document.querySelector('.goal');if(dg&&dg.firstChild&&dg.firstChild.nodeType===3)dg.firstChild.nodeValue=(haneulUiMode==='genz'?'daily grind ':'Daily goal ');
+ const heroHtml=haneulUiMode==='genz'?'Stop doomscrolling.<br><em>Start understanding.</em>':'Watch less randomly.<br><em>Understand more.</em>';if(hero&&hero.innerHTML!==heroHtml)hero.innerHTML=heroHtml;
+ setText(heroEy,haneulUiMode==='genz'?'KOREAN ARC IN PROGRESS':'LEARN WITH REAL KOREAN');
+ setText(heroP,haneulUiMode==='genz'?'Real Korean videos, but the scrolling finally has character development. Captions and learning tools still stay locked to the exact scene.':'Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.');
+ const dg=document.querySelector('.goal');if(dg&&dg.firstChild&&dg.firstChild.nodeType===3){const value=haneulUiMode==='genz'?'daily grind ':'Daily goal ';if(dg.firstChild.nodeValue!==value)dg.firstChild.nodeValue=value}
 }
 function setVibeMode(mode,{announce=true}={}){
  haneulUiMode=mode==='genz'?'genz':'normal';
