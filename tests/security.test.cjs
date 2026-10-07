@@ -129,3 +129,22 @@ test('security response headers are set without blocking video/microphone functi
  assert.ok(!/microphone=\(\)/.test(map['permissions-policy']||''),'speaking mic must stay supported');
  assert.ok(conf.headers.find(x=>x.source==='/internal/(.*)'&&x.headers.some(h=>h.key==='X-Robots-Tag')),'noindex admin area');
 });
+
+
+test('Guest Mode stays browser-local and never creates anonymous Supabase auth users',()=>{
+ const html=fs.readFileSync('index.html','utf8');
+ assert.match(html,/id="guestAuthBtn"/);
+ assert.match(html,/function startHaneulGuest\(/);
+ assert.match(html,/haneul_guest_entries/);
+ assert.match(html,/guestMode=true/);
+ assert.doesNotMatch(html,/signInAnonymously\s*\(/);
+ assert.match(html,/if\(guestMode\)return;\s*const uid=authUser\?\.id;/);
+});
+
+
+test('Guest transcript messaging is an upgrade prompt, not an unavailable error',()=>{
+ const html=fs.readFileSync('index.html','utf8');
+ assert.match(html,/Sign in with Google to view the Korean transcript/);
+ assert.doesNotMatch(html,/Transcript unavailable for this video/);
+ assert.doesNotMatch(html,/Korean transcript unavailable for this video/);
+});

@@ -1118,3 +1118,22 @@ Fixed in `index.html` with `haneul-mobile-lesson-v26` plus small navigation logi
 - no changes to desktop lesson geometry, Supabase data, security model, caption data or learner progress
 
 Regression coverage: `tests/mobile-ui.test.cjs` statically validates inline script syntax, mobile player/caption geometry, horizontal control rails, fixed-dock content clearance and the overlay-exit navigation path. The existing production verification workflow now runs both security and mobile UI regression tests.
+
+
+## Normal / Gen-Z UI mode — 2026-10-07
+
+Implemented on top of the latest Guest Mode branch state.
+
+Behavior:
+- two states only: `Normal` and `Gen-Z`
+- persisted per browser with `haneulUiMode:v1`
+- desktop switch lives in the sidebar
+- mobile access lives in Profile so the existing bottom dock stays unchanged
+- Gen-Z mode changes product chrome/microcopy such as navigation, discovery labels, search, lesson controls and selected lightweight action copy
+- Korean captions, English meanings, grammar/explanation content, transcript/auth errors and other learning-critical content are explicitly excluded from the personality transform
+- switching into Gen-Z mode uses a short transition and the confirmation toast `brainrot enabled · learning accuracy untouched`
+- switching back restores the canonical Normal copy
+
+Regression coverage:
+- `tests/genz-mode.test.cjs`
+- existing Guest Mode and security tests remain part of the same test gate
