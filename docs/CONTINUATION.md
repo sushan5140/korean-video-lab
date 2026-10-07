@@ -742,3 +742,19 @@ Fixed in `index.html` with `haneul-mobile-lesson-v26` plus small navigation logi
 - no changes to desktop lesson geometry, Supabase data, security model, caption data or learner progress
 
 Regression coverage: `tests/mobile-ui.test.cjs` statically validates inline script syntax, mobile player/caption geometry, horizontal control rails, fixed-dock content clearance and the overlay-exit navigation path. The existing production verification workflow now runs both security and mobile UI regression tests.
+
+
+## Normal / Gen-Z UI mode continuation — 2026-10-07
+
+The learner UI now has a persistent two-state personality switch:
+- Normal
+- Gen-Z
+
+Implementation rules:
+- keep the feature as a copy/personality layer, not a redesign
+- never transform Korean captions, English meanings, grammar/explanation content, transcript errors, or other learning-critical text
+- desktop switch stays in the sidebar
+- mobile access stays in Profile unless the user explicitly asks for a different mobile placement
+- persistence key: `haneulUiMode:v1`
+
+The implementation was built on top of `feature/guest-review-mode` so Guest Mode must remain preserved when promoting or merging this work.
