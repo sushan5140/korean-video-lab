@@ -1137,3 +1137,33 @@ Behavior:
 Regression coverage:
 - `tests/genz-mode.test.cjs`
 - existing Guest Mode and security tests remain part of the same test gate
+
+
+## Full-site Gen-Z personality pass — 2026-10-07
+
+Gen-Z mode now applies across the learner-facing English product surface rather than only a small hand-picked control list.
+
+Coverage includes:
+- Discover/home headings and descriptions
+- navigation and filters
+- onboarding
+- Profile
+- Progress
+- Library
+- lesson controls and practice UI
+- loading/empty/error helper states
+- dynamic cards and sections rendered after page load
+- toasts and lightweight status copy
+- future dynamically inserted learner UI through the same DOM observer
+
+The engine combines high-quality phrase mappings with a fallback slang pass so previously unmapped English UI does not stay visibly formal.
+
+Protected from slang transformation:
+- Korean source text
+- literal English translations/meanings
+- transcript cue content
+- vocabulary meaning/context fields
+- code/preformatted content
+- user-entered identity/referral fields
+
+Normal mode restores the canonical product copy.
