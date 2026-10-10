@@ -837,7 +837,7 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
 .lessonbar .close{display:grid!important;place-items:center!important;visibility:visible!important;opacity:1!important;cursor:pointer}
 @media(max-width:850px){.lessonbar .lessonBackBtn{padding:8px 9px;font-size:12px;min-height:36px}.lessonbar .lessonBackBtn span{display:none}}
 @media(prefers-reduced-motion:reduce){.lessonbar .lessonBackBtn{transition:none!important}}
-</style><style id="haneul-shorts-independent-page">
+</style><style id="haneul-mobile-shorts-nav-v1">@media(max-width:850px){.mobileNav{grid-template-columns:repeat(6,minmax(0,1fr))!important}#mobileShortsJump{color:#6854ae!important}#mobileShortsJump .navIcon{font-size:16px!important}#mobileShortsJump:focus-visible{outline:2px solid #8265ca;outline-offset:2px}}</style><style id="haneul-shorts-independent-page">
 /* Full viewport Shorts player; preserve native YouTube controls and aspect ratio. */
 #shortsPage[hidden]{display:none!important}
 #shortsPage .shortsPageHeader,#shortsPage .shortsShelf{display:none!important}
@@ -965,6 +965,7 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
   </div>
 </div><div class="toast" id="toast"></div><nav class="mobileNav" aria-label="Mobile navigation">
 <button class="on" data-nav="discover" aria-label="Home"><span class="navIcon">⌂</span><span class="navLabel">Home</span></button>
+<button type="button" id="mobileShortsJump" aria-label="Open Shorts"><span class="navIcon">▶</span><span class="navLabel">Shorts</span></button>
 <button data-nav="library" aria-label="Library"><span class="navIcon">▱</span><span class="navLabel">Library</span></button>
 <button class="practiceAction" data-nav="practice" aria-label="Start practice"><span class="navIcon">▶</span><span class="navLabel">Practice</span></button>
 <button data-nav="progress" aria-label="Progress"><span class="navIcon">◔</span><span class="navLabel">Progress</span></button>
@@ -3319,6 +3320,7 @@ function init(){
    if(typeof window.haneulCloseShorts==='function')window.haneulCloseShorts();
    if(typeof showMainPage==='function')showMainPage('discover');
  });
+ document.getElementById('mobileShortsJump')?.addEventListener('click',launchShorts);
  btn.addEventListener('click',launchShorts);
  btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launchShorts()}});
  const rail=document.createElement('div');rail.className='sideScrollRail';rail.setAttribute('role','scrollbar');rail.setAttribute('aria-label','Scroll Haneul sidebar');rail.setAttribute('aria-orientation','vertical');rail.tabIndex=0;
