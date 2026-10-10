@@ -758,3 +758,15 @@ Implementation rules:
 - persistence key: `haneulUiMode:v1`
 
 The implementation was built on top of `feature/guest-review-mode` so Guest Mode must remain preserved when promoting or merging this work.
+
+
+## Korean Shorts preview — 2026-10-10
+
+- Feature branch: `feature/korean-shorts-feed` (not yet production verified).
+- Discover page includes an isolated Shorts shelf, using separate `shorts/shorts.css` and `shorts/shorts.js`.
+- Four sourced third-party YouTube Shorts are curated with editorial vocabulary/example cards and quick recall. Source: Korean with Ina; individual video IDs are in the JS catalog.
+- Playback uses YouTube privacy-enhanced embeds; original creator links remain available.
+- Saved vocabulary currently uses device-local storage `haneulShortsSaved:v1` and is **not yet integrated** with the authenticated Library or review memory.
+- Swipe, arrow-key, and next/previous navigation are available; existing longer-video player is untouched.
+- Editor-provided vocabulary examples are related to each clip's topic and must not be presented as verified transcript excerpts or synchronized captions.
+- Pending: verify all four embed permissions, mobile playback, signed-in and guest rendering, and deployed integration before marking production ready.

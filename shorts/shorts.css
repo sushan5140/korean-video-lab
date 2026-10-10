@@ -1,0 +1,27 @@
+/* Isolated Korean Shorts feature; preserve existing Haneul layout. */
+.shortsShelf{margin:28px 0 32px;padding:23px;background:#fff;border:1px solid #e7e6f1;border-radius:22px;box-shadow:0 8px 25px #34346408}
+.shortsShelf h2{font-size:24px;letter-spacing:-.04em;margin:4px 0 7px}.shortsShelf p{color:#737b8b;font-size:13px;line-height:1.55;margin:0}
+.shortsShelfHead{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+.shortsOpen{border:0;border-radius:12px;background:#6d5dfc;color:#fff;font-size:12px;font-weight:800;padding:12px 17px;cursor:pointer}
+.shortsPreview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.shortPreview{position:relative;overflow:hidden;border:1px solid #e8e7ef;border-radius:15px;background:#f6f5fc;text-align:left;padding:0;cursor:pointer;color:#26283c}
+.shortPreview img{width:100%;aspect-ratio:9/12;object-fit:cover;display:block;background:#dedbef}
+.shortPreview b,.shortPreview small{display:block;margin:9px 10px}.shortPreview b{font-size:12px;line-height:1.4}.shortPreview small{font-size:10px;color:#777d91}
+.shortsOverlay{position:fixed;inset:0;z-index:100000;background:#10111aee;display:none;overflow:auto;padding:18px}
+.shortsOverlay.isOpen{display:flex;align-items:center;justify-content:center}
+.shortsStage{width:min(100%,930px);display:grid;grid-template-columns:minmax(235px,410px) minmax(240px,1fr);background:#fff;border-radius:23px;overflow:hidden;max-height:calc(100vh - 36px)}
+.shortsVideoPane{background:#09090f;min-height:550px;position:relative;display:flex;flex-direction:column;justify-content:center}
+.shortsVideoPane iframe{width:100%;aspect-ratio:9/16;border:0;max-height:calc(100vh - 65px)}
+.shortsDetails{padding:24px;overflow:auto;display:flex;flex-direction:column;gap:13px}
+.shortsTop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.shortsClose{border:1px solid #e6e5ed;background:#fff;border-radius:12px;font-size:22px;padding:3px 10px;cursor:pointer}
+.shortsWord{font-size:38px;line-height:1.3;font-weight:850;color:#292940}.shortsTranslation{font-size:17px;font-weight:750}
+.shortsExample{padding:15px;border-radius:13px;background:#f6f5ff;font-size:14px;line-height:1.65}
+.shortsActions{display:flex;flex-wrap:wrap;gap:8px}.shortsActions button{border:1px solid #dad7ee;border-radius:11px;padding:11px;background:#fff;color:#6253cf;font-size:12px;font-weight:800;cursor:pointer}
+.shortsQuestion{padding:14px;border:1px solid #e8e5f1;border-radius:14px}
+.shortsQuestion button{margin:7px 5px 0 0;border:1px solid #dcd9ee;padding:9px 12px;background:#fff;border-radius:10px;cursor:pointer}
+.shortsQuestion button:focus-visible,.shortsActions button:focus-visible,.shortsOpen:focus-visible{outline:3px solid #6d5dfc}
+.shortsNav{display:flex;gap:8px;margin-top:auto}.shortsNav button{flex:1;border:0;background:#eeecff;color:#5b4bcf;padding:12px;border-radius:12px;font-weight:850;cursor:pointer}
+.shortsStatus{min-height:20px;color:#535c71;font-size:12px}
+@media(max-width:900px){.shortsPreview{grid-template-columns:repeat(2,minmax(0,1fr))}.shortsStage{max-height:calc(100dvh - 22px)}}
+@media(max-width:650px){.shortsShelf{padding:15px}.shortsShelfHead{align-items:flex-start}.shortsOverlay{padding:0}.shortsStage{width:100%;height:100dvh;max-height:none;display:flex;flex-direction:column;border-radius:0}.shortsVideoPane{min-height:0;flex:1;overflow:hidden}.shortsVideoPane iframe{width:100%;height:100%;aspect-ratio:auto}.shortsDetails{padding:12px 17px;max-height:42dvh;gap:8px}.shortsWord{font-size:27px}.shortsExample{padding:10px}.shortsQuestion{padding:9px}.shortsNav{margin-top:0}}
