@@ -3450,7 +3450,7 @@ const $=id=>document.getElementById(id);
 function open(i){if(typeof showMainPage==='function')showMainPage('shorts');active=(i+lessons.length)%lessons.length;overlay.classList.add('isOpen');document.body.style.overflow='hidden';setShortsLearnExpanded(false);render()}
 window.haneulOpenShorts=function(index){open(Number.isFinite(index)?index:0)};window.haneulCloseShorts=function(){close()};window.haneulCurrentShort=()=>lessons[active];window.haneulOpenShortsById=(id)=>open(Math.max(0,lessons.findIndex(v=>v.id===id)));
 function close(){window.haneulShortsCaptionStop?.();overlay.classList.remove('isOpen');$('shortsVideo').replaceChildren();document.body.style.overflow='';if(typeof showMainPage==='function')showMainPage('discover')}
-function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;$('shortsWord').textContent=v.ko;$('shortsRoman').textContent=v.roman;$('shortsEnglish').textContent=v.en;$('shortsExample').textContent=v.example+' — '+v.translation;$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin)+'&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame);window.haneulShortsCaptionStart?.(v.id)}
+function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;window.haneulShortsShowCue?.(null);$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').disabled=true;$('shortsReveal').disabled=true;$('shortsSave').textContent='☆ Save matched caption';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin)+'&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame);window.haneulShortsCaptionStart?.(v.id)}
 function setShortsLearnExpanded(expanded){
  const stage=overlay.querySelector('.shortsStage');
  stage.classList.toggle('shortsLearningOpen',!!expanded);
@@ -3464,9 +3464,9 @@ root.addEventListener('click',e=>{const b=e.target.closest('[data-short]');if(b)
 $('shortsClose').addEventListener('click',close);
 $('shortsPrev').addEventListener('click',()=>open(active-1));
 $('shortsNext').addEventListener('click',()=>open(active+1));
-$('shortsSave').addEventListener('click',()=>{const v=lessons[active];saved=saved.includes(v.ko)?saved.filter(x=>x!==v.ko):saved.concat(v.ko);try{localStorage.setItem(storageKey,JSON.stringify(saved))}catch(_){}$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsStatus').textContent=saved.includes(v.ko)?'Saved for review on this device.':'Removed from saved words.'});
-$('shortsReveal').addEventListener('click',()=>{const v=lessons[active];const q=$('shortsQuestion');q.hidden=false;q.innerHTML='<b>What does '+h(v.ko)+' mean?</b><div>'+v.options.map(option=>'<button type="button" data-answer="'+h(option)+'">'+h(option)+'</button>').join('')+'</div>';showAnswer=true});
-$('shortsQuestion').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(!b)return;$('shortsStatus').textContent=b.dataset.answer===lessons[active].en?'Correct! 잘했어요!':'Not quite — '+lessons[active].ko+' means '+lessons[active].en+'.'});
+$('shortsSave').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v)return;saved=saved.includes(v.ko)?saved.filter(x=>x!==v.ko):saved.concat(v.ko);try{localStorage.setItem(storageKey,JSON.stringify(saved))}catch(_){}$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsStatus').textContent=saved.includes(v.ko)?'Saved for review on this device.':'Removed from saved words.'});
+$('shortsReveal').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v)return;const q=$('shortsQuestion');q.hidden=false;q.innerHTML='<b>What does '+h(v.ko)+' mean?</b><div>'+v.options.map(option=>'<button type="button" data-answer="'+h(option)+'">'+h(option)+'</button>').join('')+'</div>';showAnswer=true});
+$('shortsQuestion').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(!b)return;$('shortsStatus').textContent=b.dataset.answer===(window.haneulActiveShortsCue?.()?.en||'')?'Correct! 잘했어요!':'Not quite — '+(window.haneulActiveShortsCue?.()?.ko||'')+' means '+(window.haneulActiveShortsCue?.()?.en||'')+'.'});
 overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
 document.addEventListener('keydown',e=>{if(!overlay.classList.contains('isOpen'))return;if(e.key==='Escape')close();if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();open(active+1)}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();open(active-1)}});
 $('shortsVideo').addEventListener('touchstart',e=>{startY=e.touches[0]?.clientY??null},{passive:true});
@@ -3505,19 +3505,31 @@ function addCard(data){
  const status=$('shortsStatus');if(status)status.textContent='Saved to Library → Shorts Cards (on this device).';
 }
 window.haneulSaveShortsCard=addCard;
+let activeMatchedCue=null;window.haneulActiveShortsCue=()=>activeMatchedCue;
+window.haneulShortsShowCue=function(cue){activeMatchedCue=cue||null;
+ const word=$('shortsWord'),roman=$('shortsRoman'),english=$('shortsEnglish'),example=$('shortsExample');
+ if(!word)return;
+ word.textContent=cue?.ko||'Waiting for timed captions';
+ roman.textContent='';
+ english.textContent=cue?.en||'This video has no verified timed transcript yet.';
+ example.textContent=cue?'Caption matched to the current playback position.':'The previous vocabulary card was an unrelated study prompt, not a live caption.';
+ $('shortsSave').disabled=!cue;$('shortsReveal').disabled=!cue;
+ $('shortsSave').textContent=cue?'☆ Save matched caption':'☆ Caption unavailable';
+};
 let cues=[],lastCue=null,poll=null,player=null,videoId=null;
 const caption=$('shortsCaptionFloat');
 if(!caption)return;
-function showMessage(msg){$('shortsCaptionText').textContent=msg;$('shortsCaptionMeaning').textContent='';$('shortsCueSave').disabled=true;}
+function showMessage(msg){window.haneulShortsShowCue?.(null);$('shortsCaptionText').textContent=msg;$('shortsCaptionMeaning').textContent='';$('shortsCueSave').disabled=true;}
 function updateTime(){
  if(!player||typeof player.getCurrentTime!=='function')return;
  let time=0;try{time=Number(player.getCurrentTime())||0}catch{return}
  const cue=cues.find(c=>time>=c.start&&time<c.end);
  if(cue===lastCue)return;
  lastCue=cue||null;
- if(!cue){showMessage(cues.length?'No caption at this moment':'Synced captions unavailable for this video');return}
+ if(!cue){showMessage(cues.length?'No caption at this moment':'Synced captions unavailable for this video');window.haneulShortsShowCue?.(null);return}
  $('shortsCaptionText').textContent=cue.ko;
  $('shortsCaptionMeaning').textContent=cue.en||'';
+ window.haneulShortsShowCue?.(cue);
  $('shortsCueSave').disabled=false;
 }
 function normalizeCues(raw){
