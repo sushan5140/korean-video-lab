@@ -1,0 +1,33 @@
+/* Haneul Shorts — isolated from full-length lesson player. */
+(function(){
+'use strict';
+const lessons=[
+{id:'WyWdNJxHbkM',title:'Korean words in context',creator:'Korean with Ina',topic:'Shopping',ko:'영수증',roman:'yeongsujeung',en:'Receipt',example:'영수증 주세요.',translation:'Please give me a receipt.',options:['Receipt','Ticket','Wallet']},
+{id:'_JirUwUtCZY',title:'Everyday Korean verbs',creator:'Korean with Ina',topic:'Daily Life',ko:'먹다',roman:'meokda',en:'To eat',example:'저는 밥을 먹어요.',translation:'I eat rice / a meal.',options:['To drink','To eat','To sleep']},
+{id:'WZxDH2Bhb00',title:'Make a suggestion in Korean',creator:'Korean with Ina',topic:'Grammar',ko:'갈까요?',roman:'galkkayo?',en:'Shall we go?',example:'같이 갈까요?',translation:'Shall we go together?',options:['Did you go?','Shall we go?','Don't go']},
+{id:'mFGhAguG8JQ',title:'Korean vegetable vocabulary quiz',creator:'Korean with Ina',topic:'Food',ko:'버섯',roman:'beoseot',en:'Mushroom',example:'버섯을 좋아해요.',translation:'I like mushrooms.',options:['Onion','Mushroom','Tomato']}
+];
+const root=document.getElementById('haneulShorts');if(!root)return;
+const storageKey='haneulShortsSaved:v1';let saved=[];try{saved=JSON.parse(localStorage.getItem(storageKey)||'[]');if(!Array.isArray(saved))saved=[]}catch(_){}
+let active=0,showAnswer=false,startY=null;
+const h=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+root.innerHTML='<div class="shortsShelf"><div class="shortsShelfHead"><div><div class="ey">LEARN IN UNDER A MINUTE</div><h2>Korean Shorts ✦</h2><p>Real creator videos. One useful Korean expression at a time.</p></div><button class="shortsOpen" type="button" id="shortsLaunch">Watch Shorts ↗</button></div><div class="shortsPreview">'+lessons.map((v,i)=>'<button type="button" class="shortPreview" data-short="'+i+'"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg"><b>'+h(v.title)+'</b><small>'+h(v.topic)+' · '+h(v.creator)+'</small></button>').join('')+'</div></div>';
+const overlay=document.createElement('div');overlay.className='shortsOverlay';overlay.id='shortsOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Korean Shorts');overlay.innerHTML='<div class="shortsStage"><div class="shortsVideoPane"><div id="shortsVideo"></div></div><div class="shortsDetails"><div class="shortsTop"><span class="ey" id="shortsCounter"></span><button type="button" class="shortsClose" id="shortsClose" aria-label="Close Shorts">×</button></div><div class="ey" id="shortsTopic"></div><h2 id="shortsTitle"></h2><div class="shortsWord" id="shortsWord"></div><div id="shortsRoman"></div><div class="shortsTranslation" id="shortsEnglish"></div><div class="shortsExample" id="shortsExample"></div><div class="shortsActions"><button type="button" id="shortsSave">☆ Save word</button><button type="button" id="shortsReveal">Try quick recall</button><a id="shortsOriginal" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><div class="shortsQuestion" id="shortsQuestion" hidden></div><div class="shortsStatus" id="shortsStatus" aria-live="polite"></div><div class="shortsNav"><button id="shortsPrev" type="button">← Previous</button><button id="shortsNext" type="button">Next →</button></div></div></div>';
+document.body.appendChild(overlay);
+const $=id=>document.getElementById(id);
+function open(i){active=(i+lessons.length)%lessons.length;overlay.classList.add('isOpen');document.body.style.overflow='hidden';render();$('shortsClose').focus()}
+function close(){overlay.classList.remove('isOpen');$('shortsVideo').replaceChildren();document.body.style.overflow='';$('shortsLaunch').focus()}
+function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;$('shortsWord').textContent=v.ko;$('shortsRoman').textContent=v.roman;$('shortsEnglish').textContent=v.en;$('shortsExample').textContent=v.example+' — '+v.translation;$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame)}
+$('shortsLaunch').addEventListener('click',()=>open(0));
+root.addEventListener('click',e=>{const b=e.target.closest('[data-short]');if(b)open(Number(b.dataset.short))});
+$('shortsClose').addEventListener('click',close);
+$('shortsPrev').addEventListener('click',()=>open(active-1));
+$('shortsNext').addEventListener('click',()=>open(active+1));
+$('shortsSave').addEventListener('click',()=>{const v=lessons[active];saved=saved.includes(v.ko)?saved.filter(x=>x!==v.ko):saved.concat(v.ko);try{localStorage.setItem(storageKey,JSON.stringify(saved))}catch(_){}$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsStatus').textContent=saved.includes(v.ko)?'Saved for review on this device.':'Removed from saved words.'});
+$('shortsReveal').addEventListener('click',()=>{const v=lessons[active];const q=$('shortsQuestion');q.hidden=false;q.innerHTML='<b>What does '+h(v.ko)+' mean?</b><div>'+v.options.map(option=>'<button type="button" data-answer="'+h(option)+'">'+h(option)+'</button>').join('')+'</div>';showAnswer=true});
+$('shortsQuestion').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(!b)return;$('shortsStatus').textContent=b.dataset.answer===lessons[active].en?'Correct! 잘했어요!':'Not quite — '+lessons[active].ko+' means '+lessons[active].en+'.'});
+overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+document.addEventListener('keydown',e=>{if(!overlay.classList.contains('isOpen'))return;if(e.key==='Escape')close();if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();open(active+1)}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();open(active-1)}});
+$('shortsVideo').addEventListener('touchstart',e=>{startY=e.touches[0]?.clientY??null},{passive:true});
+$('shortsVideo').addEventListener('touchend',e=>{if(startY===null)return;const delta=(e.changedTouches[0]?.clientY??startY)-startY;startY=null;if(Math.abs(delta)>85)open(active+(delta<0?1:-1))},{passive:true});
+})();
