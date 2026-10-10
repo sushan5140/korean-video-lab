@@ -4,7 +4,7 @@
 const lessons=[
 {id:'WyWdNJxHbkM',title:'Korean words in context',creator:'Korean with Ina',topic:'Shopping',ko:'영수증',roman:'yeongsujeung',en:'Receipt',example:'영수증 주세요.',translation:'Please give me a receipt.',options:['Receipt','Ticket','Wallet']},
 {id:'_JirUwUtCZY',title:'Everyday Korean verbs',creator:'Korean with Ina',topic:'Daily Life',ko:'먹다',roman:'meokda',en:'To eat',example:'저는 밥을 먹어요.',translation:'I eat rice / a meal.',options:['To drink','To eat','To sleep']},
-{id:'WZxDH2Bhb00',title:'Make a suggestion in Korean',creator:'Korean with Ina',topic:'Grammar',ko:'갈까요?',roman:'galkkayo?',en:'Shall we go?',example:'같이 갈까요?',translation:'Shall we go together?',options:['Did you go?','Shall we go?','Don't go']},
+{id:'WZxDH2Bhb00',title:'Make a suggestion in Korean',creator:'Korean with Ina',topic:'Grammar',ko:'갈까요?',roman:'galkkayo?',en:'Shall we go?',example:'같이 갈까요?',translation:'Shall we go together?',options:['Did you go?','Shall we go?', "Don't go"]},
 {id:'mFGhAguG8JQ',title:'Korean vegetable vocabulary quiz',creator:'Korean with Ina',topic:'Food',ko:'버섯',roman:'beoseot',en:'Mushroom',example:'버섯을 좋아해요.',translation:'I like mushrooms.',options:['Onion','Mushroom','Tomato']}
 ];
 const root=document.getElementById('haneulShorts');if(!root)return;
