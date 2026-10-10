@@ -815,7 +815,20 @@ body[data-vibe="genz"] .brand{letter-spacing:-.02em}
 body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #6d5dfc12}
 @media(max-width:850px){.vibeModeBox{display:none}.vibeProfileSetting{align-items:flex-start}.vibeProfileSetting .vibeSwitch{margin-top:3px}}
 </style>
-<style id="haneul-sidebar-shorts-v2">@media(min-width:851px){.app{align-items:start}.side{position:sticky;top:0;height:100dvh;max-height:100dvh;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#777d9b #1e2239}.sideFooter{margin-top:auto;padding-bottom:20px;flex-shrink:0}}#sideShortsJump{cursor:pointer;font-weight:850;color:#f3efff;background:#ffffff14}#sideShortsJump:hover,#sideShortsJump:focus-visible{background:#6653b9}#haneulShorts{scroll-margin-top:20px}</style><link rel="stylesheet" href="/shorts/shorts.css"></head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span id="sideShortsJump" role="button" tabindex="0">▶ Shorts</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="vibeModeBox" id="vibeModeBox"><div><b id="vibeModeTitle">Normal mode</b><small id="vibeModeHint">Clear Haneul copy</small></div><button class="vibeSwitch" id="vibeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch between Normal and Gen-Z mode"><span aria-hidden="true"></span></button></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><div class="vibeQuick" id="vibeQuick"><span class="vibeDot" aria-hidden="true"></span><button id="vibeQuickBtn" type="button" aria-label="Switch between Normal and Gen-Z mode"><span id="vibeQuickLabel">Normal ↔ Gen-Z</span></button></div><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><section id="haneulShorts" aria-label="Korean Shorts"></section><div class="contentFilters">
+<style id="haneul-sidebar-shorts-v2">@media(min-width:851px){.app{align-items:start}.side{position:sticky;top:0;height:100dvh;max-height:100dvh;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#777d9b #1e2239}.sideFooter{margin-top:auto;padding-bottom:20px;flex-shrink:0}}#sideShortsJump{cursor:pointer;font-weight:850;color:#f3efff;background:#ffffff14}#sideShortsJump:hover,#sideShortsJump:focus-visible{background:#6653b9}#haneulShorts{scroll-margin-top:20px}</style><style id="haneul-sidebar-scroll-2026">
+@media(min-width:851px){
+.side{scrollbar-width:none!important;position:sticky;top:0;height:100dvh;max-height:100dvh;overflow-y:auto;overflow-x:hidden;padding-right:23px}
+.side::-webkit-scrollbar{display:none}
+.sideScrollRail{position:fixed;top:18px;bottom:18px;left:197px;width:7px;border-radius:16px;background:#ffffff18;z-index:8;cursor:pointer;transition:width .15s,background .15s;touch-action:none}
+.sideScrollRail:hover,.sideScrollRail:focus-within{width:11px;background:#ffffff28}
+.sideScrollThumb{position:absolute;top:0;left:0;width:100%;min-height:30px;border-radius:16px;background:linear-gradient(180deg,#a697ff,#65c5ec);box-shadow:0 0 11px #8871ff70;transform:translateY(0);transition:box-shadow .2s}
+.sideScrollRail:hover .sideScrollThumb,.sideScrollRail.dragging .sideScrollThumb{box-shadow:0 0 19px #a697ffb3}
+.sideScrollRail[hidden]{display:none!important}
+}
+@media(max-width:850px){.sideScrollRail{display:none!important}}
+#sideShortsJump{display:block;cursor:pointer;user-select:none}
+#sideShortsJump:active{transform:scale(.98)}
+</style><link rel="stylesheet" href="/shorts/shorts.css"></head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span id="sideShortsJump" role="button" tabindex="0">▶ Shorts</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="vibeModeBox" id="vibeModeBox"><div><b id="vibeModeTitle">Normal mode</b><small id="vibeModeHint">Clear Haneul copy</small></div><button class="vibeSwitch" id="vibeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch between Normal and Gen-Z mode"><span aria-hidden="true"></span></button></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><div class="vibeQuick" id="vibeQuick"><span class="vibeDot" aria-hidden="true"></span><button id="vibeQuickBtn" type="button" aria-label="Switch between Normal and Gen-Z mode"><span id="vibeQuickLabel">Normal ↔ Gen-Z</span></button></div><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><section id="haneulShorts" aria-label="Korean Shorts"></section><div class="contentFilters">
   <div class="compassHead"><div><div class="ey">TODAY'S LISTENING</div><h3>Shape the session, not your level.</h3><p>Your proficiency path comes from Profile. Pick the context and listening format you want right now.</p></div></div>
   <div class="personalHeader"><div><div class="ey">ACTIVE PATH</div><h3 id="activePathTitle">Beginner</h3></div><span class="pathBadge" id="activePathBadge">TOPIK 1 · profile setting</span></div>
   <div class="filterStudio">
@@ -3185,4 +3198,44 @@ if(/^[A-Za-z0-9_-]{11}$/.test(creatorWatchId)&&/^[A-Z0-9_-]{2,48}$/.test(creator
    open(lesson.id,lesson.levelCode,lesson.level)
   }catch(e){toast(e?.message||'Could not open this creator video')}
  },250)
-}</script><script>document.addEventListener('DOMContentLoaded',function(){const b=document.getElementById('sideShortsJump');if(!b)return;function jump(){const d=document.getElementById('discoverPage');if(d&&d.hidden){const link=document.querySelector('[data-nav="discover"]');if(link)link.click();}requestAnimationFrame(function(){document.getElementById('haneulShorts')?.scrollIntoView({behavior:'smooth',block:'start'});});}b.addEventListener('click',jump);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();jump();}});});</script><script src="/shorts/shorts.js" defer></script><script src="https://www.youtube.com/iframe_api"></script></body></html>
+}</script><script>
+(function(){
+function init(){
+ const side=document.querySelector('.side'),btn=document.getElementById('sideShortsJump');
+ if(!side||!btn)return;
+ function launchShorts(){
+   if(typeof showMainPage==='function')showMainPage('discover');
+   const shelf=document.getElementById('haneulShorts');
+   if(shelf){shelf.scrollIntoView({behavior:'smooth',block:'start'});}
+   const launch=document.getElementById('shortsLaunch');
+   if(launch){launch.click();return}
+   // If the Shorts asset failed, tell the learner rather than doing nothing.
+   if(typeof toast==='function')toast('Shorts is still loading. Refresh and try again.');
+ }
+ btn.addEventListener('click',launchShorts);
+ btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launchShorts()}});
+ const rail=document.createElement('div');rail.className='sideScrollRail';rail.setAttribute('role','scrollbar');rail.setAttribute('aria-label','Scroll Haneul sidebar');rail.setAttribute('aria-orientation','vertical');rail.tabIndex=0;
+ const thumb=document.createElement('div');thumb.className='sideScrollThumb';rail.appendChild(thumb);document.body.appendChild(rail);
+ let held=false;
+ function update(){
+   const available=Math.max(0,side.scrollHeight-side.clientHeight);
+   const railH=rail.clientHeight;
+   const thumbH=available?Math.max(30,Math.min(railH,railH*side.clientHeight/side.scrollHeight)):railH;
+   thumb.style.height=thumbH+'px';
+   thumb.style.transform='translateY('+(available?side.scrollTop/available*Math.max(0,railH-thumbH):0)+'px)';
+   rail.hidden=!available||window.innerWidth<=850;
+   rail.setAttribute('aria-valuemin','0');rail.setAttribute('aria-valuemax','100');
+   rail.setAttribute('aria-valuenow',String(available?Math.round(side.scrollTop/available*100):0));
+ }
+ function seek(e){const rect=rail.getBoundingClientRect(),tH=thumb.getBoundingClientRect().height;const travel=Math.max(1,rect.height-tH);const y=Math.max(0,Math.min(travel,e.clientY-rect.top-tH/2));side.scrollTop=y/travel*Math.max(0,side.scrollHeight-side.clientHeight);update()}
+ rail.addEventListener('pointerdown',e=>{held=true;rail.classList.add('dragging');rail.setPointerCapture(e.pointerId);seek(e)});
+ rail.addEventListener('pointermove',e=>{if(held)seek(e)});
+ function release(){held=false;rail.classList.remove('dragging')}
+ rail.addEventListener('pointerup',release);rail.addEventListener('pointercancel',release);
+ rail.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'){e.preventDefault();side.scrollBy({top:(e.key==='ArrowDown'?65:e.key==='ArrowUp'?-65:e.key==='PageDown'?side.clientHeight:-side.clientHeight),behavior:'smooth'})}if(e.key==='Home'||e.key==='End'){e.preventDefault();side.scrollTo({top:e.key==='Home'?0:side.scrollHeight,behavior:'smooth'})}});
+ side.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);
+ if(window.ResizeObserver){new ResizeObserver(update).observe(side)}setTimeout(update,300);update();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script><script src="/shorts/shorts.js" defer></script><script src="https://www.youtube.com/iframe_api"></script></body></html>
