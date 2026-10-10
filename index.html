@@ -907,6 +907,43 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
  #shortsPage .shortsDetails #shortsStatus{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){#shortsPage *{scroll-behavior:auto!important}}
+</style><style id="haneul-shorts-mobile-clean-v3">
+.shortsStudyNote{font-size:11px;line-height:1.4;color:#6b6677;margin:0 0 9px}
+.shortsLearnToggle{display:none}
+@media(max-width:700px){
+ #shortsPage .shortsOverlay{height:100dvh!important}
+ #shortsPage .shortsVideoPane{width:100vw!important;height:100dvh!important;inset:0!important}
+ #shortsPage #shortsVideo{width:100%!important;height:100%!important}
+ #shortsPage #shortsVideo iframe{width:100%!important;height:100%!important;aspect-ratio:9 / 16!important}
+ #shortsPage .shortsDetails{
+   position:absolute!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;
+   padding:9px 13px max(12px,env(safe-area-inset-bottom))!important;
+   height:auto!important;min-height:0!important;max-height:120px!important;
+   background:#fdfcff!important;border-radius:16px 16px 0 0!important;
+   box-shadow:0 -5px 20px #0002!important;overflow:hidden!important;
+   display:flex!important;flex-direction:column!important;gap:8px!important;
+   transition:max-height .22s ease!important;
+ }
+ #shortsPage .shortsDetails .shortsTop{display:flex!important;align-items:center!important;gap:8px!important;flex:none!important;min-height:33px!important}
+ #shortsPage .shortsLearnToggle{
+   display:inline-flex!important;align-items:center;justify-content:center;margin-left:auto;
+   border:1px solid #e4dff1;border-radius:10px;padding:8px 10px;
+   color:#5d4fb6;background:#f1edff;font-size:11px;font-weight:800;cursor:pointer;
+ }
+ #shortsPage .shortsDetails .shortsClose{flex:none!important;width:34px;height:34px;font-size:19px}
+ #shortsPage .shortsLearningContent{display:none!important}
+ #shortsPage .shortsDetails .shortsNav{display:flex!important;position:static!important;flex:none!important;gap:8px!important;margin:0!important;padding:0!important;background:transparent!important}
+ #shortsPage .shortsNav button{min-height:40px!important;padding:8px!important;font-size:12px!important}
+ #shortsPage .shortsStage.shortsLearningOpen .shortsDetails{
+   max-height:min(62dvh,570px)!important;overflow-y:auto!important;
+   box-shadow:0 -16px 40px #0006!important
+ }
+ #shortsPage .shortsStage.shortsLearningOpen .shortsLearningContent{display:block!important;overflow-y:auto!important}
+ #shortsPage .shortsStage.shortsLearningOpen .shortsLearningContent>*{margin-top:8px}
+ #shortsPage .shortsStage.shortsLearningOpen .shortsDetails #shortsStatus{display:block!important}
+ #shortsPage .shortsStage.shortsLearningOpen .shortsDetails .shortsNav{position:sticky!important;bottom:0!important;padding-top:8px!important;background:#fdfcff!important}
+}
+@media(prefers-reduced-motion:reduce){#shortsPage .shortsDetails{transition:none!important}}
 </style><style id="haneul-shorts-bundled-v2">/* Isolated Korean Shorts feature; preserve existing Haneul layout. */
 .shortsShelf{margin:28px 0 32px;padding:23px;background:#fff;border:1px solid #e7e6f1;border-radius:22px;box-shadow:0 8px 25px #34346408}
 .shortsShelf h2{font-size:24px;letter-spacing:-.04em;margin:4px 0 7px}.shortsShelf p{color:#737b8b;font-size:13px;line-height:1.55;margin:0}
@@ -3388,13 +3425,21 @@ const storageKey='haneulShortsSaved:v1';let saved=[];try{saved=JSON.parse(localS
 let active=0,showAnswer=false,startY=null;
 const h=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 root.innerHTML='<div class="shortsShelf"><div class="shortsShelfHead"><div><div class="ey">LEARN IN UNDER A MINUTE</div><h2>Korean Shorts ✦</h2><p>Real creator videos. One useful Korean expression at a time.</p></div><button class="shortsOpen" type="button" id="shortsLaunch">Watch Shorts ↗</button></div><div class="shortsPreview">'+lessons.map((v,i)=>'<button type="button" class="shortPreview" data-short="'+i+'"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg"><b>'+h(v.title)+'</b><small>'+h(v.topic)+' · '+h(v.creator)+'</small></button>').join('')+'</div></div>';
-const overlay=document.createElement('div');overlay.className='shortsOverlay';overlay.id='shortsOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Korean Shorts');overlay.innerHTML='<div class="shortsStage"><div class="shortsVideoPane"><div id="shortsVideo"></div></div><div class="shortsDetails"><div class="shortsTop"><span class="ey" id="shortsCounter"></span><button type="button" class="shortsClose" id="shortsClose" aria-label="Close Shorts">×</button></div><div class="ey" id="shortsTopic"></div><h2 id="shortsTitle"></h2><div class="shortsWord" id="shortsWord"></div><div id="shortsRoman"></div><div class="shortsTranslation" id="shortsEnglish"></div><div class="shortsExample" id="shortsExample"></div><div class="shortsActions"><button type="button" id="shortsSave">☆ Save word</button><button type="button" id="shortsReveal">Try quick recall</button><a id="shortsOriginal" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><div class="shortsQuestion" id="shortsQuestion" hidden></div><div class="shortsStatus" id="shortsStatus" aria-live="polite"></div><div class="shortsNav"><button id="shortsPrev" type="button">← Previous</button><button id="shortsNext" type="button">Next →</button></div></div></div>';
+const overlay=document.createElement('div');overlay.className='shortsOverlay';overlay.id='shortsOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Korean Shorts');overlay.innerHTML='<div class="shortsStage"><div class="shortsVideoPane"><div id="shortsVideo"></div></div><div class="shortsDetails"><div class="shortsTop"><span class="ey" id="shortsCounter"></span><button type="button" id="shortsLearnToggle" class="shortsLearnToggle" aria-expanded="false" aria-controls="shortsLearningContent">Learn this Short ↑</button><button type="button" class="shortsClose" id="shortsClose" aria-label="Close Shorts">×</button></div><div id="shortsLearningContent" class="shortsLearningContent"><p class="shortsStudyNote">Study card · not synchronized captions. Use YouTube CC for video subtitles.</p><div class="ey" id="shortsTopic"></div><h2 id="shortsTitle"></h2><div class="shortsWord" id="shortsWord"></div><div id="shortsRoman"></div><div class="shortsTranslation" id="shortsEnglish"></div><div class="shortsExample" id="shortsExample"></div><div class="shortsActions"><button type="button" id="shortsSave">☆ Save word</button><button type="button" id="shortsReveal">Try quick recall</button><a id="shortsOriginal" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><div class="shortsQuestion" id="shortsQuestion" hidden></div><div class="shortsStatus" id="shortsStatus" aria-live="polite"></div></div><div class="shortsNav"><button id="shortsPrev" type="button">← Previous</button><button id="shortsNext" type="button">Next →</button></div></div></div>';
 document.getElementById('shortsInlinePlayer').appendChild(overlay);
 const $=id=>document.getElementById(id);
-function open(i){if(typeof showMainPage==='function')showMainPage('shorts');active=(i+lessons.length)%lessons.length;overlay.classList.add('isOpen');document.body.style.overflow='hidden';render()}
+function open(i){if(typeof showMainPage==='function')showMainPage('shorts');active=(i+lessons.length)%lessons.length;overlay.classList.add('isOpen');document.body.style.overflow='hidden';setShortsLearnExpanded(false);render()}
 window.haneulOpenShorts=function(index){open(Number.isFinite(index)?index:0)};window.haneulCloseShorts=function(){close()};
 function close(){overlay.classList.remove('isOpen');$('shortsVideo').replaceChildren();document.body.style.overflow='';if(typeof showMainPage==='function')showMainPage('discover')}
 function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;$('shortsWord').textContent=v.ko;$('shortsRoman').textContent=v.roman;$('shortsEnglish').textContent=v.en;$('shortsExample').textContent=v.example+' — '+v.translation;$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame)}
+function setShortsLearnExpanded(expanded){
+ const stage=overlay.querySelector('.shortsStage');
+ stage.classList.toggle('shortsLearningOpen',!!expanded);
+ const toggle=$('shortsLearnToggle');
+ toggle.setAttribute('aria-expanded',String(!!expanded));
+ toggle.textContent=expanded?'Hide study card ↓':'Learn this Short ↑';
+}
+$('shortsLearnToggle').addEventListener('click',()=>setShortsLearnExpanded(!overlay.querySelector('.shortsStage').classList.contains('shortsLearningOpen')));
 $('shortsLaunch').addEventListener('click',()=>open(0));
 root.addEventListener('click',e=>{const b=e.target.closest('[data-short]');if(b)open(Number(b.dataset.short))});
 $('shortsClose').addEventListener('click',close);
