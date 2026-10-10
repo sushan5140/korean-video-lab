@@ -944,6 +944,21 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
  #shortsPage .shortsStage.shortsLearningOpen .shortsDetails .shortsNav{position:sticky!important;bottom:0!important;padding-top:8px!important;background:#fdfcff!important}
 }
 @media(prefers-reduced-motion:reduce){#shortsPage .shortsDetails{transition:none!important}}
+</style><style id="haneul-shorts-caption-cards-v1">
+#shortsVideoPane{position:relative}
+.shortsCaptionFloat{position:absolute;z-index:3;left:50%;top:76%;transform:translate(-50%,-50%);width:min(78%,370px);border-radius:12px;background:#101019d9;color:#fff;text-align:center;box-shadow:0 8px 24px #0006;padding:5px 12px 10px;pointer-events:none}
+.shortsCaptionHandle{pointer-events:auto;display:inline-flex;cursor:grab;border:0;border-radius:8px;color:#e2ddf5;background:#ffffff22;font-size:10px;padding:5px 12px;touch-action:none;user-select:none}
+.shortsCaptionHandle:active{cursor:grabbing}
+.shortsCaptionFloat p{font-size:16px;font-weight:800;margin:7px 0 3px;line-height:1.3}
+.shortsCaptionFloat small{color:#ddd7f8;display:block;font-size:12px;line-height:1.3}
+.shortsCueSave{pointer-events:auto;border:1px solid #ffffff5c;background:#ffffff20;border-radius:9px;color:#fff;padding:6px 10px;margin-top:7px;font-size:10px;font-weight:750;cursor:pointer}
+.shortsCueSave:disabled{opacity:.45;cursor:default}
+.shortsFlashcards{margin-top:12px;border-top:1px solid #eae6f2;padding-top:12px}
+.shortsFlashcards h3{font-size:15px;margin:0 0 8px}.shortSavedCard{display:flex;align-items:center;gap:8px;padding:9px;border-radius:10px;background:#f6f3ff;margin:6px 0}
+.shortSavedCard b{font-size:13px}.shortSavedCard small{flex:1;font-size:10px;color:#787086}.shortSavedCard button{border:0;background:transparent;cursor:pointer;font-size:20px}
+.shortsCardEmpty{color:#7a7288;font-size:11px}
+.shortsStudyCardSave{padding:9px;border-radius:10px;border:1px solid #ded6ee;background:#fff;color:#5843a0;cursor:pointer}
+@media(max-width:700px){.shortsCaptionFloat{width:min(76%,310px);padding:4px 8px 8px}.shortsCaptionFloat p{font-size:13px}.shortsCaptionFloat small{font-size:10px}.shortsCaptionHandle{font-size:9px;padding:3px 8px}}
 </style><style id="haneul-shorts-bundled-v2">/* Isolated Korean Shorts feature; preserve existing Haneul layout. */
 .shortsShelf{margin:28px 0 32px;padding:23px;background:#fff;border:1px solid #e7e6f1;border-radius:22px;box-shadow:0 8px 25px #34346408}
 .shortsShelf h2{font-size:24px;letter-spacing:-.04em;margin:4px 0 7px}.shortsShelf p{color:#737b8b;font-size:13px;line-height:1.55;margin:0}
@@ -3401,6 +3416,131 @@ function init(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+</script><script id="haneul-shorts-captions-v1">
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const key='haneulShortsCards:v1';
+const posKey='haneulShortsCaptionPosition:v1';
+let cards=[];try{cards=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(cards))cards=[]}catch{}
+const save=()=>{try{localStorage.setItem(key,JSON.stringify(cards))}catch{}};
+const safe=x=>String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function current(){return window.haneulCurrentShort?.()||null}
+function renderCards(){
+ const list=$('shortsVideoCards');if(!list)return;
+ const v=current(),mine=cards.filter(c=>c.videoId===v?.id);
+ list.innerHTML=mine.length?mine.map(c=>'<div class="shortSavedCard"><b>'+safe(c.ko)+'</b><small>'+safe(c.en)+' · '+safe(c.timestampLabel)+'</small><button type="button" data-remove-card="'+safe(c.id)+'" aria-label="Remove card">×</button></div>').join(''):'<p class="shortsCardEmpty">No flashcards saved for this video yet.</p>';
+}
+window.haneulShortsCardsForLibrary=()=>cards.slice();
+window.haneulShortsRefreshCards=renderCards;
+document.addEventListener('click',e=>{
+ const remove=e.target.closest('[data-remove-card]');if(!remove)return;
+ cards=cards.filter(c=>c.id!==remove.dataset.removeCard);save();renderCards();
+});
+function addCard(data){
+ const v=current();if(!v)return;
+ const ko=String(data?.ko||v.ko||'').trim(),en=String(data?.en||v.en||'').trim();
+ if(!ko)return;
+ const timestamp=Number.isFinite(data?.time)?data.time:null;
+ const id=v.id+'::'+ko+'::'+(timestamp===null?'study':Math.floor(timestamp));
+ if(cards.some(c=>c.id===id))return;
+ cards.unshift({id,videoId:v.id,videoTitle:v.title,creator:v.creator,ko,en,time:timestamp,timestampLabel:timestamp===null?'Study prompt':Math.floor(timestamp/60)+':'+String(Math.floor(timestamp%60)).padStart(2,'0'),savedAt:Date.now()});
+ cards=cards.slice(0,300);save();renderCards();
+ const status=$('shortsStatus');if(status)status.textContent='Saved to Library → Shorts Cards (on this device).';
+}
+window.haneulSaveShortsCard=addCard;
+let cues=[],lastCue=null,poll=null,player=null,videoId=null;
+const caption=$('shortsCaptionFloat');
+if(!caption)return;
+function showMessage(msg){$('shortsCaptionText').textContent=msg;$('shortsCaptionMeaning').textContent='';$('shortsCueSave').disabled=true;}
+function updateTime(){
+ if(!player||typeof player.getCurrentTime!=='function')return;
+ let time=0;try{time=Number(player.getCurrentTime())||0}catch{return}
+ const cue=cues.find(c=>time>=c.start&&time<c.end);
+ if(cue===lastCue)return;
+ lastCue=cue||null;
+ if(!cue){showMessage(cues.length?'No caption at this moment':'Synced captions unavailable for this video');return}
+ $('shortsCaptionText').textContent=cue.ko;
+ $('shortsCaptionMeaning').textContent=cue.en||'';
+ $('shortsCueSave').disabled=false;
+}
+function normalizeCues(raw){
+ if(!Array.isArray(raw))return [];
+ return raw.map(c=>{
+   const start=Number(c.startMs??(Number(c.start||0)*1000))/1000;
+   const end=Number(c.endMs??(Number(c.end||0)*1000))/1000;
+   return {start,end,ko:String(c.ko||c.text||'').trim(),en:String(c.en||c.translation||'').trim()};
+ }).filter(c=>Number.isFinite(c.start)&&Number.isFinite(c.end)&&c.end>c.start&&c.ko).sort((a,b)=>a.start-b.start);
+}
+async function loadCues(id){
+ const requested=id;
+ cues=[];lastCue=null;showMessage('Checking timed Korean captions…');
+ try{
+  const response=await fetch('/api/captions?videoId='+encodeURIComponent(id)+'&cv=10',{headers:typeof haneulApiHeaders==='function'?await haneulApiHeaders():{}});
+  if(!response.ok)throw Error('Captions unavailable');
+  const data=await response.json();
+  if(videoId!==requested)return;
+  cues=normalizeCues(data?.cues);
+  if(!cues.length)throw Error('No timed captions');
+  updateTime();
+ }catch(e){if(videoId===requested)showMessage('Synced captions unavailable · YouTube CC may still work')}
+}
+function resetPlayer(){
+ if(poll){clearInterval(poll);poll=null}
+ try{player?.destroy?.()}catch{}
+ player=null;lastCue=null;
+}
+window.haneulShortsCaptionStart=(id)=>{
+ videoId=id;resetPlayer();renderCards();
+ const frame=$('shortsVideo')?.querySelector('iframe');
+ if(!frame)return;
+ // The IFrame API is only used for read-only playback timing. YouTube owns playback and CC.
+ const connect=()=>{
+  if(!window.YT?.Player||videoId!==id)return false;
+  try{
+   frame.id='shortsYoutubeFrame';
+   player=new window.YT.Player(frame,{events:{onReady:()=>{poll=setInterval(updateTime,250)},onStateChange:updateTime}});
+   return true;
+  }catch{return false}
+ };
+ if(!connect()){
+  let attempts=0;const timer=setInterval(()=>{if(connect()||++attempts>25||videoId!==id)clearInterval(timer)},250);
+ }
+ loadCues(id);
+};
+window.haneulShortsCaptionStop=()=>{videoId=null;resetPlayer();cues=[];showMessage('Captions unavailable')};
+$('shortsCueSave').addEventListener('click',()=>{
+ const v=current();if(!v||!lastCue)return;
+ addCard({ko:lastCue.ko,en:lastCue.en,time:lastCue.start});
+});
+$('shortsStudyCardSave').addEventListener('click',()=>addCard({}));
+let pos={x:.5,y:.76};try{const p=JSON.parse(localStorage.getItem(posKey)||'null');if(Number.isFinite(p?.x)&&Number.isFinite(p?.y))pos=p}catch{}
+const apply=()=>{caption.style.left=(pos.x*100)+'%';caption.style.top=(pos.y*100)+'%'};
+apply();let drag=null;
+caption.querySelector('.shortsCaptionHandle').addEventListener('pointerdown',e=>{
+ if(e.button!==0)return;
+ const rect=$('shortsVideoPane')?.getBoundingClientRect();if(!rect)return;
+ drag={pointer:e.pointerId,rect,px:e.clientX,py:e.clientY,x:pos.x,y:pos.y};
+ e.currentTarget.setPointerCapture(e.pointerId);
+});
+caption.querySelector('.shortsCaptionHandle').addEventListener('pointermove',e=>{
+ if(!drag||drag.pointer!==e.pointerId)return;
+ pos.x=Math.max(.18,Math.min(.82,drag.x+(e.clientX-drag.px)/drag.rect.width));
+ pos.y=Math.max(.12,Math.min(.88,drag.y+(e.clientY-drag.py)/drag.rect.height));
+ apply();
+});
+const finish=()=>{if(!drag)return;drag=null;try{localStorage.setItem(posKey,JSON.stringify(pos))}catch{}};
+caption.querySelector('.shortsCaptionHandle').addEventListener('pointerup',finish);
+caption.querySelector('.shortsCaptionHandle').addEventListener('pointercancel',finish);
+caption.querySelector('.shortsCaptionHandle').addEventListener('keydown',e=>{
+ const step=e.shiftKey?.05:.02;
+ if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
+ e.preventDefault();
+ pos.x=Math.max(.18,Math.min(.82,pos.x+(e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0)));
+ pos.y=Math.max(.12,Math.min(.88,pos.y+(e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0)));
+ apply();try{localStorage.setItem(posKey,JSON.stringify(pos))}catch{}
+});
+})();
 </script><script id="haneul-shorts-bundled-v2">/* Haneul Shorts — isolated from full-length lesson player. */
 (function(){
 'use strict';
@@ -3425,13 +3565,13 @@ const storageKey='haneulShortsSaved:v1';let saved=[];try{saved=JSON.parse(localS
 let active=0,showAnswer=false,startY=null;
 const h=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 root.innerHTML='<div class="shortsShelf"><div class="shortsShelfHead"><div><div class="ey">LEARN IN UNDER A MINUTE</div><h2>Korean Shorts ✦</h2><p>Real creator videos. One useful Korean expression at a time.</p></div><button class="shortsOpen" type="button" id="shortsLaunch">Watch Shorts ↗</button></div><div class="shortsPreview">'+lessons.map((v,i)=>'<button type="button" class="shortPreview" data-short="'+i+'"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg"><b>'+h(v.title)+'</b><small>'+h(v.topic)+' · '+h(v.creator)+'</small></button>').join('')+'</div></div>';
-const overlay=document.createElement('div');overlay.className='shortsOverlay';overlay.id='shortsOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Korean Shorts');overlay.innerHTML='<div class="shortsStage"><div class="shortsVideoPane"><div id="shortsVideo"></div></div><div class="shortsDetails"><div class="shortsTop"><span class="ey" id="shortsCounter"></span><button type="button" id="shortsLearnToggle" class="shortsLearnToggle" aria-expanded="false" aria-controls="shortsLearningContent">Learn this Short ↑</button><button type="button" class="shortsClose" id="shortsClose" aria-label="Close Shorts">×</button></div><div id="shortsLearningContent" class="shortsLearningContent"><p class="shortsStudyNote">Study card · not synchronized captions. Use YouTube CC for video subtitles.</p><div class="ey" id="shortsTopic"></div><h2 id="shortsTitle"></h2><div class="shortsWord" id="shortsWord"></div><div id="shortsRoman"></div><div class="shortsTranslation" id="shortsEnglish"></div><div class="shortsExample" id="shortsExample"></div><div class="shortsActions"><button type="button" id="shortsSave">☆ Save word</button><button type="button" id="shortsReveal">Try quick recall</button><a id="shortsOriginal" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><div class="shortsQuestion" id="shortsQuestion" hidden></div><div class="shortsStatus" id="shortsStatus" aria-live="polite"></div></div><div class="shortsNav"><button id="shortsPrev" type="button">← Previous</button><button id="shortsNext" type="button">Next →</button></div></div></div>';
+const overlay=document.createElement('div');overlay.className='shortsOverlay';overlay.id='shortsOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Korean Shorts');overlay.innerHTML='<div class="shortsStage"><div class="shortsVideoPane" id="shortsVideoPane"><div id="shortsVideo"></div><div id="shortsCaptionFloat" class="shortsCaptionFloat"><button type="button" class="shortsCaptionHandle" aria-label="Drag captions or use arrow keys" title="Drag to reposition">⠿ Move captions</button><p id="shortsCaptionText">Checking captions…</p><small id="shortsCaptionMeaning"></small><button id="shortsCueSave" class="shortsCueSave" type="button" disabled>+ Flashcard</button></div></div><div class="shortsDetails"><div class="shortsTop"><span class="ey" id="shortsCounter"></span><button type="button" id="shortsLearnToggle" class="shortsLearnToggle" aria-expanded="false" aria-controls="shortsLearningContent">Learn this Short ↑</button><button type="button" class="shortsClose" id="shortsClose" aria-label="Close Shorts">×</button></div><div id="shortsLearningContent" class="shortsLearningContent"><section class="shortsFlashcards"><h3>Flashcards · this video</h3><button id="shortsStudyCardSave" class="shortsStudyCardSave" type="button">+ Save study word</button><div id="shortsVideoCards"></div></section><p class="shortsStudyNote">Study card · not synchronized captions. Use YouTube CC for video subtitles.</p><div class="ey" id="shortsTopic"></div><h2 id="shortsTitle"></h2><div class="shortsWord" id="shortsWord"></div><div id="shortsRoman"></div><div class="shortsTranslation" id="shortsEnglish"></div><div class="shortsExample" id="shortsExample"></div><div class="shortsActions"><button type="button" id="shortsSave">☆ Save word</button><button type="button" id="shortsReveal">Try quick recall</button><a id="shortsOriginal" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></div><div class="shortsQuestion" id="shortsQuestion" hidden></div><div class="shortsStatus" id="shortsStatus" aria-live="polite"></div></div><div class="shortsNav"><button id="shortsPrev" type="button">← Previous</button><button id="shortsNext" type="button">Next →</button></div></div></div>';
 document.getElementById('shortsInlinePlayer').appendChild(overlay);
 const $=id=>document.getElementById(id);
 function open(i){if(typeof showMainPage==='function')showMainPage('shorts');active=(i+lessons.length)%lessons.length;overlay.classList.add('isOpen');document.body.style.overflow='hidden';setShortsLearnExpanded(false);render()}
-window.haneulOpenShorts=function(index){open(Number.isFinite(index)?index:0)};window.haneulCloseShorts=function(){close()};
-function close(){overlay.classList.remove('isOpen');$('shortsVideo').replaceChildren();document.body.style.overflow='';if(typeof showMainPage==='function')showMainPage('discover')}
-function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;$('shortsWord').textContent=v.ko;$('shortsRoman').textContent=v.roman;$('shortsEnglish').textContent=v.en;$('shortsExample').textContent=v.example+' — '+v.translation;$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame)}
+window.haneulOpenShorts=function(index){open(Number.isFinite(index)?index:0)};window.haneulCloseShorts=function(){close()};window.haneulCurrentShort=()=>lessons[active];
+function close(){window.haneulShortsCaptionStop?.();overlay.classList.remove('isOpen');$('shortsVideo').replaceChildren();document.body.style.overflow='';if(typeof showMainPage==='function')showMainPage('discover')}
+function render(){const v=lessons[active];showAnswer=false;$('shortsCounter').textContent=(active+1)+' / '+lessons.length;$('shortsTopic').textContent=v.topic+' · '+v.creator;$('shortsTitle').textContent=v.title;$('shortsWord').textContent=v.ko;$('shortsRoman').textContent=v.roman;$('shortsEnglish').textContent=v.en;$('shortsExample').textContent=v.example+' — '+v.translation;$('shortsStatus').textContent='Swipe on the video or use Next to continue.';$('shortsQuestion').hidden=true;$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsOriginal').href='https://www.youtube.com/shorts/'+v.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+v.id+'?playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin)+'&rel=0';frame.title=v.title+' — YouTube Shorts';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('shortsVideo').replaceChildren(frame);window.haneulShortsCaptionStart?.(v.id)}
 function setShortsLearnExpanded(expanded){
  const stage=overlay.querySelector('.shortsStage');
  stage.classList.toggle('shortsLearningOpen',!!expanded);
