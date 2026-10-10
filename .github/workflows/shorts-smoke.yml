@@ -1,0 +1,29 @@
+name: Shorts JavaScript smoke test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - shorts/shorts.js
+      - tests/shorts-smoke.cjs
+      - .github/workflows/shorts-smoke.yml
+  pull_request:
+    paths:
+      - index.html
+      - shorts/shorts.js
+      - tests/shorts-smoke.cjs
+      - .github/workflows/shorts-smoke.yml
+
+jobs:
+  shorts-smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile scripts and smoke-test Shorts navigation
+        run: node tests/shorts-smoke.cjs
