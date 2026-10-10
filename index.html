@@ -1037,7 +1037,7 @@ function initVibeMode(){
 }
 const HANEUL_SUPABASE_URL='https://uyltjaftajwkujjhuric.supabase.co';
 const HANEUL_SUPABASE_KEY='sb_publishable_WNWIyMORd5O4N_4qTWMO_w_HbHooVeW';
-const HANEUL_REDIRECT='https://korean-video-lab.vercel.app/';
+const HANEUL_REDIRECT=window.location.origin+'/'; // Preserve the current domain for production and preview OAuth.
 const haneulAuth=window.supabase?.createClient(HANEUL_SUPABASE_URL,HANEUL_SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let authUser=null;
 let guestMode=false;
