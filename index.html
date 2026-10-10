@@ -817,19 +817,18 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
 </style>
 <style id="haneul-sidebar-shorts-v2">@media(min-width:851px){.app{align-items:start}.side{position:sticky;top:0;height:100dvh;max-height:100dvh;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#777d9b #1e2239}.sideFooter{margin-top:auto;padding-bottom:20px;flex-shrink:0}}#sideShortsJump{cursor:pointer;font-weight:850;color:#f3efff;background:#ffffff14}#sideShortsJump:hover,#sideShortsJump:focus-visible{background:#6653b9}#haneulShorts{scroll-margin-top:20px}</style><style id="haneul-sidebar-scroll-2026">
 @media(min-width:851px){
-.side{scrollbar-width:none!important;position:sticky;top:0;height:100dvh;max-height:100dvh;overflow-y:auto;overflow-x:hidden;padding-right:23px;overscroll-behavior-y:contain}
-.side::-webkit-scrollbar{display:none}
-.sideScrollRail{position:fixed;top:19px;bottom:19px;left:194px;width:10px;z-index:8;touch-action:none;cursor:default}
-.sideScrollRail:before{content:"";position:absolute;right:3px;top:0;bottom:0;width:3px;border-radius:999px;background:#c5bfcf;opacity:.15;transition:opacity .2s}
-.sideScrollThumb{position:absolute;top:0;right:2px;width:5px;min-height:34px;border-radius:100px;background:#a89bbd;opacity:.45;transform:translateY(0);transition:opacity .18s ease,width .18s ease,right .18s ease,background .18s ease;box-shadow:0 1px 3px #0002}
-.sideScrollRail:hover .sideScrollThumb,.sideScrollRail.dragging .sideScrollThumb,.sideScrollRail:focus-within .sideScrollThumb{width:7px;right:1px;opacity:.95;background:#c1b0db}
-.sideScrollRail:hover:before,.sideScrollRail:focus-within:before{opacity:.55}
+.side{scrollbar-width:none!important;overflow-y:auto!important;overscroll-behavior-y:contain;padding-right:20px!important}
+.side::-webkit-scrollbar{display:none!important}
+.sideScrollRail{position:fixed;top:16px;bottom:16px;width:12px;z-index:8;touch-action:none;cursor:pointer;opacity:0;transition:opacity .2s ease;pointer-events:none}
+.side:hover~.sideScrollRail,.sideScrollRail:hover,.sideScrollRail.dragging,.sideScrollRail:focus-visible{opacity:1;pointer-events:auto}
+.sideScrollRail:before{content:"";position:absolute;top:0;bottom:0;left:5px;width:2px;border-radius:99px;background:rgba(105,99,119,.09)}
+.sideScrollThumb{position:absolute;top:0;left:3px;width:6px;min-height:40px;border-radius:99px;background:#a49bac;opacity:.7;transform:translateY(0);transition:background .18s,width .18s,left .18s,opacity .18s}
+.sideScrollRail:hover .sideScrollThumb,.sideScrollRail.dragging .sideScrollThumb,.sideScrollRail:focus-visible .sideScrollThumb{left:2px;width:8px;background:#83758f;opacity:1}
 .sideScrollRail[hidden]{display:none!important}
 }
 @media(max-width:850px){.sideScrollRail{display:none!important}}
-@media(prefers-reduced-motion:reduce){.sideScrollRail:before,.sideScrollThumb{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.sideScrollRail,.sideScrollThumb{transition:none!important}}
 #sideShortsJump{display:block;cursor:pointer;user-select:none}
-#sideShortsJump:active{transform:scale(.98)}
 </style><link rel="stylesheet" href="/shorts/shorts.css"></head><body data-ui="haneul-v2" class="haneulAuthPending haneulAuthRestoring"><div class="app"><aside class="side"><div class="brand"><b>한</b>Haneul</div><div class="nav"><span class="on" data-nav="discover">⌂ Discover</span><span id="sideShortsJump" role="button" tabindex="0">▶ Shorts</span><span data-nav="practice">◎ Practice</span><span data-nav="library">▱ Library</span><span data-nav="progress">◌ Progress</span><span data-nav="profile">◉ Profile</span></div><div class="vibeModeBox" id="vibeModeBox"><div><b id="vibeModeTitle">Normal mode</b><small id="vibeModeHint">Clear Haneul copy</small></div><button class="vibeSwitch" id="vibeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch between Normal and Gen-Z mode"><span aria-hidden="true"></span></button></div><div class="sideFooter"><a class="sideAdminPanelLink" href="/creators/" aria-label="Open your creator community"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Creator community</b><small>Challenges · AI tutor · ranking</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAmbassadorStudioLink" class="sideAdminPanelLink" href="/ambassadors/" hidden aria-label="Open private Ambassador Studio"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Ambassador Studio</b><small>Content factory · Quiz · Videos</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><a id="sideAdminPanelLink" class="sideAdminPanelLink" href="/internal/collaborators/" hidden aria-label="Open Haneul Admin Panel"><span class="sideAdminPanelIcon" aria-hidden="true">✦</span><span><b>Admin Panel</b><small>Manage collaborator codes</small></span><span class="sideAdminPanelArrow" aria-hidden="true">↗</span></a><div class="sideProfile" data-nav="profile"><span class="sideMiniAvatar" id="sideMiniAvatar">한</span><span><b id="sideProfileName">Learner</b><small id="sideProfileLevel">Building profile</small></span></div></div></aside><main class="main"><div class="vibeQuick" id="vibeQuick"><span class="vibeDot" aria-hidden="true"></span><button id="vibeQuickBtn" type="button" aria-label="Switch between Normal and Gen-Z mode"><span id="vibeQuickLabel">Normal ↔ Gen-Z</span></button></div><section id="discoverPage"><div class="top"><div><div class="ey">LEARN WITH REAL KOREAN</div><h1>Watch less randomly.<br><em>Understand more.</em></h1><p>Real Korean videos become focused listening sessions with captions and learning tools attached to the exact scene.</p></div><div class="goal">Daily goal <b id="dailyGoalText">0 / 25 min</b><div class="bar"><i id="dailyGoalBar" style="width:0%"></i></div></div></div><div id="nextLessonMount"></div><section id="haneulShorts" aria-label="Korean Shorts"></section><div class="contentFilters">
   <div class="compassHead"><div><div class="ey">TODAY'S LISTENING</div><h3>Shape the session, not your level.</h3><p>Your proficiency path comes from Profile. Pick the context and listening format you want right now.</p></div></div>
   <div class="personalHeader"><div><div class="ey">ACTIVE PATH</div><h3 id="activePathTitle">Beginner</h3></div><span class="pathBadge" id="activePathBadge">TOPIK 1 · profile setting</span></div>
@@ -3217,12 +3216,13 @@ function init(){
  btn.addEventListener('click',launchShorts);
  btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launchShorts()}});
  const rail=document.createElement('div');rail.className='sideScrollRail';rail.setAttribute('role','scrollbar');rail.setAttribute('aria-label','Scroll Haneul sidebar');rail.setAttribute('aria-orientation','vertical');rail.tabIndex=0;
- const thumb=document.createElement('div');thumb.className='sideScrollThumb';rail.appendChild(thumb);document.body.appendChild(rail);
+ const thumb=document.createElement('div');thumb.className='sideScrollThumb';rail.appendChild(thumb);side.insertAdjacentElement('afterend',rail);
  let held=false,dragOffset=0;
  function update(){
    const available=Math.max(0,side.scrollHeight-side.clientHeight);
    const railH=rail.clientHeight;
-   const thumbH=available?Math.min(railH,Math.max(34,railH*side.clientHeight/side.scrollHeight)):railH;
+   rail.style.left=Math.round(side.getBoundingClientRect().right-14)+'px';
+   const thumbH=available?Math.min(94,Math.max(42,railH*side.clientHeight/side.scrollHeight*.22)):railH;
    thumb.style.height=thumbH+'px';
    thumb.style.transform='translateY('+(available?side.scrollTop/available*Math.max(0,railH-thumbH):0)+'px)';
    rail.hidden=!available||window.innerWidth<=850;
