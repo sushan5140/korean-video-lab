@@ -838,22 +838,75 @@ body[data-vibe="genz"] .vibeModeBox{box-shadow:0 0 0 1px #ff76bc20,0 10px 30px #
 @media(max-width:850px){.lessonbar .lessonBackBtn{padding:8px 9px;font-size:12px;min-height:36px}.lessonbar .lessonBackBtn span{display:none}}
 @media(prefers-reduced-motion:reduce){.lessonbar .lessonBackBtn{transition:none!important}}
 </style><style id="haneul-shorts-independent-page">
+/* Full viewport Shorts player; preserve native YouTube controls and aspect ratio. */
 #shortsPage[hidden]{display:none!important}
 #shortsPage .shortsPageHeader,#shortsPage .shortsShelf{display:none!important}
-#shortsPage .shortsOverlay{position:fixed!important;inset:0!important;z-index:500!important;background:#0c0c11!important;padding:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}
-#shortsPage .shortsStage{width:100%!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#101015!important;display:grid!important;grid-template-columns:minmax(280px,480px) minmax(270px,380px)!important;justify-content:center!important;gap:18px!important;padding:12px!important;overflow:hidden!important}
-#shortsPage .shortsVideoPane{height:calc(100dvh - 24px)!important;min-height:0!important;border-radius:18px;overflow:hidden}
-#shortsPage .shortsVideoPane iframe{width:100%!important;height:100%!important;max-height:none!important;aspect-ratio:auto!important}
-#shortsPage .shortsDetails{height:calc(100dvh - 24px);max-height:none!important;background:#fff;border-radius:18px;overflow:auto!important;padding:22px!important}
-#shortsPage .shortsClose{display:block!important}
-#shortsPage .shortsNav{position:sticky;bottom:0;background:#fff;padding-top:8px}
-@media(max-width:700px){
-#shortsPage .shortsStage{display:flex!important;flex-direction:column!important;gap:0!important;padding:0!important;position:relative!important}
-#shortsPage .shortsVideoPane{height:63dvh!important;flex:none!important;border-radius:0!important}
-#shortsPage .shortsDetails{height:37dvh!important;max-height:37dvh!important;flex:none!important;border-radius:0!important;padding:12px 16px!important}
-#shortsPage .shortsWord{font-size:26px!important}
-#shortsPage .shortsClose{position:relative;z-index:4}
+#shortsPage .shortsOverlay{
+ position:fixed!important;inset:0!important;z-index:500!important;
+ background:#09090d!important;padding:0!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
 }
+#shortsPage .shortsStage{
+ display:grid!important;grid-template-columns:minmax(0, min(54vw, calc(100dvh * 9 / 16))) minmax(320px,420px)!important;
+ align-items:center!important;justify-content:center!important;gap:14px!important;
+ width:100vw!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;
+ margin:0!important;padding:10px 20px!important;background:#09090d!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important
+}
+#shortsPage .shortsVideoPane{
+ display:block!important;position:relative!important;align-self:center!important;
+ width:100%!important;height:min(calc(100dvh - 20px), calc(54vw * 16 / 9))!important;
+ min-height:0!important;border-radius:16px!important;background:#08080a!important;overflow:hidden!important
+}
+#shortsPage #shortsVideo{position:absolute!important;inset:0!important;display:block!important;height:100%!important;width:100%!important}
+#shortsPage #shortsVideo iframe{
+ display:block!important;width:100%!important;height:100%!important;max-height:none!important;
+ aspect-ratio:9/16!important;border:0!important
+}
+#shortsPage .shortsDetails{
+ align-self:center!important;width:100%!important;height:min(860px,calc(100dvh - 20px))!important;
+ max-height:calc(100dvh - 20px)!important;padding:24px!important;overflow-y:auto!important;
+ border-radius:17px!important;background:#fff!important;color:#24232b!important
+}
+#shortsPage .shortsClose{display:grid!important;place-items:center!important}
+#shortsPage .shortsNav{position:sticky!important;bottom:-24px!important;background:#fff!important;padding:10px 0!important;z-index:2!important}
+@media(max-width:850px){
+ #shortsPage .shortsStage{grid-template-columns:minmax(0, min(55vw, calc(100dvh * 9 / 16))) minmax(240px,1fr)!important;gap:9px!important;padding:8px!important}
+ #shortsPage .shortsVideoPane{height:min(calc(100dvh - 16px), calc(55vw * 16 / 9))!important}
+ #shortsPage .shortsDetails{height:calc(100dvh - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:15px!important}
+}
+@media(max-width:700px){
+ #shortsPage .shortsOverlay{overflow:hidden!important;overscroll-behavior:contain!important}
+ #shortsPage .shortsStage{
+  display:block!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;
+  padding:0!important;position:relative!important;overflow:hidden!important
+ }
+ #shortsPage .shortsVideoPane{
+  position:absolute!important;inset:0!important;display:block!important;flex:none!important;
+  width:100vw!important;height:100dvh!important;border-radius:0!important;background:#08080a!important
+ }
+ #shortsPage #shortsVideo,#shortsPage #shortsVideo iframe{width:100%!important;height:100%!important;max-height:none!important}
+ #shortsPage .shortsDetails{
+  position:absolute!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;
+  display:flex!important;flex-direction:column!important;gap:5px!important;
+  width:100%!important;height:auto!important;max-height:min(36dvh,260px)!important;
+  border-radius:18px 18px 0 0!important;padding:12px 16px max(12px,env(safe-area-inset-bottom))!important;
+  background:rgba(255,255,255,.96)!important;overflow-y:auto!important;
+  box-shadow:0 -10px 40px #0005!important
+ }
+ #shortsPage .shortsTop{min-height:26px!important;flex-shrink:0!important}
+ #shortsPage .shortsDetails #shortsTitle{font-size:15px!important;margin:0!important;line-height:1.3!important}
+ #shortsPage .shortsDetails .shortsWord{font-size:21px!important;line-height:1.2!important}
+ #shortsPage .shortsDetails #shortsRoman,#shortsPage .shortsDetails #shortsEnglish{font-size:11px!important}
+ #shortsPage .shortsExample{font-size:11px!important;padding:7px!important}
+ #shortsPage .shortsActions{gap:5px!important}
+ #shortsPage .shortsActions button{padding:7px!important;font-size:10px!important}
+ #shortsPage .shortsNav{position:sticky!important;bottom:0!important;padding:6px 0 0!important;margin:0!important}
+ #shortsPage .shortsNav button{padding:10px!important}
+ #shortsPage .shortsClose{display:grid!important}
+ #shortsPage .shortsDetails #shortsStatus{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){#shortsPage *{scroll-behavior:auto!important}}
 </style><style id="haneul-shorts-bundled-v2">/* Isolated Korean Shorts feature; preserve existing Haneul layout. */
 .shortsShelf{margin:28px 0 32px;padding:23px;background:#fff;border:1px solid #e7e6f1;border-radius:22px;box-shadow:0 8px 25px #34346408}
 .shortsShelf h2{font-size:24px;letter-spacing:-.04em;margin:4px 0 7px}.shortsShelf p{color:#737b8b;font-size:13px;line-height:1.55;margin:0}
