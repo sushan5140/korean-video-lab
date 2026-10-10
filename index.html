@@ -3544,14 +3544,15 @@ async function loadCues(id){
  const requested=id;
  cues=[];lastCue=null;showMessage('Checking timed Korean captions…');
  try{
-  const response=await fetch('/api/captions?videoId='+encodeURIComponent(id)+'&cv=10',{headers:typeof haneulApiHeaders==='function'?await haneulApiHeaders():{}});
-  if(!response.ok)throw Error('Captions unavailable');
+  const response=await fetch('/api/captions?videoId='+encodeURIComponent(id)+'&source=youtube&cv=10',{headers:typeof haneulApiHeaders==='function'?await haneulApiHeaders():{}});
+  if(!response.ok)throw Error('YouTube caption request failed ('+response.status+')');
   const data=await response.json();
   if(videoId!==requested)return;
+  if(data?.ok!==true)throw Error(data?.reason==='no-korean-caption-track'?'No Korean caption track on this Short':data?.reason==='no-caption-track'?'This Short has no YouTube caption track':data?.reason==='youtube-track-not-korean'?'The available captions do not contain Korean':data?.reason||'No usable Korean captions');
   cues=normalizeCues(data?.cues);
-  if(!cues.length)throw Error('No timed captions');
+  if(!cues.length)throw Error('No usable timed Korean captions');
   updateTime();
- }catch(e){if(videoId===requested)showMessage('Synced captions unavailable · YouTube CC may still work')}
+ }catch(e){if(videoId===requested){const reason=String(e?.message||'Korean captions unavailable');showMessage(reason);const status=$('shortsStatus');if(status)status.textContent=reason+' · No transcript was fabricated.';}}
 }
 function resetPlayer(){
  if(poll){clearInterval(poll);poll=null}
