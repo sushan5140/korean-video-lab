@@ -3464,8 +3464,8 @@ root.addEventListener('click',e=>{const b=e.target.closest('[data-short]');if(b)
 $('shortsClose').addEventListener('click',close);
 $('shortsPrev').addEventListener('click',()=>open(active-1));
 $('shortsNext').addEventListener('click',()=>open(active+1));
-$('shortsSave').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v)return;saved=saved.includes(v.ko)?saved.filter(x=>x!==v.ko):saved.concat(v.ko);try{localStorage.setItem(storageKey,JSON.stringify(saved))}catch(_){}$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsStatus').textContent=saved.includes(v.ko)?'Saved for review on this device.':'Removed from saved words.'});
-$('shortsReveal').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v)return;const q=$('shortsQuestion');q.hidden=false;q.innerHTML='<b>What does '+h(v.ko)+' mean?</b><div>'+v.options.map(option=>'<button type="button" data-answer="'+h(option)+'">'+h(option)+'</button>').join('')+'</div>';showAnswer=true});
+$('shortsSave').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v||!/[가-힣]/.test(v.ko))return;saved=saved.includes(v.ko)?saved.filter(x=>x!==v.ko):saved.concat(v.ko);try{localStorage.setItem(storageKey,JSON.stringify(saved))}catch(_){}$('shortsSave').textContent=saved.includes(v.ko)?'★ Saved':'☆ Save word';$('shortsStatus').textContent=saved.includes(v.ko)?'Saved for review on this device.':'Removed from saved words.'});
+$('shortsReveal').addEventListener('click',()=>{const v=window.haneulActiveShortsCue?.();if(!v||!/[가-힣]/.test(v.ko))return;const q=$('shortsQuestion');q.hidden=false;q.innerHTML='<b>What does '+h(v.ko)+' mean?</b><div>'+v.options.map(option=>'<button type="button" data-answer="'+h(option)+'">'+h(option)+'</button>').join('')+'</div>';showAnswer=true});
 $('shortsQuestion').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(!b)return;$('shortsStatus').textContent=b.dataset.answer===(window.haneulActiveShortsCue?.()?.en||'')?'Correct! 잘했어요!':'Not quite — '+(window.haneulActiveShortsCue?.()?.ko||'')+' means '+(window.haneulActiveShortsCue?.()?.en||'')+'.'});
 overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
 document.addEventListener('keydown',e=>{if(!overlay.classList.contains('isOpen'))return;if(e.key==='Escape')close();if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();open(active+1)}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();open(active-1)}});
@@ -3496,7 +3496,7 @@ document.addEventListener('click',e=>{
 function addCard(data){
  const v=current();if(!v)return;
  const ko=String(data?.ko||v.ko||'').trim(),en=String(data?.en||v.en||'').trim();
- if(!ko)return;
+ if(!ko||!/[가-힣]/.test(ko))return;
  const timestamp=Number.isFinite(data?.time)?data.time:null;
  const id=v.id+'::'+ko+'::'+(timestamp===null?'study':Math.floor(timestamp));
  if(cards.some(c=>c.id===id))return;
@@ -3511,10 +3511,10 @@ window.haneulShortsShowCue=function(cue){activeMatchedCue=cue||null;
  if(!word)return;
  word.textContent=cue?.ko||'Waiting for timed captions';
  roman.textContent='';
- english.textContent=cue?.en||'This video has no verified timed transcript yet.';
+ english.textContent=cue?( /[가-힣]/.test(cue.ko)?(cue.en||'Korean dialogue · timestamped caption'):'English speech · timestamped caption (not a Korean flashcard)'):'No timestamped YouTube caption available for this moment.';
  example.textContent=cue?'Caption matched to the current playback position.':'The previous vocabulary card was an unrelated study prompt, not a live caption.';
- $('shortsSave').disabled=!cue;$('shortsReveal').disabled=!cue;
- $('shortsSave').textContent=cue?'☆ Save matched caption':'☆ Caption unavailable';
+ $('shortsSave').disabled=!cue||!/[가-힣]/.test(cue.ko);$('shortsReveal').disabled=!cue||!/[가-힣]/.test(cue.ko);
+ $('shortsSave').textContent=cue&&/[가-힣]/.test(cue.ko)?'☆ Save Korean caption':'☆ Korean flashcard unavailable';
 };
 let cues=[],lastCue=null,poll=null,player=null,videoId=null;
 const caption=$('shortsCaptionFloat');
@@ -3542,15 +3542,15 @@ function normalizeCues(raw){
 }
 async function loadCues(id){
  const requested=id;
- cues=[];lastCue=null;showMessage('Checking timed Korean captions…');
+ cues=[];lastCue=null;showMessage('Checking English and Korean captions…');
  try{
-  const response=await fetch('/api/captions?videoId='+encodeURIComponent(id)+'&source=youtube&cv=10',{headers:typeof haneulApiHeaders==='function'?await haneulApiHeaders():{}});
+  const response=await fetch('/api/captions?videoId='+encodeURIComponent(id)+'&source=youtube&shorts=1&cv=11',{headers:typeof haneulApiHeaders==='function'?await haneulApiHeaders():{}});
   if(!response.ok)throw Error('YouTube caption request failed ('+response.status+')');
   const data=await response.json();
   if(videoId!==requested)return;
-  if(data?.ok!==true)throw Error(data?.reason==='no-korean-caption-track'?'No Korean caption track on this Short':data?.reason==='no-caption-track'?'This Short has no YouTube caption track':data?.reason==='youtube-track-not-korean'?'The available captions do not contain Korean':data?.reason||'No usable Korean captions');
+  if(data?.ok!==true)throw Error(data?.reason==='no-ko-en-caption-track'?'No English or Korean subtitle track on YouTube':data?.reason==='no-korean-caption-track'?'No Korean caption track on this Short':data?.reason==='no-caption-track'?'This Short has no YouTube caption track':data?.reason==='youtube-track-not-korean'?'The available captions do not contain Korean':data?.reason||'No usable Korean captions');
   cues=normalizeCues(data?.cues);
-  if(!cues.length)throw Error('No usable timed Korean captions');
+  if(!cues.length)throw Error('No usable timed captions');
   updateTime();
  }catch(e){if(videoId===requested){const reason=String(e?.message||'Korean captions unavailable');showMessage(reason);const status=$('shortsStatus');if(status)status.textContent=reason+' · No transcript was fabricated.';}}
 }
