@@ -38,7 +38,12 @@ class FakeElement {
     this.classList = {
       add: name => this.classes.add(name),
       remove: name => this.classes.delete(name),
-      contains: name => this.classes.has(name)
+      contains: name => this.classes.has(name),
+      toggle: (name, force) => {
+        const add = force === undefined ? !this.classes.has(name) : Boolean(force);
+        if (add) this.classes.add(name); else this.classes.delete(name);
+        return add;
+      }
     };
   }
   set id(value) { this._id = value; elements.set(value, this); }
@@ -50,6 +55,13 @@ class FakeElement {
     }
   }
   get innerHTML() { return this.markup || ''; }
+  querySelector(selector) {
+    if (selector === '.shortsStage' && this.markup?.includes('class="shortsStage"')) {
+      if (!this.stage) this.stage = new FakeElement();
+      return this.stage;
+    }
+    return null;
+  }
   addEventListener(type, callback) { this.listeners[type] = callback; }
   click() { if (this.listeners.click) this.listeners.click({ target: this, preventDefault() {} }); }
   setAttribute(name, value) { this[name] = value; }
@@ -70,12 +82,18 @@ const appWindow = {};
 const localStorage = { getItem: () => null, setItem() {} };
 const showMainPage = name => visited.push(name);
 vm.runInNewContext(bundled[1], {
-  document, window: appWindow, localStorage, showMainPage
+  document, window: appWindow, localStorage, showMainPage,
+  location: { origin: 'https://korean-video-lab.vercel.app' }
 }, { filename: 'shorts:runtime', timeout: 3000 });
 assert.equal(typeof appWindow.haneulOpenShorts, 'function', 'Shorts opener must initialize');
 appWindow.haneulOpenShorts(0);
 assert.ok(elements.get('shortsOverlay').classList.contains('isOpen'), 'Reel should open');
+const stage = elements.get('shortsOverlay').querySelector('.shortsStage');
+assert.ok(!stage.classList.contains('shortsLearningOpen'), 'Study panel starts collapsed');
+elements.get('shortsLearnToggle').click();
+assert.ok(stage.classList.contains('shortsLearningOpen'), 'Study panel expands');
 assert.match(elements.get('shortsVideo').children[0].src, /\/embed\/WyWdNJxHbkM/);
+assert.match(elements.get('shortsVideo').children[0].src, /origin=https%3A%2F%2Fkorean-video-lab\.vercel\.app/);
 assert.equal(visited[0], 'shorts');
 elements.get('shortsNext').click();
 assert.equal(elements.get('shortsCounter').textContent, '2 / 14');

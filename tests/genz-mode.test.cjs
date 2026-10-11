@@ -15,7 +15,12 @@ test('Normal and Gen-Z mode has a persistent two-state switch',()=>{
 
 test('Gen-Z copy layer protects Korean learning content',()=>{
  const source=html();
- assert.match(source,/closest\('\.cap,\.ko,\.en,\.wordContext,\.realExample'\)/);
+ const protectedSelector=source.match(/const vibeProtectedSelector=\[([\s\S]*?)\]\.join\(','\);/);
+ assert.ok(protectedSelector,'Protected learning selectors must be defined');
+ for(const cls of ['.cap','.ko','.en','.wordContext','.realExample']){
+  assert.ok(protectedSelector[1].includes("'"+cls+"'"),'Missing protected learning selector: '+cls);
+ }
+ assert.match(source,/p\.closest\(vibeProtectedSelector\)/);
  assert.match(source,/Learning content stays accurate/);
  assert.match(source,/Korean learning content never changes/);
  assert.match(source,/Sign in with Google to view the Korean transcript/);
